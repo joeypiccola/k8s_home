@@ -5,8 +5,8 @@ metadata:
   name: manage-flux
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: flux-repo
+  # dependsOn:
+  #   - name: flux-repo
   interval: 10m0s
   path: ./manifests/install
   prune: true
