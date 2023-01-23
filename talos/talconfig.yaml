@@ -1,0 +1,102 @@
+clusterName: ${clusterName}
+endpoint: https://${clusterName}.${domainName}:6443
+talosVersion: ${talosVersion}
+kubernetesVersion: ${kubernetesVersion}
+
+nodes:
+  - hostname: control-1.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${controlPlaneIP_1}
+    controlPlane: true
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eth0
+        vip:
+          ip: ${vip}
+        dhcp: false
+        addresses:
+          - ${controlPlaneIP_1}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+  - hostname: control-2.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${controlPlaneIP_2}
+    controlPlane: true
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eth0
+        vip:
+          ip: ${vip}
+        dhcp: false
+        addresses:
+          - ${controlPlaneIP_2}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+  - hostname: control-3.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${controlPlaneIP_3}
+    controlPlane: true
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eth0
+        vip:
+          ip: ${vip}
+        dhcp: false
+        addresses:
+          - ${controlPlaneIP_3}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+  - hostname: worker-1.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${workerIP_1}
+    controlPlane: false
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eth0
+        dhcp: false
+        addresses:
+          - ${workerIP_1}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+  - hostname: worker-2.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${workerIP_2}
+    controlPlane: false
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eth0
+        dhcp: false
+        addresses:
+          - ${workerIP_2}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+
+controlPlane:
+  patches:
+    - |-
+      - op: replace
+        path: /cluster/extraManifests
+        value:
+          - "https://raw.githubusercontent.com/mologie/talos-vmtoolsd/master/deploy/unstable.yaml"
+worker:
+  patches:
+    - |-
+      - op: replace
+        path: /cluster/extraManifests
+        value:
+          - "https://raw.githubusercontent.com/mologie/talos-vmtoolsd/master/deploy/unstable.yaml"

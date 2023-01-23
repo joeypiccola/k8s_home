@@ -1,0 +1,22 @@
+# Editors
+.vscode/
+# Trash
+.DS_Store
+Thumbs.db
+# k8s
+*kubeconfig*
+# vscode-sops
+.decrypted~*.yaml
+.envrc
+.terraform/
+*.tfstate*
+*.lock.hcl
+backend.conf
+
+*talosconfig*
+
+*.log
+*sa.json
+compare.yaml
+
+apps/**

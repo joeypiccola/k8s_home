@@ -1,0 +1,95 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: date
+  namespace: joey
+spec:
+  selector:
+    matchLabels:
+      app: date
+  replicas: 6
+  template:
+    metadata:
+      labels:
+        app: date
+    spec:
+      volumes:
+      - name: html
+        emptyDir: {}
+      # - name: nfsdir
+      #   persistentVolumeClaim:
+      #     claimName: date
+      containers:
+      - name: 1st
+        image: nginx
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+      - name: 2nd
+        image: debian
+        volumeMounts:
+        - name: html
+          mountPath: /html
+        command: ["/bin/sh", "-c"]
+        args:
+          - while true; do
+              rm /html/index.html;
+              date >> /html/index.html;
+              sleep 1;
+            done
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: date
+  namespace: joey
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: date
+
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: date
+  namespace: joey
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls.certresolver: letsencrypt
+spec:
+  rules:
+  - host: "a.piccola.us"
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: date
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - a.piccola.us
+
+# ---
+# apiVersion: traefik.containo.us/v1alpha1
+# kind: IngressRoute
+# metadata:
+#   name: date
+# spec:
+#   entryPoints:
+#     - websecure
+#   routes:
+#     - match: Host(`a.piccola.us`)
+#       kind: Rule
+#       services:
+#         - name: date
+#           port: 80
+#   tls:
+#     certResolver: letsencrypt

@@ -1,0 +1,5 @@
+---
+creation_rules:
+  - path_regex: (talos|clusters)/.*\.sops\.ya?ml
+    encrypted_regex: "((?i)(^trusted|^secrets|^trustdinfo|^cluster|.[pP]assword|crt|key|^data$|^stringData))"
+    age: 'age1tatwwrxettyutu5zz3dmt349lqzjqfp8eheydzm76rqmqr5fu4usuj2cv7'
