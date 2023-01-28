@@ -31,11 +31,11 @@ rm ./vmtoolsd-secret.yaml
 
 ### install GOTK
 
-The `flux` and `yq` binaries is required here. At the time of this writing flux version `0.38.2` is being used. Install flux at the version specified in `clusters/talos/flux/repos/git/flux-repo.yaml`.
+The `flux` and `yq` binaries are required here. At the time of this writing flux version `0.38.3` is being used. Install flux at the version specified in `clusters/talos/flux/repos/git/flux-repo.yaml`.
 
 ```
-# cd to root of repo
-yq '.spec.ref.tag' clusters/talos/flux/repos/git/flux-repo.yaml | xargs -I{} flux install --version={} --export | kubectl apply -f -
+# cd to root of k8s_home repo
+yq '.spec.ref.tag' clusters/talos/flux/repos/git/flux-repo.yaml | xargs -I{} flux install --components-extra=image-reflector-controller,image-automation-controller --version={} --export | kubectl apply -f -
 ```
 
 Once installed, create your sops secret then apply your "root" Kustomization.
@@ -43,4 +43,14 @@ Once installed, create your sops secret then apply your "root" Kustomization.
 ```
 cat 'wherever you keep this file/keys.txt' | kubectl create secret generic sops-age --namespace=flux-system --from-file=age.agekey=/dev/stdin
 k apply -k clusters/talos
+```
+
+
+
+
+
+once cluster is up run the following to bootstrap flu
+```
+# cd to root of repo
+flux bootstrap github --owner=$GITHUB_USER --repository=k8s_home --branch=main --path=clusters/production --personal=true --reconcile=true
 ```
