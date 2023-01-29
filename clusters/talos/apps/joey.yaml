@@ -5,15 +5,15 @@ metadata:
   name: joey-kustomization
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: deploy
+  # dependsOn:
+  #   - name: deploy
   interval: 10m0s
   path: ./clusters/talos/apps/joey
   prune: true
   wait: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: k8s-home-repo
   decryption:
     provider: sops
     secretRef:
