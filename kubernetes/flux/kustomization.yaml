@@ -6,3 +6,4 @@ resources:
   - ./repositories/git/flux.yaml
   - ./flux-manage.yaml
   - ./flux-install.yaml
+  - ./apps.yaml
