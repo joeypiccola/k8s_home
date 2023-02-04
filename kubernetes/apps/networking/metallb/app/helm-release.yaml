@@ -9,8 +9,8 @@ spec:
   releaseName: metallb
   chart:
     spec:
-      chart: bitnami/metallb
-      version: 4.1.14
+      chart: metallb
+      version: 0.13.7
       sourceRef:
         kind: HelmRepository
         name: metallb
