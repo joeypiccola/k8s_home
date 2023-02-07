@@ -9,6 +9,11 @@ spec:
     provider: sops
     secretRef:
       name: sops-age
+  postBuild:
+    substitute: {}
+    substituteFrom:
+      - kind: Secret
+        name: cluster-secrets
   interval: 10m0s
   path: ./kubernetes/apps
   prune: true
