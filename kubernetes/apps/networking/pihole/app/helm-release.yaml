@@ -16,3 +16,13 @@ spec:
         name: pihole
         namespace: flux-system
       interval: 5m
+  values:
+    adminPassword: ${PIHOLE_ADMINPASSWORD}
+    serviceDns:
+      type: LoadBalancer # was NodePort jjp
+      loadBalancerIP: "10.0.3.209"
+      annotations: # {}
+        metallb.universe.tf/allow-shared-ip: pihole-svc
+    serviceDhcp:
+      enabled: false # was true jjp
+    virtualHost: ${PIHOLE_VIRTUALHOST}
