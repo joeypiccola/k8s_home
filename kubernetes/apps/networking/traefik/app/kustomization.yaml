@@ -5,4 +5,4 @@ resources:
   - ./namespace.yaml
   - ./storage.yaml
   - ./helm-repo.yaml
-  # - ./helm-release.yaml
+  - ./helm-release.yaml
