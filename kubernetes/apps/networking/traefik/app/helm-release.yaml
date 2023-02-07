@@ -39,7 +39,7 @@ spec:
       spec:
         loadBalancerIP: 10.0.3.208
     persistence:
-        enabled: true
+      enabled: true
       existingClaim: "traefik"
     certResolvers:
       letsencrypt:
