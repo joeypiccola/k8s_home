@@ -5,6 +5,12 @@ metadata:
   name: apps
   namespace: flux-system
 spec:
+  interval: 10m0s
+  path: ./kubernetes/apps
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: k8s-home
   decryption:
     provider: sops
     secretRef:
@@ -14,9 +20,22 @@ spec:
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
-  interval: 10m0s
-  path: ./kubernetes/apps
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: k8s-home
+  patches:
+    - patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+        kind: Kustomization
+        metadata:
+          name: not-used
+        spec:
+          decryption:
+            provider: sops
+            secretRef:
+              name: sops-age
+          postBuild:
+            substituteFrom:
+              - kind: Secret
+                name: cluster-secrets
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        version: v1beta2
+        kind: Kustomization
