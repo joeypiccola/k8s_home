@@ -11,7 +11,7 @@ terraform apply
 
 ### Bootstrap the systems with Talos
 
-For this you can use any controlplane IP from `talos/talenv.yaml/`.
+For this you can use any controlplane IP from `talos/talenv.yaml`.
 
 ```bash
 cd talos/clusterconfig
