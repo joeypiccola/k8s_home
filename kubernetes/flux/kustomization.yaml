@@ -7,4 +7,4 @@ resources:
   - ./flux-manage.yaml
   - ./flux-install.yaml
   - ./vars/cluster-secrets.sops.yaml
-  - ./apps.yaml
+  # - ./apps.yaml
