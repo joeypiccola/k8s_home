@@ -35,7 +35,7 @@ rm ./vmtoolsd-secret.yaml
 
 ```bash
 # cd to root of k8s_home repo
-yq '.spec.ref.tag' kubernetes/flux-bootstrap/flux-repo.yaml | xargs -I{} flux install --components-extra=image-reflector-controller,image-automation-controller --version={} --export | kubectl apply -f -
+yq '.spec.ref.tag' kubernetes/flux/repositories/git/flux.yaml | xargs -I{} flux install --components-extra=image-reflector-controller,image-automation-controller --version={} --export | kubectl apply -f -
 ```
 
 Once installed, create your sops secret then apply your "root" Kustomization.
