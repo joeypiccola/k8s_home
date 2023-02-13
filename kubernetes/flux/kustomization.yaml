@@ -6,5 +6,5 @@ resources:
   - ./repositories/git/flux.yaml
   - ./flux-manage.yaml
   - ./flux-install.yaml
-  # - ./vars/cluster-secrets.sops.yaml
+  - ./vars/cluster-secrets.sops.yaml
   # - ./apps.yaml
