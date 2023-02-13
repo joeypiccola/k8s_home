@@ -5,12 +5,14 @@ metadata:
   name: traefik
   namespace: flux-system
 spec:
+  dependsOn:
+    - name: metallb
   decryption:
     provider: sops
     secretRef:
       name: sops-age
   interval: 10m0s
-  path: ./kubernetes/apps/networking/traefik/app
+  path: ./kubernetes/infrastructure/networking/traefik/app
   prune: true
   sourceRef:
     kind: GitRepository

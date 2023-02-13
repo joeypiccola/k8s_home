@@ -10,7 +10,7 @@ spec:
     secretRef:
       name: sops-age
   interval: 10m0s
-  path: ./kubernetes/apps/networking/metallb/app
+  path: ./kubernetes/infrastructure/networking/metallb/app
   prune: true
   sourceRef:
     kind: GitRepository

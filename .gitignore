@@ -20,3 +20,4 @@ backend.conf
 compare.yaml
 
 apps/**
+vars/**
