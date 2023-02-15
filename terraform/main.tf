@@ -8,13 +8,13 @@ locals {
         memory = 2048
         num_cpus = 2
         disk_size = 10
-        # ceph_disk_size = 20
+        ceph_disk_size = 20
       }
       controlplane = {
         memory = 4096
         num_cpus = 2
         disk_size = 10
-        # ceph_disk_size = 20
+        ceph_disk_size = 20
       }
     }
   }
@@ -53,19 +53,19 @@ resource "vsphere_virtual_machine" "talos_nodes" {
     remote_ovf_url = local.talos_ovf_url
   }
 
-  # Disk
+  # Disk for os
   disk {
     label = "disk0"
     size  = local.vmware_config.node_hardware_config[each.value.type].disk_size
   }
 
 
-  # # Disk
-  # disk {
-  #   label       = "disk1"
-  #   size        = local.vmware_config.node_hardware_config[each.value.type].ceph_disk_size
-  #   unit_number = 1
-  # }
+  # Disk for ceph
+  disk {
+    label       = "disk1"
+    size        = local.vmware_config.node_hardware_config[each.value.type].ceph_disk_size
+    unit_number = 1
+  }
 
   # VM networking
   network_interface {
@@ -84,9 +84,9 @@ resource "vsphere_virtual_machine" "talos_nodes" {
   lifecycle {
     ignore_changes = [
       disk[0].io_share_count,
-      disk[0].thin_provisioned #,
-      # disk[1].io_share_count,
-      # disk[1].thin_provisioned
+      disk[0].thin_provisioned,
+      disk[1].io_share_count,
+      disk[1].thin_provisioned
     ]
   }
 }
