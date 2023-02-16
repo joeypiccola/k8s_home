@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: networking
+    - name: infrastructure
   interval: 10m0s
   path: ./kubernetes/applications
   prune: true
