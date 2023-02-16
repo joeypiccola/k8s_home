@@ -9,6 +9,7 @@ spec:
     - name: infrastructure
   interval: 10m0s
   path: ./kubernetes/applications
+  wait: false
   prune: true
   sourceRef:
     kind: GitRepository
