@@ -10,7 +10,7 @@ spec:
     secretRef:
       name: sops-age
   interval: 10m0s
-  path: ./kubernetes/apps/networking/pihole/app
+  path: ./kubernetes/applications/pihole/app
   prune: true
   sourceRef:
     kind: GitRepository
