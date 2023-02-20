@@ -38,12 +38,16 @@ rm ./vmtoolsd-secret.yaml
 yq '.spec.ref.tag' kubernetes/flux/repositories/git/flux.yaml | xargs -I{} flux install --components-extra=image-reflector-controller,image-automation-controller --version={} --export | kubectl apply -f -
 ```
 
-Once installed, create your sops secret then apply your "root" Kustomization.
+Once installed, create your sops secret.
 
 ```bash
 cat 'wherever you keep this file/keys.txt' | kubectl create secret generic sops-age --namespace=flux-system --from-file=age.agekey=/dev/stdin
-k apply -k clusters/talos
 ```
+
+Kickstart flux kustomizations. This will
+
+`k apply --kustomize kubernetes/flux`
+`k apply --kustomize kubernetes/infrastructure`
 
 #### old notes
 
