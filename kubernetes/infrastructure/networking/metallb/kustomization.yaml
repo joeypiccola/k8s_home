@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: metallb
+  name: infrastructure-networking-metallb-app
   namespace: flux-system
 spec:
   decryption:
@@ -15,21 +15,16 @@ spec:
   sourceRef:
     kind: GitRepository
     name: k8s-home
-  # healthChecks:
-  #   - apiVersion: helm.toolkit.fluxcd.io/v2beta1
-  #     kind: HelmRelease
-  #     name: metallb
-  #     namespace: networking
 
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
 kind: Kustomization
 metadata:
-  name: metallb-config
+  name: infrastructure-networking-metallb-config
   namespace: flux-system
 spec:
   dependsOn:
-    - name: metallb
+    - name: infrastructure-networking-metallb-app
   decryption:
     provider: sops
     secretRef:
