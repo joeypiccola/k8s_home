@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - ./infrastructure.yaml
   - ./networking.yaml
-  # - ./storage.yaml
+  - ./storage.yaml
