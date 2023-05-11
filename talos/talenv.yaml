@@ -1,6 +1,6 @@
 clusterName: talos
 domainName: piccola.us
-talosVersion: v1.3.0
+talosVersion: v1.4.3
 kubernetesVersion: v1.26.0
 gateway: 10.0.3.1
 vip: 10.0.3.150
