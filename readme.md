@@ -1,10 +1,15 @@
 # kubernetes @ home
 
+## Talos and Kubernetes Versions
+
+Talos and Kubernetes versions are a bit interdependent. You can find a support-matrix [here](https://www.talos.dev/v1.4/introduction/support-matrix/). Talos releases are [here](https://github.com/siderolabs/talos/releases).
+
 ## Rebuild from scratch
 
 ### Build the infrastructure with Terraform
 
 ```bash
+# from repo root
 cd terraform
 terraform apply
 ```
@@ -14,6 +19,7 @@ terraform apply
 For this you can use any controlplane IP from `talos/talenv.yaml`.
 
 ```bash
+# from repo root
 cd talos/clusterconfig
 talosctl bootstrap --nodes 10.0.3.151
 ```
@@ -23,37 +29,34 @@ talosctl bootstrap --nodes 10.0.3.151
 This secret is used by the `talos-vmtoolsd` daemonset. Without it, these pods will be stuck in `ContainerCreating`.
 
 ```bash
+# from repo root
 cd talos/clusterconfig
 talosctl -n 10.0.3.151 config new vmtoolsd-secret.yaml --roles os:admin
 kubectl -n kube-system create secret generic talos-vmtoolsd-config --from-file=talosconfig=./vmtoolsd-secret.yaml
 rm ./vmtoolsd-secret.yaml
 ```
 
-### install GOTK
+### Install GitOps Toolkit (GOTK) components
 
-**Imperatively** install flux at the version specified in `kubernetes/flux-bootstrap/flux-repo.yaml`. The `flux` and `yq` binaries are required here. At the time of this writing the flux binary version `0.38.3` is being used.
+**Imperatively** install [flux](https://fluxcd.io/flux/components/) at the version specified in `kubernetes/flux-bootstrap/flux-repo.yaml`. `flux` and `yq` binaries are required here. At the time of this writing the `flux` binary version `0.41.2` is being used.
 
 ```bash
-# cd to root of k8s_home repo
+# from repo root
 yq '.spec.ref.tag' kubernetes/flux/repositories/git/flux.yaml | xargs -I{} flux install --components-extra=image-reflector-controller,image-automation-controller --version={} --export | kubectl apply -f -
 ```
 
-Once installed, create your sops secret.
+### Create aɡe secret for SOPS
+
+Once installed, create your `sops-age` secret.
 
 ```bash
 cat 'wherever you keep this file/keys.txt' | kubectl create secret generic sops-age --namespace=flux-system --from-file=age.agekey=/dev/stdin
 ```
 
-Kickstart flux kustomizations. This will
-
-`k apply --kustomize kubernetes/flux`
-`k apply --kustomize kubernetes/infrastructure`
-
-#### old notes
-
-once cluster is up run the following to bootstrap flux
+### Apply kustomizations
 
 ```bash
-# cd to root of repo
-flux bootstrap github --owner=$GITHUB_USER --repository=k8s_home --branch=main --path=clusters/production --personal=true --reconcile=true
+# from repo root
+k apply --kustomize kubernetes/flux
+k apply --kustomize kubernetes/infrastructure
 ```
