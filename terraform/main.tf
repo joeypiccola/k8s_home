@@ -59,7 +59,6 @@ resource "vsphere_virtual_machine" "talos_nodes" {
     size  = local.vmware_config.node_hardware_config[each.value.type].disk_size
   }
 
-
   # Disk for ceph
   disk {
     label       = "disk1"
