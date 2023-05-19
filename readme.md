@@ -60,3 +60,15 @@ cat 'wherever you keep this file/keys.txt' | kubectl create secret generic sops-
 k apply --kustomize kubernetes/flux
 k apply --kustomize kubernetes/infrastructure
 ```
+
+### Helm Charts
+
+The following are a few commands for working with Helm charts and their releases.
+
+`helm repo list` to list chart repositories.
+
+`helm repo update` to update information of available charts locally from chart repositories.
+
+`helm repo add metallb https://metallb.github.io/metallb` for adding the `metallb` repo locally.
+
+`helm search repo metallb --versions` to list chart versions / releases.
