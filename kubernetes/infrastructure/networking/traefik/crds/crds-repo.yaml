@@ -1,0 +1,17 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: traefik-git-crds
+  namespace: flux-system
+spec:
+  interval: 30m
+  # renovate: datasource=github-releases
+  url: https://github.com/traefik/traefik-helm-chart.git
+  ref:
+    tag: v22.3.0
+  ignore: |
+    # exclude all
+    /*
+    # include deploy crds dir
+    !/traefik/crds
