@@ -72,3 +72,11 @@ The following are a few commands for working with Helm charts and their releases
 `helm repo add metallb https://metallb.github.io/metallb` for adding the `metallb` repo locally.
 
 `helm search repo metallb --versions` to list chart versions / releases.
+
+`helm list --all-namespaces --all` to list installed charts.
+
+### Troubleshooting kustomizations with flux
+
+`k get kustomizations.kustomize.toolkit.fluxcd.io -n flux-system` to list kustomization in `flux-system` namespace
+
+`flux reconcile kustomization flux-install` to reconcile the `flux-install` kustomization
