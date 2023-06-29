@@ -5,8 +5,8 @@ metadata:
   name: infrastructure-storage
   namespace: flux-system
 spec:
-  dependsOn:
-    - name: infrastructure-cluster
+  # dependsOn:
+  #   - name: infrastructure-cluster
   interval: 10m0s
   path: ./kubernetes/infrastructure/storage
   prune: true
