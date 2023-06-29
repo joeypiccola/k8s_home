@@ -27,12 +27,13 @@ spec:
         - effect: "NoSchedule"
           operator: "Exists"
 
-    # monitoring:
+    # monitoring: <-- defaults to false
     #   enabled: true
 
-    # resources:
-    #   requests:
-    #     cpu: 109m
-    #     memory: 204M
-    #   limits:
-    #     memory: 453M
+      # resources: <-- defaults
+      #   limits:
+      #     cpu: 500m
+      #     memory: 512Mi
+      #   requests:
+      #     cpu: 100m
+      #     memory: 128Mi
