@@ -24,7 +24,10 @@ spec:
       #   connections:
       #     compression:
       #       enabled: true
-
+      mon:
+        # Set the number of mons to be started. Generally recommended to be 3.
+        # For highest availability, an odd number of mons should be specified.
+        count: 2
       resources:
         mgr:
           requests:
