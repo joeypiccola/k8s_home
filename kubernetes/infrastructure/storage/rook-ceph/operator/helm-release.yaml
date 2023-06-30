@@ -15,26 +15,24 @@ spec:
         name: rook-ceph
         namespace: flux-system
   values:
-    # crds:
-    #   enabled: true <-- already default
+    crds:
+      enabled: true
 
     csi:
-      # kubeletDirPath: /var/lib/kubelet <-- already default
-      # enableCSIHostNetwork: true <-- already default
-      pluginTolerations: # Array of tolerations in YAML format which will be added to CephCSI plugin DaemonSet
+      kubeletDirPath: /var/lib/kubelet
+      enableCSIHostNetwork: true
+      pluginTolerations:
         - effect: "NoExecute"
           operator: "Exists"
         - effect: "NoSchedule"
           operator: "Exists"
 
-    # monitoring: <-- defaults to false
+    # monitoring:
     #   enabled: true
 
     resources:
-      #TODO(Joey): add limits back in when you know what they should be
-      limits:
-        memory: 512Mi
-        # cpu: 500m
       requests:
-        cpu: 100m
-        memory: 128Mi
+        cpu: 109m
+        memory: 204M
+      limits:
+        memory: 512M
