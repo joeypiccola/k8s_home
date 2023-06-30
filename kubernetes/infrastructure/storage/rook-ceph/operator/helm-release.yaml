@@ -31,10 +31,10 @@ spec:
     #   enabled: true
 
       resources:
-        # limits: <- removed bc op was cycling
         #TODO(Joey): add limits back in when you know what they should be
-        #   cpu: 500m
-        #   memory: 512Mi
+        limits:
+          memory: 512Mi
+          # cpu: 500m
         requests:
           cpu: 100m
           memory: 128Mi
