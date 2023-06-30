@@ -36,6 +36,16 @@ kubectl -n kube-system create secret generic talos-vmtoolsd-config --from-file=t
 rm ./vmtoolsd-secret.yaml
 ```
 
+### Patch control plane machines with admission control
+
+For this to work `control-1.piccola.us` names must be in DNS.
+
+```bash
+# from repo root
+cd talos/clusterconfig
+talosctl patch machineconfig -n control-1.piccola.us,control-2.piccola.us,control-3.piccola.us --patch-file ../patches/admissionControl-patch.yaml
+```
+
 ### Install GitOps Toolkit (GOTK) components
 
 **Imperatively** install [flux](https://fluxcd.io/flux/components/) at the version specified in `kubernetes/flux-bootstrap/flux-repo.yaml`. `flux` and `yq` binaries are required here. At the time of this writing the `flux` binary version `0.41.2` is being used.
