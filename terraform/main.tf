@@ -5,7 +5,7 @@ locals {
     folder = var.vsphere_folder
     node_hardware_config = {
       worker = {
-        memory = 8192
+        memory = 16384
         num_cpus = 4
         disk_size = 60
         ceph_disk_size = 80
