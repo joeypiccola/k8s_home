@@ -30,11 +30,11 @@ spec:
     # monitoring: <-- defaults to false
     #   enabled: true
 
-      resources:
-        #TODO(Joey): add limits back in when you know what they should be
-        limits:
-          memory: 512Mi
-          # cpu: 500m
-        requests:
-          cpu: 100m
-          memory: 128Mi
+    resources:
+      #TODO(Joey): add limits back in when you know what they should be
+      limits:
+        memory: 512Mi
+        # cpu: 500m
+      requests:
+        cpu: 100m
+        memory: 128Mi
