@@ -98,6 +98,8 @@ spec:
       dashboard:
         enabled: true
         urlPrefix: /
+        port: 80
+        ssl: false
 
       storage:
         useAllNodes: false
@@ -126,11 +128,11 @@ spec:
         entryPoints:
           - websecure
         routes:
-          - match: Host(`${CEPH_DASHBOARD}`)
+          - match: Host(`${CEPH_DASHBOARD}`) && (PathPrefix(`/`)
             kind: Rule
             services:
               - name: ceph-web
-                port: 8443
+                port: 80
         tls:
           certResolver: letsencrypt
 
