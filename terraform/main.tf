@@ -7,14 +7,14 @@ locals {
       worker = {
         memory = 8192
         num_cpus = 4
-        disk_size = 10
-        ceph_disk_size = 20
+        disk_size = 60
+        ceph_disk_size = 80
       }
       controlplane = {
         memory = 8192 #
         num_cpus = 4
-        disk_size = 10
-        ceph_disk_size = 20
+        disk_size = 60
+        ceph_disk_size = 80
       }
     }
   }
