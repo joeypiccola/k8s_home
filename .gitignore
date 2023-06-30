@@ -21,3 +21,5 @@ compare.yaml
 
 apps/**
 vars/**
+
+charts/**
