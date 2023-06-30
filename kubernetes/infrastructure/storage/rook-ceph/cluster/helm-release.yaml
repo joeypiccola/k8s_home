@@ -17,13 +17,27 @@ spec:
   values:
 
     cephClusterSpec:
-      # cephVersion:
-      # image: quay.io/ceph/ceph:v17.2.0
-      # network:
-      #   provider: host
-      #   connections:
-      #     compression:
-      #       enabled: true
+      placement:
+        mon:
+          tolerations:
+          - key: node-role.kubernetes.io/control-plane
+            operator: Exists
+        # all:
+        #   nodeAffinity:
+        #     requiredDuringSchedulingIgnoredDuringExecution:
+        #       nodeSelectorTerms:
+        #         - matchExpressions:
+        #           - key: role
+        #             operator: In
+        #             values:
+        #             - storage-node
+        #   podAffinity:
+        #   podAntiAffinity:
+        #   topologySpreadConstraints:
+        #   tolerations:
+        #   - key: storage-node
+        #     operator: Exists
+        # The above placement information can also be specified for mon, osd, and mgr components
       mon:
         # Set the number of mons to be started. Generally recommended to be 3.
         # For highest availability, an odd number of mons should be specified.
