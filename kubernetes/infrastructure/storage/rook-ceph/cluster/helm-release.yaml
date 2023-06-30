@@ -96,10 +96,10 @@ spec:
       #   disable: false # <-- defaults to false
 
       dashboard:
-        enabled: true
-        urlPrefix: /
-        port: 80
-        ssl: false
+        enabled: false
+        # urlPrefix: /
+        # port: 80
+        # ssl: false
 
       storage:
         useAllNodes: false
@@ -123,18 +123,18 @@ spec:
             devices:
               - name: "sdb"
 
-    ingress:
-      dashboard:
-        entryPoints:
-          - websecure
-        routes:
-          - match: Host(`${CEPH_DASHBOARD}`) && (PathPrefix(`/`)
-            kind: Rule
-            services:
-              - name: ceph-web
-                port: 80
-        tls:
-          certResolver: letsencrypt
+    # ingress:
+    #   dashboard:
+    #     entryPoints:
+    #       - websecure
+    #     routes:
+    #       - match: Host(`${CEPH_DASHBOARD}`) && (PathPrefix(`/`)
+    #         kind: Rule
+    #         services:
+    #           - name: ceph-web
+    #             port: 80
+    #     tls:
+    #       certResolver: letsencrypt
 
     cephBlockPools:
       - name: ceph-blockpool
