@@ -5,14 +5,14 @@ locals {
     folder = var.vsphere_folder
     node_hardware_config = {
       worker = {
-        memory = 2048
-        num_cpus = 2
+        memory = 8192
+        num_cpus = 4
         disk_size = 10
         ceph_disk_size = 20
       }
       controlplane = {
-        memory = 4096
-        num_cpus = 2
+        memory = 8192 #
+        num_cpus = 4
         disk_size = 10
         ceph_disk_size = 20
       }
