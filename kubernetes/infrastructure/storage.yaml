@@ -5,8 +5,6 @@ metadata:
   name: infrastructure-storage
   namespace: flux-system
 spec:
-  # dependsOn:
-  #   - name: infrastructure-cluster
   interval: 10m0s
   path: ./kubernetes/infrastructure/storage
   prune: true
@@ -22,6 +20,8 @@ spec:
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
+  dependsOn:
+    - name: infrastructure-storage-cluster
   patches:
     - patch: |-
         apiVersion: kustomize.toolkit.fluxcd.io/v1beta2

@@ -20,6 +20,8 @@ spec:
     substituteFrom:
       - kind: Secret
         name: cluster-secrets
+  dependsOn:
+    - name: infrastructure-storage-cluster
   patches:
     - patch: |-
         apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
