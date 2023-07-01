@@ -9,5 +9,6 @@ controlPlaneIP_2: 10.0.3.152
 controlPlaneIP_3: 10.0.3.153
 workerIP_1: 10.0.3.161
 workerIP_2: 10.0.3.162
+workerIP_3: 10.0.3.163
 ns1: 10.0.3.24
 ns2: 10.0.3.22

@@ -85,6 +85,21 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: ${gateway}
+  - hostname: worker-3.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${workerIP_3}
+    controlPlane: false
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eth0
+        dhcp: false
+        addresses:
+          - ${workerIP_3}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
 
 controlPlane:
   patches:
