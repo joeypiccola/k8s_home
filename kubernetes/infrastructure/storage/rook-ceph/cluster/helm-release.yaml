@@ -122,6 +122,9 @@ spec:
           - name: "worker-2"
             devices:
               - name: "sdb"
+          - name: "worker-3"
+            devices:
+              - name: "sdb"
 
     # ingress:
     #   dashboard:
@@ -224,14 +227,14 @@ spec:
           enabled: true
           name: ceph-bucket
           reclaimPolicy: Delete
-          volumeBindingMode: "Immediate"
+          # volumeBindingMode: "Immediate"
           # see https://github.com/rook/rook/blob/master/Documentation/ceph-object-bucket-claim.md#storageclass for available configuration
           parameters:
             # note: objectStoreNamespace and objectStoreName are configured by the chart
             region: us-east-1
-        ingress:
-          # Enable an ingress for the ceph-objectstore
-          enabled: false
+        # ingress:
+        #   # Enable an ingress for the ceph-objectstore
+        #   enabled: false
 
 
     # cephBlockPoolsVolumeSnapshotClass: <-- no idea what this is yet
