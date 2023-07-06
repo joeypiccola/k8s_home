@@ -26,3 +26,7 @@ spec:
     serviceDhcp:
       enabled: false # was true jjp
     virtualHost: ${PIHOLE_VIRTUALHOST}
+    persistentVolumeClaim:
+      enabled: true
+      existingClaim: pihole-ceph-pvc
+      # size: 200mi
