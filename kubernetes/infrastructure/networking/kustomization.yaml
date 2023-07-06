@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - ./metallb/ks.yaml
   - ./traefik/ks.yaml
+  - ./pihole/ks.yaml
