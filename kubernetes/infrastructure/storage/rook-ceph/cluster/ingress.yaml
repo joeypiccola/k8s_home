@@ -12,6 +12,6 @@ spec:
       kind: Rule
       services:
         - name: rook-ceph-mgr-dashboard
-          port: 8443
+          port: 7000
   tls:
     certResolver: letsencrypt

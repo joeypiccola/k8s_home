@@ -99,7 +99,7 @@ spec:
         enabled: true
         # urlPrefix: /
         # port: 80
-        # ssl: false
+        ssl: false
 
       storage:
         useAllNodes: false
