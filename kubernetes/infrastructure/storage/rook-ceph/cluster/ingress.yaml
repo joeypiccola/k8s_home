@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: pihole
+  namespace: pihole
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`${CEPH_DASHBOARD}`)
+      kind: Rule
+      services:
+        - name: rook-ceph-mgr-dashboard
+          port: 8443
+  tls:
+    certResolver: letsencrypt
