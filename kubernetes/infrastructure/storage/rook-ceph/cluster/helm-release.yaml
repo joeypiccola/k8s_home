@@ -97,7 +97,7 @@ spec:
 
       dashboard:
         enabled: true
-        # urlPrefix: /
+        urlPrefix: /
         # port: 80
         ssl: false
 
