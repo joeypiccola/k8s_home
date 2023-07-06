@@ -2,8 +2,8 @@
 apiVersion: traefik.containo.us/v1alpha1
 kind: IngressRoute
 metadata:
-  name: pihole
-  namespace: pihole
+  name: rook-ceph
+  namespace: rook-ceph
 spec:
   entryPoints:
     - websecure
