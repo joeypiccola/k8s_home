@@ -96,7 +96,7 @@ spec:
       #   disable: false # <-- defaults to false
 
       dashboard:
-        enabled: false
+        enabled: true
         # urlPrefix: /
         # port: 80
         # ssl: false
