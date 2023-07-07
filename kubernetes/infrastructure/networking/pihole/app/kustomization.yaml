@@ -4,6 +4,6 @@ kind: Kustomization
 resources:
   - ./namespace.yaml
   - ./helm-repo.yaml
+  - ./pvc.yaml
   - ./helm-release.yaml
   - ./ingress.yaml
-  - ./pvc.yml

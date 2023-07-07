@@ -10,9 +10,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-
   resources:
     requests:
       storage: 200Mi
-
   storageClassName: ceph-block
