@@ -29,4 +29,4 @@ spec:
     persistentVolumeClaim:
       enabled: true
       existingClaim: pihole-ceph-pvc
-      size: 200mi
+      size: 1Gi
