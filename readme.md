@@ -11,7 +11,7 @@ Talos and Kubernetes versions are a bit interdependent. You can find a support-m
 ```bash
 # from repo root
 cd terraform
-terraform apply
+t apply
 ```
 
 ### Bootstrap the systems with Talos
@@ -71,7 +71,13 @@ k apply --kustomize kubernetes/flux
 k apply --kustomize kubernetes/infrastructure
 ```
 
-### Helm Charts
+## Troubleshooting
+
+### rook-ceph
+
+`kubectl --namespace rook-ceph get cephcluster` to get the status of the cluster.
+
+### helm charts
 
 The following are a few commands for working with Helm charts and their releases.
 
@@ -85,7 +91,7 @@ The following are a few commands for working with Helm charts and their releases
 
 `helm list --all-namespaces --all` to list installed charts.
 
-### Troubleshooting kustomizations with flux
+### kustomizations with flux
 
 `k get kustomizations.kustomize.toolkit.fluxcd.io -n flux-system` to list kustomization in `flux-system` namespace
 
