@@ -246,8 +246,8 @@ spec:
     #   bdev_enable_discard = true
     #   bdev_async_discard = true
 
-    # toolbox:
-    #   enabled: false <-- defaults to false
+    toolbox:
+      enabled: true
 
     # monitoring:
     #   enabled: true <-- defaults to false
