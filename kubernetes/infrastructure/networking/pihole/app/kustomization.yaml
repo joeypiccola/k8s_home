@@ -6,4 +6,4 @@ resources:
   - ./helm-repo.yaml
   - ./helm-release.yaml
   - ./ingress.yaml
-  - ./pvc.yaml
+  - ./pvc.yml
