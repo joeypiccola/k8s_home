@@ -17,6 +17,7 @@ spec:
         namespace: flux-system
       interval: 5m
   values:
+    DNS1: "10.0.3.24"
     adminPassword: ${PIHOLE_ADMINPASSWORD}
     serviceDns:
       type: LoadBalancer # was NodePort jjp
