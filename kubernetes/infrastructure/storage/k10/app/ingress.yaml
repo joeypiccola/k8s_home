@@ -1,0 +1,17 @@
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: k10
+  namespace: kas10-io
+spec:
+  entryPoints:
+    - websecure
+  routes:
+    - match: Host(`${K10_DASHBOARD}`)
+      kind: Rule
+      services:
+        - name: tbd
+          port: 80
+  tls:
+    certResolver: letsencrypt
