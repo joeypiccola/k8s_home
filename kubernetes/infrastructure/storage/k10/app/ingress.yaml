@@ -11,7 +11,7 @@ spec:
     - match: Host(`${K10_DASHBOARD}`)
       kind: Rule
       services:
-        - name: dashboardbff-svc
+        - name: gateway
           port: 8000
   tls:
     certResolver: letsencrypt
