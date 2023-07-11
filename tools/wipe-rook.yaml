@@ -1,0 +1,137 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: disk-wipe-physical1
+spec:
+  restartPolicy: Never
+  nodeName: control-1
+  containers:
+    - name: disk-wipe
+      image: ubuntu:jammy
+      securityContext:
+        privileged: true
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "apt update && apt install -y gdisk",
+          "blkdiscard -f /dev/sdb",
+          "dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sdb",
+          "sgdisk -z /dev/sdb",
+        ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: disk-wipe-physical1
+spec:
+  restartPolicy: Never
+  nodeName: control-2
+  containers:
+    - name: disk-wipe
+      image: ubuntu:jammy
+      securityContext:
+        privileged: true
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "apt update && apt install -y gdisk",
+          "blkdiscard -f /dev/sdb",
+          "dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sdb",
+          "sgdisk -z /dev/sdb",
+        ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: disk-wipe-physical1
+spec:
+  restartPolicy: Never
+  nodeName: control-3
+  containers:
+    - name: disk-wipe
+      image: ubuntu:jammy
+      securityContext:
+        privileged: true
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "apt update && apt install -y gdisk",
+          "blkdiscard -f /dev/sdb",
+          "dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sdb",
+          "sgdisk -z /dev/sdb",
+        ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: disk-wipe-physical1
+spec:
+  restartPolicy: Never
+  nodeName: worker-1
+  containers:
+    - name: disk-wipe
+      image: ubuntu:jammy
+      securityContext:
+        privileged: true
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "apt update && apt install -y gdisk",
+          "blkdiscard -f /dev/sdb",
+          "dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sdb",
+          "sgdisk -z /dev/sdb",
+        ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: disk-wipe-physical1
+spec:
+  restartPolicy: Never
+  nodeName: worker-2
+  containers:
+    - name: disk-wipe
+      image: ubuntu:jammy
+      securityContext:
+        privileged: true
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "apt update && apt install -y gdisk",
+          "blkdiscard -f /dev/sdb",
+          "dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sdb",
+          "sgdisk -z /dev/sdb",
+        ]
+
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: disk-wipe-physical1
+spec:
+  restartPolicy: Never
+  nodeName: worker-3
+  containers:
+    - name: disk-wipe
+      image: ubuntu:jammy
+      securityContext:
+        privileged: true
+      command:
+        [
+          "/bin/sh",
+          "-c",
+          "apt update && apt install -y gdisk",
+          "blkdiscard -f /dev/sdb",
+          "dd if=/dev/zero bs=1M count=10000 oflag=direct of=/dev/sdb",
+          "sgdisk -z /dev/sdb",
+        ]
