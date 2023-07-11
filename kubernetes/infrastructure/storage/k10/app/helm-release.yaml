@@ -30,6 +30,8 @@ spec:
   values:
     eula:
       accept: true
+      company: jpi
+      email: joeypiccola@users.noreply.github.com
     serviceAccount:
       create: true
     auth:
