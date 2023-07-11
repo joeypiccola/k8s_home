@@ -69,7 +69,7 @@ nodes:
           ip: ${vip}
         dhcp: false
         addresses:
-          - ${controlPlaneIP_3}/24
+          - ${controlPlaneIP_4}/24
         routes:
           - network: 0.0.0.0/0
             gateway: ${gateway}
