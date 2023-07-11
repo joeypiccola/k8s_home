@@ -4,6 +4,16 @@
 
 Talos and Kubernetes versions are a bit interdependent. You can find a support-matrix [here](https://www.talos.dev/v1.4/introduction/support-matrix/). Talos releases are [here](https://github.com/siderolabs/talos/releases).
 
+## Talos and Talhelper
+
+Use `talhelper` to gen talos configs. It's a wrapper around `talosctl config new` that adds some niceties. The following will generate individual talos node config files in `k8s_home/talos/clusterconfig`. Regenerating configs is only necessary if you want to change the talos version or the talos config.
+
+```bash
+# from repo root
+cd talos
+talhelper genconfig
+```
+
 ## Rebuild from scratch
 
 ### Build the infrastructure with Terraform
