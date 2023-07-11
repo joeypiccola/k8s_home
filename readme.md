@@ -91,6 +91,8 @@ The following are a few commands for working with Helm charts and their releases
 
 `helm list --all-namespaces --all` to list installed charts.
 
+`k delete hr -n pihole pihole` to delete a HelmRelease named pihole in the pihole namespace.
+
 ### kustomizations with flux
 
 `k get kustomizations.kustomize.toolkit.fluxcd.io -n flux-system` to list kustomization in `flux-system` namespace
