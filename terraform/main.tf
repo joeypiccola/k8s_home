@@ -11,7 +11,7 @@ locals {
         ceph_disk_size = 80
       }
       controlplane = {
-        memory = 8192 #
+        memory = 16384 #
         num_cpus = 4
         disk_size = 60
         ceph_disk_size = 80

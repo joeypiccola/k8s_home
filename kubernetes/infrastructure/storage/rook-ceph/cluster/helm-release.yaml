@@ -116,15 +116,21 @@ spec:
           - name: "control-3"
             devices:
               - name: "sdb"
-          - name: "worker-1"
+          - name: "control-4"
             devices:
               - name: "sdb"
-          - name: "worker-2"
-            devices:
-              - name: "sdb"
-          - name: "worker-3"
-            devices:
-              - name: "sdb"
+          - name: "control-5"
+          #   devices:
+          #     - name: "sdb"
+          # - name: "worker-1"
+          #   devices:
+          #     - name: "sdb"
+          # - name: "worker-2"
+          #   devices:
+          #     - name: "sdb"
+          # - name: "worker-3"
+          #   devices:
+          #     - name: "sdb"
 
     # ingress:
     #   dashboard:

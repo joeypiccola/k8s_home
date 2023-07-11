@@ -2,6 +2,7 @@ clusterName: ${clusterName}
 endpoint: https://${clusterName}.${domainName}:6443
 talosVersion: ${talosVersion}
 kubernetesVersion: ${kubernetesVersion}
+allowSchedulingOnMasters: true # this value sets allowSchedulingOnControlPlanes to true in the talos node config
 
 nodes:
   - hostname: control-1.${domainName}
@@ -55,48 +56,37 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: ${gateway}
-  - hostname: worker-1.${domainName}
+  - hostname: control-4.${domainName}
     installDisk: /dev/sda
-    ipAddress: ${workerIP_1}
-    controlPlane: false
+    ipAddress: ${controlPlaneIP_3}
+    controlPlane: true
     nameservers:
       - ${ns1}
       - ${ns2}
     networkInterfaces:
       - interface: eth0
+        vip:
+          ip: ${vip}
         dhcp: false
         addresses:
-          - ${workerIP_1}/24
+          - ${controlPlaneIP_3}/24
         routes:
           - network: 0.0.0.0/0
             gateway: ${gateway}
-  - hostname: worker-2.${domainName}
+  - hostname: control-5.${domainName}
     installDisk: /dev/sda
-    ipAddress: ${workerIP_2}
-    controlPlane: false
+    ipAddress: ${controlPlaneIP_4}
+    controlPlane: true
     nameservers:
       - ${ns1}
       - ${ns2}
     networkInterfaces:
       - interface: eth0
+        vip:
+          ip: ${vip}
         dhcp: false
         addresses:
-          - ${workerIP_2}/24
-        routes:
-          - network: 0.0.0.0/0
-            gateway: ${gateway}
-  - hostname: worker-3.${domainName}
-    installDisk: /dev/sda
-    ipAddress: ${workerIP_3}
-    controlPlane: false
-    nameservers:
-      - ${ns1}
-      - ${ns2}
-    networkInterfaces:
-      - interface: eth0
-        dhcp: false
-        addresses:
-          - ${workerIP_3}/24
+          - ${controlPlaneIP_5}/24
         routes:
           - network: 0.0.0.0/0
             gateway: ${gateway}
