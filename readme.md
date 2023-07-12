@@ -48,12 +48,12 @@ rm ./vmtoolsd-secret.yaml
 
 ### Patch control plane machines with admission control
 
-For this to work `control-1.piccola.us` names must be in DNS.
+For this to work `control-1.piccola.us` names must be in DNS. "That is what allows you to run privileges in all namespaces", move away from this using a kyverno policy.
 
 ```bash
 # from repo root
 cd talos/clusterconfig
-talosctl patch machineconfig -n control-1.piccola.us,control-2.piccola.us,control-3.piccola.us --patch-file ../patches/admissionControl-patch.yaml
+talosctl patch machineconfig -n control-1.piccola.us,control-2.piccola.us,control-3.piccola.us,control-4.piccola.us,control-5.piccola.us --patch-file ../patches/admissionControl-patch.yaml
 ```
 
 ### Install GitOps Toolkit (GOTK) components
