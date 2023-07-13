@@ -243,9 +243,9 @@ spec:
         #   enabled: false
 
 
-    # cephBlockPoolsVolumeSnapshotClass: <-- no idea what this is yet
-    #   enabled: true
-    #   name: csi-rbdplugin-snapclass
+    cephBlockPoolsVolumeSnapshotClass:
+      enabled: true
+      name: csi-rbdplugin-snapclass
 
     # configOverride: |
     #   [global]
