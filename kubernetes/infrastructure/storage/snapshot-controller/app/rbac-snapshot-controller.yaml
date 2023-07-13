@@ -3,14 +3,14 @@
 # The snapshot controller implements the control loop for CSI snapshot functionality.
 # It should be installed as part of the base Kubernetes distribution in an appropriate
 # namespace for components implementing base system functionality. For installing with
-# Vanilla Kubernetes, kube-system makes sense for the namespace.
+# Vanilla Kubernetes, rook-ceph makes sense for the namespace.
 
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: snapshot-controller
-  namespace: kube-system
+  namespace: rook-ceph
 
 ---
 kind: ClusterRole
@@ -54,7 +54,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: snapshot-controller
-    namespace: kube-system
+    namespace: rook-ceph
 roleRef:
   kind: ClusterRole
   name: snapshot-controller-runner
@@ -65,7 +65,7 @@ kind: Role
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: snapshot-controller-leaderelection
-  namespace: kube-system
+  namespace: rook-ceph
 rules:
 - apiGroups: ["coordination.k8s.io"]
   resources: ["leases"]
@@ -76,7 +76,7 @@ kind: RoleBinding
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: snapshot-controller-leaderelection
-  namespace: kube-system
+  namespace: rook-ceph
 subjects:
   - kind: ServiceAccount
     name: snapshot-controller
