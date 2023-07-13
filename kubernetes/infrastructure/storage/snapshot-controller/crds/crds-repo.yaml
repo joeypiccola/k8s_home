@@ -1,0 +1,16 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: GitRepository
+metadata:
+  name: external-snapshotter-git-crds
+  namespace: flux-system
+spec:
+  interval: 30m
+  url: https://github.com/kubernetes-csi/external-snapshotter.git
+  ref:
+    tag: v6.2.2
+  ignore: |
+    # exclude all
+    /*
+    # include deploy crds dir
+    !/client/config/crd

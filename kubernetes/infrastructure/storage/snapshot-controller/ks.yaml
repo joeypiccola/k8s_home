@@ -1,0 +1,39 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: infrastructure-storage-snapshot-controller-app
+  namespace: flux-system
+spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  interval: 10m0s
+  path: ./kubernetes/infrastructure/storage/snapshot-controller/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: k8s-home
+  dependsOn:
+    - name: infrastructure-storage-snapshot-controller-crds-install
+
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: infrastructure-storage-snapshot-controller-crds
+  namespace: flux-system
+spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  interval: 10m0s
+  path: ./kubernetes/infrastructure/storage/snapshot-controller/crds
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: k8s-home
+  # dependsOn:
+  #   - name: infrastructure-storage-k10-app
