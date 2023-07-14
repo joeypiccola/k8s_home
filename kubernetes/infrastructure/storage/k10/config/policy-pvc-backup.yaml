@@ -59,7 +59,7 @@ spec:
       exportParameters:
         frequency: "@daily"
         profile:
-          name: k10-disaster-recovery
+          name: disaster-recovery
           namespace: kasten-io
 
         exportData:
