@@ -5,3 +5,4 @@ resources:
   - policy-disaster-recovery.yaml
   - policy-pvc-backup.yaml
   - profile-disaster-recovery.yaml
+  - secrets.sops.yaml
