@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: kasten-io
+  name: k10-pv
 spec:
   capacity:
     storage: 100Mi
@@ -16,7 +16,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: k10
+  name: k10-pvc
   namespace: kasten-io
 spec:
   accessModes:

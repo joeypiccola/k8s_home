@@ -1,0 +1,70 @@
+kind: Policy
+apiVersion: config.kio.kasten.io/v1alpha1
+metadata:
+  name: pvc-backup
+  namespace: kasten-io
+spec:
+  comment: Policy to backup all resources daily.  Daily snapshot/backup
+  frequency: "@daily"
+  subFrequency:
+    minutes:
+      - 0
+    hours:
+      - 17
+    weekdays:
+      - 0
+    days:
+      - 1
+    months:
+      - 1
+  retention:
+    daily: 7
+    weekly: 4
+    monthly: 12
+    yearly: 7
+  selector:
+    matchExpressions:
+      - key: k10.kasten.io/appNamespace
+        operator: In
+        values:
+          - pihole
+  actions:
+    - action: backup
+      backupParameters:
+        filters:
+          includeResources:
+            - resource: persistentvolumeclaims
+              matchExpressions:
+                - key: kasten.io/backup-volume
+                  operator: In
+                  values:
+                    - enabled
+          # excludeResources:
+          #   - name: downloads-nfs-ebooks
+          #     resource: persistentvolumeclaims
+          #   - name: nextcloud-nfs-config
+          #     resource: persistentvolumeclaims
+          #   - name: audiobookshelf-nfs-audiobooks
+          #     resource: persistentvolumeclaims
+          #   - name: downloads-nfs-ebooks
+          #     resource: persistentvolumeclaims
+          #   - name: esphome-nfs-config
+          #     resource: persistentvolumeclaims
+          #   - name: audiobookshelf-nfs-audiobooks
+          #     resource: persistentvolumeclaims
+        profile:
+          name: disaster-recovery
+          namespace: kasten-io
+    # - action: export
+    #   exportParameters:
+    #     frequency: "@daily"
+    #     receiveString: bIzAPpoanmEV5gpgrg9R0px5RkwtEEuY2Ain5nIfW58fG74Yxke+WLaeQ5LW6uN1IwX0zKuNGU+u7zELhTr9sDA1lwQrAruZQbK3y8Cw6cWkrJps7F9uIg6EvtWNTZViGqItmnlz3tVCq7OQ7NzV7XO6DMn1lhhE6FL5AlCSz8Ol17oxMkezvz3S4kTRCzpg3uUpPJrspWhY00o3MTiL9929XXSzHSjrpihO/IrbWJdep4bOOnTYbsUDs6SuidqyZJbfIPjMK990Wzb/s1tgtzKarbWBaf3En17ACjYnBmF6RXHUr2AguWa+s9DU8Nt0i0whK9FdkTsLmsZoh3LcDPle8/YbKTsK5pIXnJy7u+XqzVzQjMrEu3d1glmvnTw6opGsP5pHxPGjJzlv3oSmNgizwqEhaDoAQ3KXKJmrK7TKnmqw
+    #     profile:
+    #       name: k10-disaster-recovery
+    #       namespace: kasten-io
+    #     migrationToken:
+    #       name: backup-all-migration-token-5hsjk
+    #       namespace: kasten-io
+    #     exportData:
+    #       enabled: true
+    #   retention: {}
