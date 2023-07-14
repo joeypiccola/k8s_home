@@ -55,16 +55,13 @@ spec:
         profile:
           name: disaster-recovery
           namespace: kasten-io
-    # - action: export
-    #   exportParameters:
-    #     frequency: "@daily"
-    #     receiveString: bIzAPpoanmEV5gpgrg9R0px5RkwtEEuY2Ain5nIfW58fG74Yxke+WLaeQ5LW6uN1IwX0zKuNGU+u7zELhTr9sDA1lwQrAruZQbK3y8Cw6cWkrJps7F9uIg6EvtWNTZViGqItmnlz3tVCq7OQ7NzV7XO6DMn1lhhE6FL5AlCSz8Ol17oxMkezvz3S4kTRCzpg3uUpPJrspWhY00o3MTiL9929XXSzHSjrpihO/IrbWJdep4bOOnTYbsUDs6SuidqyZJbfIPjMK990Wzb/s1tgtzKarbWBaf3En17ACjYnBmF6RXHUr2AguWa+s9DU8Nt0i0whK9FdkTsLmsZoh3LcDPle8/YbKTsK5pIXnJy7u+XqzVzQjMrEu3d1glmvnTw6opGsP5pHxPGjJzlv3oSmNgizwqEhaDoAQ3KXKJmrK7TKnmqw
-    #     profile:
-    #       name: k10-disaster-recovery
-    #       namespace: kasten-io
-    #     migrationToken:
-    #       name: backup-all-migration-token-5hsjk
-    #       namespace: kasten-io
-    #     exportData:
-    #       enabled: true
-    #   retention: {}
+    - action: export
+      exportParameters:
+        frequency: "@daily"
+        profile:
+          name: k10-disaster-recovery
+          namespace: kasten-io
+
+        exportData:
+          enabled: true
+      retention: {}
