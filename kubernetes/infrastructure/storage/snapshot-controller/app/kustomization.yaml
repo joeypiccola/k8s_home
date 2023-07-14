@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - rbac-snapshot-controller.yaml
   - setup-snapshot-controller.yaml
+  - volume-snapshot-class.yaml
