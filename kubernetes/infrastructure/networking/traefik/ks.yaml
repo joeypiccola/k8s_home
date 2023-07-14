@@ -6,7 +6,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: infrastructure-networking-traefik-app-crds
+    - name: infrastructure-networking-traefik-app-crds-install
     - name: infrastructure-networking-metallb-config
   decryption:
     provider: sops
