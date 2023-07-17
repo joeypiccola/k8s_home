@@ -6,10 +6,8 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
-  path: ./kubernetes/infrastructure/networking/pihole/app
+  path: ./kubernetes/applications/networking/pihole/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: k8s-home
-  dependsOn:
-    - name: infrastructure-networking-traefik-app
