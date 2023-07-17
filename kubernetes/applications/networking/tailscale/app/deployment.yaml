@@ -29,7 +29,7 @@ spec:
         - name: USERSPACE
           value: "true"
         - name: EXTRA_ARGS
-          value: "--advertise-exit-node --hostname=k8s_home"
+          value: "--advertise-exit-node --hostname=k8s-home"
         - name: ROUTES
           value: "10.0.3.0/24"
         - name: AUTH_KEY
