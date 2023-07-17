@@ -79,6 +79,7 @@ cat 'wherever you keep this file/keys.txt' | kubectl create secret generic sops-
 # from repo root
 k apply --kustomize kubernetes/flux
 k apply --kustomize kubernetes/infrastructure
+k apply --kustomize kubernetes/applications
 ```
 
 ## Troubleshooting
