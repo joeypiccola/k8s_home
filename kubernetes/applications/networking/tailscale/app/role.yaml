@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: tailscale
+  namespace: tailscale
+rules:
+- apiGroups: [""]
+  resources: ["secrets"]
+  # Create can not be restricted to a resource name.
+  verbs: ["create"]
+- apiGroups: [""]
+  resourceNames: ["tailscale-auth"]
+  resources: ["secrets"]
+  verbs: ["get", "update"]

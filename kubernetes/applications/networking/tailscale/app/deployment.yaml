@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tailscale
+  namespace: tailscale
+spec:
+  selector:
+    matchLabels:
+      app: tailscale
+  strategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: tailscale
+    spec:
+      serviceAccountName: "tailscale"
+      containers:
+      - name: tailscale
+        image: ghcr.io/tailscale/tailscale:latest
+        imagePullPolicy: Always
+        env:
+        - name: TZ
+          value: "America/Denver"
+        - name: KUBE_SECRET
+          value: "tailscale-auth"
+        - name: USERSPACE
+          value: "true"
+        - name: EXTRA_ARGS
+          value: "--advertise-exit-node --hostname=k8s_home"
+        - name: ROUTES
+          value: "10.0.3.0/24"
+        - name: AUTH_KEY
+          valueFrom:
+            secretKeyRef:
+              name: tailscale-auth
+              key: AUTH_KEY
+              optional: false
+        livenessProbe:
+          exec:
+            command:
+            - tailscale
+            - --socket=/tmp/tailscaled.sock
+            - status
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          failureThreshold: 24
+        startupProbe:
+          exec:
+            command:
+            - tailscale
+            - --socket=/tmp/tailscaled.sock
+            - status
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          failureThreshold: 1
+        command: ["/bin/sh"]
+        args:
+          - -c
+          - >-
+              apk add curl; apk fix &&
+              apk add curl &&
+              curl https://raw.githubusercontent.com/tailscale/tailscale/cced414/docs/k8s/run.sh -O &&
+              echo "starting" &&
+              sh run.sh
