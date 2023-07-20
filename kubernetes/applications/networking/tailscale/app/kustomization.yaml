@@ -7,4 +7,5 @@ resources:
   - ./role.yaml
   - ./rolebinding.yaml
   - ./secrets.sops.yaml
+  - ./secrets2.yaml
   - ./serviceaccount.yaml

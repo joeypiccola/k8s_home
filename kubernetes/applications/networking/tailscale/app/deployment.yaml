@@ -25,7 +25,7 @@ spec:
         - name: TZ
           value: "America/Denver"
         - name: KUBE_SECRET
-          value: "tailscale-auth"
+          value: "tailscale-state"
         - name: USERSPACE
           value: "true"
         - name: EXTRA_ARGS
@@ -35,7 +35,7 @@ spec:
         - name: AUTH_KEY
           valueFrom:
             secretKeyRef:
-              name: tailscale-auth
+              name: tailscale-auth-key
               key: AUTH_KEY
               optional: false
         livenessProbe:
