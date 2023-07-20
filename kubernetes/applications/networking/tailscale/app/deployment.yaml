@@ -25,17 +25,17 @@ spec:
         - name: TZ
           value: "America/Denver"
         - name: KUBE_SECRET
-          value: "tailscale-state"
+          value: "tailscale-auth"
         - name: USERSPACE
           value: "true"
         - name: EXTRA_ARGS
-          value: "--advertise-exit-node --hostname=k8s-home --snat-subnet-routes=false"
+          value: "--advertise-exit-node --hostname=k8s-home"
         - name: ROUTES
           value: "10.0.3.0/24"
         - name: AUTH_KEY
           valueFrom:
             secretKeyRef:
-              name: tailscale-auth-key
+              name: tailscale-auth
               key: AUTH_KEY
               optional: false
         livenessProbe:
