@@ -20,6 +20,8 @@ spec:
       containers:
       - name: tailscale
         image: ghcr.io/tailscale/tailscale:latest
+        ports:
+        - containerPort: 41641
         imagePullPolicy: Always
         env:
         - name: TZ
