@@ -22,6 +22,7 @@ spec:
         image: ghcr.io/tailscale/tailscale:latest
         ports:
         - containerPort: 41641
+          protocol: UDP
         imagePullPolicy: Always
         env:
         - name: TZ
