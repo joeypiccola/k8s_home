@@ -31,7 +31,7 @@ spec:
           value: "tailscale-auth"
         - name: TS_USERSPACE
           value: "true"
-        - name: EXTRA_ARGS
+        - name: TS_EXTRA_ARGS
           value: "--advertise-exit-node --hostname=k8s-home"
         - name: TS_ROUTES
           value: "10.0.3.0/24"
