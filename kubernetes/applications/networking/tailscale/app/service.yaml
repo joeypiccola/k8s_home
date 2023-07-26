@@ -1,0 +1,20 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: tailscale
+  namespace: tailscale
+  labels:
+    app: tailscale
+  annotations:
+    metallb.universe.tf/allow-shared-ip: huh
+    metallb.universe.tf/load-balancer-ip: 10.0.3.210
+spec:
+  ports:
+    - name: tailscale
+      port: 41641
+      protocol: UDP
+      targetPort: 41641
+  selector:
+    app: tailscale
+  type: LoadBalancer
