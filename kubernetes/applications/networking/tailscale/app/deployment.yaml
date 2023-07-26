@@ -20,9 +20,6 @@ spec:
       containers:
       - name: tailscale
         image: ghcr.io/tailscale/tailscale:latest
-        # ports:
-        # - containerPort: 41641
-        #   protocol: UDP
         imagePullPolicy: Always
         env:
         - name: TZ
@@ -59,12 +56,3 @@ spec:
           initialDelaySeconds: 15
           periodSeconds: 30
           failureThreshold: 1
-        # command: ["/bin/sh"]
-        # args:
-        #   - -c
-        #   - >-
-        #       apk add curl; apk fix &&
-        #       apk add curl &&
-        #       curl https://raw.githubusercontent.com/tailscale/tailscale/cced414/docs/k8s/run.sh -O &&
-        #       echo "starting" &&
-        #       sh run.sh
