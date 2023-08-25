@@ -4,6 +4,6 @@ kind: Kustomization
 resources:
   - remove-cpu-limit.yaml
   # - add-psa-labels.yaml
-  - apply-ingress-whitelist-annotations.yaml
-  - apply-ingress-external-dns-annotations.yaml
-  - apply-ingress-auth-annotations.yaml
+  # - apply-ingress-whitelist-annotations.yaml
+  # - apply-ingress-external-dns-annotations.yaml
+  # - apply-ingress-auth-annotations.yaml
