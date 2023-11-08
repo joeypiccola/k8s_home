@@ -31,7 +31,8 @@ spec:
         value: "${CF_DNS_API_TOKEN}"
     ports:
       web:
-        redirectTo: websecure
+        redirectTo:
+          port:  websecure
       websecure:
         tls:
           certResolver: "letsencrypt"
