@@ -50,7 +50,9 @@ Talos support patching node configs during config generation. This is done one o
 
 ##### VMware Tools
 
-VMware tools, more specifically [talos-vmtoolsd](https://github.com/mologie/talos-vmtoolsd), is configured via a yaml patch during talos node config generation. For this to work correctly we also must create the secret `talos-vmtoolsd-config` which we do later. This secret contains a full `talosconfig` file that we generate later with the appropriate roles so the containers running vm tools can run with the correct privileges.
+VMware tools, more specifically [talos-vmtoolsd](https://github.com/mologie/talos-vmtoolsd), is configured via a yaml patch during talos node config generation. For this to work correctly we also must create the secret `talos-vmtoolsd-config` which we do later. This secret contains a full `talosconfig` file that we generate later with the appropriate role so the containers running vm tools can run with the correct privileges. More specifically, the `talosconfig` is used with `talosapi.NewLocalClient` to connect to the talos node API.
+
+todo(joey): start using `https://github.com/mologie/talos-vmtoolsd/blob/0.3.1/deploy/unstable.yaml` with a ref.
 
 ## SOPS and age
 
@@ -101,7 +103,9 @@ At this point, Talos will form an etcd cluster, and start the Kubernetes control
 
 ### Create and apply talos-vmtoolsd-config secret
 
-This secret is used by the `talos-vmtoolsd` daemonset (that we patched in during talos node config generation). Without it, these pods will be stuck in `ContainerCreating`. Again, this is full `talosconfig` that is written to the secret.
+This secret is used by the `talos-vmtoolsd` daemonset (that we patched in during talos node config generation). Without it, these pods will be stuck in `ContainerCreating`. Again, this is full `talosconfig` that is written to the secret. More info on this back in [VMware Tools](#vmware-tools).
+
+todo(joey): this is not great. sharing same talosconfig we use to admin teh cluster with the vmtoolsd daemonset.
 
 ```shell
 # from repo root
@@ -139,12 +143,54 @@ Once installed, create your `sops-age` secret. This is using the `SOPS_AGE_KEY` 
 echo "$SOPS_AGE_KEY" | kubectl create secret generic sops-age --namespace=flux-system --from-file=age.agekey=/dev/stdin
 ```
 
-### How cluster secret decryption with flux works
+#### How cluster secret decryption with flux works
 
 When we bootstrapped the cluster with flux we created the secret `cluster-secrets` in the `flux-system` namespace. This secret contains key/value's that are substituted in to manifest files.
 
 Q: How does this substitution work?
-A:
+A: Below
+
+1. a `kustomize.config.k8s.io` kustomization is applied (this is the file with yaml files listed as resources).
+2. the resource yaml files are then read. these are `kustomize.toolkit.fluxcd.io/v1` kustomizations).
+3. in this `kustomize.toolkit.fluxcd.io/v1` kustomization
+
+
+
+
+
+When a `kustomize.config.k8s.io` kustomization is applied (this is the file with yaml files listed as resources) and the resource yaml files are then read (which are `kustomize.toolkit.fluxcd.io/v1` kustomizations) which
+
+### Flux
+
+Define a `kustomization.yaml`. This file is manually applied via `k apply --kustomize kubernetes/infrastructure`.
+
+```yaml
+# kustomization.yaml
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./infrastructure.yaml
+```
+
+Once applied `infrastructure.yaml` will be read. `infrastructure.yaml`
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ### Apply kustomizations
 
