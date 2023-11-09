@@ -4,7 +4,7 @@ Run Kubernetes using Talos Linux in VMware.
 
 ## Talos
 
-Talos Linux is Linux designed for Kubernetes – secure, immutable, and minimal.
+Talos Linux is Linux designed for Kubernetes - secure, immutable, and minimal.
 
 ### Talos and Kubernetes Versions
 
@@ -14,9 +14,9 @@ Talos and Kubernetes versions are a bit interdependent. You can find a support-m
 
 We're going to use `talhelper` to generate talos node configs. Talos node configs are node specific and are used later during infrastructure provisioning. Normally we'd do something like `talosctl gen config myCluster https://<VIP>:<port>` to generate talos node configs but this doesn't scale very well. With `talhelper` we can leverage `talos/talconfig.yaml` + `talos/talenv.yaml` + `talos/talsecret.sops.yaml` to generate all talos node configs at once. The following is a brief description of each file.
 
-- `talos/talconfig.yaml`: talos config template. This is a `talhelper` specific config that leverages variable substitution from `talos/talenv.yaml` (e.g. `${domainName}`).
+- `talos/talconfig.yaml`: talos config template (created by hand initially via a [starter template](https://github.com/budimanjojo/talhelper/blob/master/example/talconfig.yaml)) This is a `talhelper` specific config that leverages variable substitution from `talos/talenv.yaml` (e.g. `${domainName}`).
 - `talos/talenv.yaml`: talos environment variables that are injected into talos node config files.
-- `talos/talsecret.sops.yaml`: talos secrets that are injected into talos node config files. It holds k8s certs/keys and talos specific certs/keys and bootstrap tokens that get injected into talos config files. This file was created with `talhelper gensecret > talsecret.sops.yaml`, only needed once! This file was encrypted with `sops -e -i talos/talsecret.sops.yaml` discussed later.
+- `talos/talsecret.sops.yaml`: talos secrets that are injected into talos node config files. It holds k8s certs/keys, talos specific certs/keys and bootstrap tokens that get injected into talos config files. This file was created with `talhelper gensecret > talsecret.sops.yaml`, only needed once! This file was encrypted with `sops -e -i talos/talsecret.sops.yaml` discussed later.
 
 #### Installs
 
@@ -44,6 +44,14 @@ talos/clusterconfig
 └── talosconfig
 ```
 
+#### Talos Config Node Patches
+
+Talos support patching node configs during config generation. This is done one of two ways, 1) in the `talosconfig.yaml` file via yaml patching or 2) via a patch file applied to the nodes after provisioning.
+
+##### VMware Tools
+
+VMware tools, more specifically [talos-vmtoolsd](https://github.com/mologie/talos-vmtoolsd), is configured via a yaml patch during talos node config generation. For this to work correctly we also must create the secret `talos-vmtoolsd-config` which we do later. This secret contains a full `talosconfig` file that we generate later with the appropriate roles so the containers running vm tools can run with the correct privileges.
+
 ## SOPS and age
 
 All secrets in this repo are encrypted with [SOPS](https://github.com/getsops/sops) leveraging [age](https://github.com/FiloSottile/age). `age-keygen -o myKey.txt` was used to generate the public key and age secret. SOPS is configured to use the age public key via the `.sops.yaml` in the root of this repo. Via the VSCode extension `signageos.signageos-vscode-sops` we can automatically encrypt/decrypt secrets in place. In order for this to work you must have `SOPS_AGE_KEY` set as an environment variable (this is a requirement of SOPS). `SOPS_AGE_KEY` is set by the git ignored `.envrc` file in the root of this repo.
@@ -54,9 +62,10 @@ The `.sops.yaml` file defines rules for what files via path filtering are in sco
 
 ### Build the infrastructure with Terraform
 
-Leverages git ignored `.envrc` to set environment variables.
+Leverages git ignored `.envrc` to set environment variables for vCenter authentication.
 
 ```shell
+# terraform/.envrc
 export VSPHERE_USER=''
 export VSPHERE_PASSWORD=''
 export VSPHERE_SERVER=''
@@ -69,11 +78,12 @@ cd terraform
 t apply
 ```
 
-### Bootstrap the cluster
+### Bootstrap the cluster (talos)
 
-Leverages git ignored `.envrc` to set environment variables.
+Leverages git ignored `.envrc` to set environment variables for `talosctl` authentication.
 
 ```shell
+# talos/clusterconfig/.envrc
 export TALOSCONFIG=./talosconfig
 ```
 
@@ -91,14 +101,14 @@ At this point, Talos will form an etcd cluster, and start the Kubernetes control
 
 ### Create and apply talos-vmtoolsd-config secret
 
-This secret is used by the `talos-vmtoolsd` daemonset. Without it, these pods will be stuck in `ContainerCreating`.
+This secret is used by the `talos-vmtoolsd` daemonset (that we patched in during talos node config generation). Without it, these pods will be stuck in `ContainerCreating`. Again, this is full `talosconfig` that is written to the secret.
 
 ```shell
 # from repo root
 cd talos/clusterconfig
-talosctl -n 10.0.3.151 config new vmtoolsd-secret.yaml --roles os:admin
-kubectl -n kube-system create secret generic talos-vmtoolsd-config --from-file=talosconfig=./vmtoolsd-secret.yaml
-rm ./vmtoolsd-secret.yaml
+talosctl -n 10.0.3.151 config new talosconfig_vmtoolsd.yaml --roles os:admin
+kubectl -n kube-system create secret generic talos-vmtoolsd-config --from-file=talosconfig=./talosconfig_vmtoolsd.yaml
+rm ./talosconfig_vmtoolsd.yaml
 ```
 
 ### Patch control plane machines with admission control
@@ -111,22 +121,30 @@ cd talos/clusterconfig
 talosctl patch machineconfig -n control-1.piccola.us,control-2.piccola.us,control-3.piccola.us,control-4.piccola.us,control-5.piccola.us --patch-file ../patches/admissionControl-patch.yaml
 ```
 
-### Install GitOps Toolkit (GOTK) components
+### Bootstrap the cluster (flux)
 
-**Imperatively** install [flux](https://fluxcd.io/flux/components/) at the version specified in `kubernetes/flux/repositories/git/flux.yaml`. `flux` and `yq` binaries are required here. At the time of this writing the `flux` binary version `2.1.2` is being used.
+**Imperatively** install [flux](https://github.com/fluxcd/flux2) at the version specified in `kubernetes/flux/repositories/git/flux.yaml`. `flux` and `yq` binaries are required here. At the time of this writing the `flux` binary version `2.1.2` is being used.
 
 ```shell
 # from repo root
 yq '.spec.ref.tag' kubernetes/flux/repositories/git/flux.yaml | xargs -I{} flux install --components-extra=image-reflector-controller,image-automation-controller --version={} --export | kubectl apply -f -
 ```
 
-### Create aɡe secret for SOPS
+### Create age secret for SOPS decryption on the cluster
 
-Once installed, create your `sops-age` secret.
+Once installed, create your `sops-age` secret. This is using the `SOPS_AGE_KEY` environment variable set in the `.envrc` file in the root of this repo.
 
 ```shell
-cat 'wherever you keep this file/keys.txt' | kubectl create secret generic sops-age --namespace=flux-system --from-file=age.agekey=/dev/stdin
+# from repo root
+echo "$SOPS_AGE_KEY" | kubectl create secret generic sops-age --namespace=flux-system --from-file=age.agekey=/dev/stdin
 ```
+
+### How cluster secret decryption with flux works
+
+When we bootstrapped the cluster with flux we created the secret `cluster-secrets` in the `flux-system` namespace. This secret contains key/value's that are substituted in to manifest files.
+
+Q: How does this substitution work?
+A:
 
 ### Apply kustomizations
 
