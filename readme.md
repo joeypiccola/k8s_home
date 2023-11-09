@@ -46,7 +46,7 @@ talos/clusterconfig
 
 ## SOPS and age
 
-All secrets in this repo are encrypted with SOPS leveraging age. `age-keygen -o myKey.txt` was used to generate the public key and age secret. SOPS is configured to use the age public key via the `.sops.yaml` in the root of this repo. Via the VSCode extension `signageos.signageos-vscode-sops` we can automatically encrypt/decrypt secrets in place. In order for this to work you must have `SOPS_AGE_KEY` set as an environment variable (this is a requirement of SOPS). `SOPS_AGE_KEY` is set by the git ignored `.envrc` file in the root of this repo.
+All secrets in this repo are encrypted with [SOPS](https://github.com/getsops/sops) leveraging [age](https://github.com/FiloSottile/age). `age-keygen -o myKey.txt` was used to generate the public key and age secret. SOPS is configured to use the age public key via the `.sops.yaml` in the root of this repo. Via the VSCode extension `signageos.signageos-vscode-sops` we can automatically encrypt/decrypt secrets in place. In order for this to work you must have `SOPS_AGE_KEY` set as an environment variable (this is a requirement of SOPS). `SOPS_AGE_KEY` is set by the git ignored `.envrc` file in the root of this repo.
 
 The `.sops.yaml` file defines rules for what files via path filtering are in scope for encryption in addition to what keys in those files should be encrypted. To onboard a file for encryption (not the entire file, just the keys that match the rules) you can run `sops -e -i ./testing/test.sops.yaml`.
 
@@ -54,13 +54,28 @@ The `.sops.yaml` file defines rules for what files via path filtering are in sco
 
 ### Build the infrastructure with Terraform
 
+Leverages git ignored `.envrc` to set environment variables.
+
+```shell
+export VSPHERE_USER=''
+export VSPHERE_PASSWORD=''
+export VSPHERE_SERVER=''
+export VSPHERE_ALLOW_UNVERIFIED_SSL='true'
+```
+
 ```shell
 # from repo root
 cd terraform
 t apply
 ```
 
-### Bootstrap the systems with Talos
+### Bootstrap the cluster
+
+Leverages git ignored `.envrc` to set environment variables.
+
+```shell
+export TALOSCONFIG=./talosconfig
+```
 
 For this you can use any controlplane IP from `talos/talenv.yaml`.
 
@@ -69,6 +84,10 @@ For this you can use any controlplane IP from `talos/talenv.yaml`.
 cd talos/clusterconfig
 talosctl bootstrap --nodes 10.0.3.151
 ```
+
+At this point, Talos will form an etcd cluster, and start the Kubernetes control plane components. This will take a few minutes. Once complete, if this is a new cluster with new generated secrets via `talhelper gensecret` you can run the following to download your Kubernetes client configuration and get started. Running this command will add (merge) you new cluster into your local Kubernetes configuration.
+
+`talosctl kubeconfig --nodes 10.0.3.151 --endpoints 10.0.3.151`
 
 ### Create and apply talos-vmtoolsd-config secret
 
