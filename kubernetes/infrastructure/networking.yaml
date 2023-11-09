@@ -11,6 +11,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: k8s-home
+  # dependsOn:
+  #   - name: infrastructure-cluster-kyverno-policies
   # decryption:
   #   provider: sops
   #   secretRef:
@@ -20,8 +22,6 @@ spec:
   #   substituteFrom:
   #     - kind: Secret
   #       name: cluster-secrets
-  # dependsOn:
-  #   - name: infrastructure-cluster-kyverno-policies
   patches:
     - patch: |-
         apiVersion: kustomize.toolkit.fluxcd.io/v1
