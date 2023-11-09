@@ -15,8 +15,8 @@ Talos and Kubernetes versions are a bit interdependent. You can find a support-m
 We're going to use `talhelper` to generate talos node configs. Talos node configs are node specific and are used later during infrastructure provisioning. Normally we'd do something like `talosctl gen config myCluster https://<VIP>:<port>` to generate talos node configs but this doesn't scale very well. With `talhelper` we can leverage `talos/talconfig.yaml` + `talos/talenv.yaml` + `talos/talsecret.sops.yaml` to generate all talos node configs at once. The following is a brief description of each file.
 
 - `talos/talconfig.yaml`: talos config template. This is a `talhelper` specific config that leverages variable substitution from `talos/talenv.yaml` (e.g. `${domainName}`).
-- `talos/talenv.yaml`: talos environment variables that get injected into `talconfig.yaml`
-- `talos/talsecret.sops.yaml`: talos secrets that get injected into talos config files. It holds k8s certs/keys and talos specific certs/keys and bootstrap tokens that get injected into talos config files. This file was created with `talhelper gensecret > talsecret.sops.yaml`, only needed once! This file was encrypted with `sops -e -i talos/talsecret.sops.yaml` discussed later.
+- `talos/talenv.yaml`: talos environment variables that are injected into talos node config files.
+- `talos/talsecret.sops.yaml`: talos secrets that are injected into talos node config files. It holds k8s certs/keys and talos specific certs/keys and bootstrap tokens that get injected into talos config files. This file was created with `talhelper gensecret > talsecret.sops.yaml`, only needed once! This file was encrypted with `sops -e -i talos/talsecret.sops.yaml` discussed later.
 
 #### Installs
 
@@ -43,6 +43,12 @@ talos/clusterconfig
 ├── talos-control-5.piccola.us.yaml
 └── talosconfig
 ```
+
+## SOPS and age
+
+All secrets in this repo are encrypted with SOPS leveraging age. `age-keygen -o myKey.txt` was used to generate the public key and age secret. SOPS is configured to use the age public key via the `.sops.yaml` in the root of this repo. Via the VSCode extension `signageos.signageos-vscode-sops` we can automatically encrypt/decrypt secrets in place. In order for this to work you must have `SOPS_AGE_KEY` set as an environment variable (this is a requirement of SOPS). `SOPS_AGE_KEY` is set by the git ignored `.envrc` file in the root of this repo.
+
+The `.sops.yaml` file defines rules for what files via path filtering are in scope for encryption in addition to what keys in those files should be encrypted. To onboard a file for encryption (not the entire file, just the keys that match the rules) you can run `sops -e -i ./testing/test.sops.yaml`.
 
 ## Rebuild from scratch
 
