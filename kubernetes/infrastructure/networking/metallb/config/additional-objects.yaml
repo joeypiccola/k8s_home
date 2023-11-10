@@ -29,12 +29,12 @@ spec:
   ipAddressPools:
   - vlan3
 
----
-apiVersion: metallb.io/v1beta1
-kind: L2Advertisement
-metadata:
-  name: vlan3route
-  namespace: metallb-system
-spec:
-  ipAddressPools:
-  - vlan3
+# ---
+# apiVersion: metallb.io/v1beta1
+# kind: L2Advertisement
+# metadata:
+#   name: vlan3route
+#   namespace: metallb-system
+# spec:
+#   ipAddressPools:
+#   - vlan3
