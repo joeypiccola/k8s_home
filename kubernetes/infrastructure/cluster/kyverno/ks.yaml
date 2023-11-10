@@ -1,14 +1,10 @@
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: infrastructure-cluster-kyverno-app
   namespace: flux-system
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   interval: 10m0s
   path: ./kubernetes/infrastructure/cluster/kyverno/app
   prune: true
@@ -16,16 +12,12 @@ spec:
     kind: GitRepository
     name: k8s-home
 ---
-apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: infrastructure-cluster-kyverno-policies
   namespace: flux-system
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
   interval: 10m0s
   path: ./kubernetes/infrastructure/cluster/kyverno/policies
   prune: true

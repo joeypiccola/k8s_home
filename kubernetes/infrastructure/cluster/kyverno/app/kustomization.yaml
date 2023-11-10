@@ -2,7 +2,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ./namespace.yaml
-  # - rbac.yaml # not used, references a svc account that does not even exist
-  - ./helm-repo.yaml
   - ./helm-release.yaml
+  - ./helm-repo.yaml
+  - ./namespace.yaml
