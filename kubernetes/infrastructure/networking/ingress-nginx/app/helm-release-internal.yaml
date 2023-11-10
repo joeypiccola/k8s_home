@@ -36,7 +36,7 @@ spec:
         loadBalancerIP: 10.0.3.209
         # annotations:
           # io.cilium/lb-ipam-ips: ${INTERNAL_NGINX_LB}
-        externalTrafficPolicy: Cluster #was cluster # See https://github.com/JJGadgets/Biohazard/blob/main/kube/deploy/core/_networking/cilium/README.md#preserving-source-ips
+        externalTrafficPolicy: Local #was cluster # See https://github.com/JJGadgets/Biohazard/blob/main/kube/deploy/core/_networking/cilium/README.md#preserving-source-ips
 
       publishService:
         enabled: true
