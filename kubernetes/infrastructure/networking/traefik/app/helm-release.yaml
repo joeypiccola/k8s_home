@@ -23,6 +23,8 @@ spec:
         volumeMounts:
           - name: data
             mountPath: /data
+    ingressClass:
+      isDefaultClass: false
     ingressRoute:
       dashboard:
         enabled: false
