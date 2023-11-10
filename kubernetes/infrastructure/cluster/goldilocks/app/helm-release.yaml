@@ -38,7 +38,7 @@ spec:
         enabled: true
         ingressClassName: "nginx-internal"
         annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production
+          cert-manager.io/cluster-issuer: letsencrypt-staging
 
         hosts:
           - host: &host "goldilocks.${CLUSTER_NAME}.${NGINX_INGRESS_SECRET_DOMAIN}"
