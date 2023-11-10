@@ -11,15 +11,15 @@ spec:
   sourceRef:
     kind: GitRepository
     name: k8s-home
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
-  postBuild:
-    substitute: {}
-    substituteFrom:
-      - kind: Secret
-        name: cluster-secrets
+  # decryption:
+  #   provider: sops
+  #   secretRef:
+  #     name: sops-age
+  # postBuild:
+  #   substitute: {}
+  #   substituteFrom:
+  #     - kind: Secret
+  #       name: cluster-secrets
   patches:
     - patch: |-
         apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -27,10 +27,6 @@ spec:
         metadata:
           name: not-used
         spec:
-          decryption:
-            provider: sops
-            secretRef:
-              name: sops-age
           postBuild:
             substituteFrom:
               - kind: Secret
