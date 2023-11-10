@@ -29,10 +29,6 @@ spec:
         metadata:
           name: not-used
         spec:
-          decryption:
-            provider: sops
-            secretRef:
-              name: sops-age
           postBuild:
             substituteFrom:
               - kind: Secret
@@ -41,3 +37,9 @@ spec:
         group: kustomize.toolkit.fluxcd.io
         version: v1
         kind: Kustomization
+
+
+          # decryption:
+          #   provider: sops
+          #   secretRef:
+          #     name: sops-age
