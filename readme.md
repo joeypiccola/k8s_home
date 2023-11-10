@@ -56,7 +56,7 @@ todo(joey): start using `https://github.com/mologie/talos-vmtoolsd/blob/0.3.1/de
 
 ## SOPS and age
 
-All secrets in this repo are encrypted with [SOPS](https://github.com/getsops/sops) leveraging [age](https://github.com/FiloSottile/age). `age-keygen -o myKey.txt` was used to generate the public key and age secret. SOPS is configured to use the age public key via the `.sops.yaml` in the root of this repo. Via the VSCode extension `signageos.signageos-vscode-sops` we can automatically encrypt/decrypt secrets in place. In order for this to work you must have `SOPS_AGE_KEY` set as an environment variable (this is a requirement of SOPS). `SOPS_AGE_KEY` is set by the git ignored `.envrc` file in the root of this repo.
+All secrets in this repo are encrypted with [SOPS](https://github.com/getsops/sops) leveraging [age](https://github.com/FiloSottile/age). `age-keygen -o myKey.txt` was used to generate the public key and age secret. SOPS is configured to use the age public key via the `.sops.yaml` in the root of this repo to encrypt files. Via the VSCode extension `signageos.signageos-vscode-sops` we can automatically encrypt/decrypt secrets in place. In order for this to work you must have `SOPS_AGE_KEY` set as an environment variable (this is a requirement of SOPS). `SOPS_AGE_KEY` is set by the git ignored `.envrc` file in the root of this repo.
 
 The `.sops.yaml` file defines rules for what files via path filtering are in scope for encryption in addition to what keys in those files should be encrypted. To onboard a file for encryption (not the entire file, just the keys that match the rules) you can run `sops -e -i ./testing/test.sops.yaml`.
 
@@ -105,7 +105,7 @@ At this point, Talos will form an etcd cluster, and start the Kubernetes control
 
 This secret is used by the `talos-vmtoolsd` daemonset (that we patched in during talos node config generation). Without it, these pods will be stuck in `ContainerCreating`. Again, this is full `talosconfig` that is written to the secret. More info on this back in [VMware Tools](#vmware-tools).
 
-todo(joey): this is not great. sharing same talosconfig we use to admin teh cluster with the vmtoolsd daemonset.
+todo(joey): this is not great. sharing same talosconfig we use to admin the cluster with the vmtoolsd daemonset.
 
 ```shell
 # from repo root
@@ -125,7 +125,9 @@ cd talos/clusterconfig
 talosctl patch machineconfig -n control-1.piccola.us,control-2.piccola.us,control-3.piccola.us,control-4.piccola.us,control-5.piccola.us --patch-file ../patches/admissionControl-patch.yaml
 ```
 
-### Bootstrap the cluster (flux)
+### Flux
+
+#### Bootstrap the cluster
 
 **Imperatively** install [flux](https://github.com/fluxcd/flux2) at the version specified in `kubernetes/flux/repositories/git/flux.yaml`. `flux` and `yq` binaries are required here. At the time of this writing the `flux` binary version `2.1.2` is being used.
 
@@ -134,7 +136,7 @@ talosctl patch machineconfig -n control-1.piccola.us,control-2.piccola.us,contro
 yq '.spec.ref.tag' kubernetes/flux/repositories/git/flux.yaml | xargs -I{} flux install --components-extra=image-reflector-controller,image-automation-controller --version={} --export | kubectl apply -f -
 ```
 
-### Create age secret for SOPS decryption on the cluster
+#### Create age secret for SOPS decryption on the cluster
 
 Once installed, create your `sops-age` secret. This is using the `SOPS_AGE_KEY` environment variable set in the `.envrc` file in the root of this repo.
 
@@ -143,54 +145,59 @@ Once installed, create your `sops-age` secret. This is using the `SOPS_AGE_KEY` 
 echo "$SOPS_AGE_KEY" | kubectl create secret generic sops-age --namespace=flux-system --from-file=age.agekey=/dev/stdin
 ```
 
-#### How cluster secret decryption with flux works
+#### How cluster secret decryption and substitution works with Flux
+
+Yikes, big topic :grimacing:.
+
+##### Decryption
+
+The `sops-age` secret we created earlier is referenced in various kustomize kustomizations via `.spec.decryption`. This `.spec.decryption` element specifies the encryption provider to use and the name of the secret to fetch (gettign the value) to use to decrypt files. This is a flux specific process that `.spec.decryption` is providing.
+
+At the time of the writing, only a few secrets are encrypted that require the age secret to decrypt. If a secret can simply be substituted into a manifest and is not required to exist in a namespace, then they can go in `kubernetes/flux/vars/cluster-secrets.sops.yaml`. An example of a full `.spec.decryption` is below.
+
+```yaml
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: secrets
+  namespace: flux-system
+spec:
+  # ...omitted for brevity
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+```
+
+##### Substitution
 
 When we bootstrapped the cluster with flux we created the secret `cluster-secrets` in the `flux-system` namespace. This secret contains key/value's that are substituted in to manifest files.
 
 Q: How does this substitution work?
-A: Below
-
-1. a `kustomize.config.k8s.io` kustomization is applied (this is the file with yaml files listed as resources).
-2. the resource yaml files are then read. these are `kustomize.toolkit.fluxcd.io/v1` kustomizations).
-3. in this `kustomize.toolkit.fluxcd.io/v1` kustomization
-
-
-
-
-
-When a `kustomize.config.k8s.io` kustomization is applied (this is the file with yaml files listed as resources) and the resource yaml files are then read (which are `kustomize.toolkit.fluxcd.io/v1` kustomizations) which
-
-### Flux
-
-Define a `kustomization.yaml`. This file is manually applied via `k apply --kustomize kubernetes/infrastructure`.
+A: You have a kustomize kustomization that includes flux kustomization(s) (e.g. resources). The flux kustomization(s) leverage `.spec.patches` to patch "target" downstream flux kustomization's with the `.spec.postBuild` element. The `.spec.postBuild` element leverages `.spec.postBuild.substituteFrom` to do post build variable substitution. In the `.spec.postBuild.substituteFrom` element is a list of places to look to perform substitution. In this case, we're pulling from a `Secret` named `cluster-secrets`. An example of the full patch block is below. Note: in order for this to work properly, the secret `cluster-secrets` must use the `.spec.stringData` field.
 
 ```yaml
-# kustomization.yaml
 ---
-apiVersion: kustomize.config.k8s.io/v1beta1
+apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
-resources:
-  - ./infrastructure.yaml
+metadata:
+  name: infrastructure-networking
+  namespace: flux-system
+spec:
+  # ...omitted for brevity
+  patches:
+    - patch: |-
+        apiVersion: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        metadata:
+          name: not-used
+        spec:
+          postBuild:
+            substituteFrom:
+              - kind: Secret
+                name: cluster-secrets
 ```
-
-Once applied `infrastructure.yaml` will be read. `infrastructure.yaml`
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ### Apply kustomizations
 
