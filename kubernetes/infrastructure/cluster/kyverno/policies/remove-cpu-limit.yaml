@@ -20,14 +20,14 @@ spec:
           - resources:
               kinds:
                 - Pod
-    exclude:
-      any:
-      - resources:
-          namespaces:
-          - default
-          - kube-system
-          - kube-public
-          - kyverno
+      exclude:
+        any:
+        - resources:
+            namespaces:
+            - default
+            - kube-system
+            - kube-public
+            - kyverno
       mutate:
         foreach:
           - list: request.object.spec.containers[]
