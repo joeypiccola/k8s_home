@@ -5,3 +5,4 @@ resources:
   - ./metallb/ks.yaml
   - ./traefik/ks.yaml
   - ./cert-manager/ks.yaml
+  - ./ingress-nginx/ks.yaml
