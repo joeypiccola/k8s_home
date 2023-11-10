@@ -4,9 +4,9 @@ policies:
 resources:
   - resource.yaml
 results:
-  - policy: remove-cpu-limit
+  - policy: resources-remove-cpu-limits
     rule: cpu-limits-remove
     resource: cpu-limits-remove-pod
-    patchedResource: patchedResource-1.yaml
+    patchedResource: ./patchedResource-1.yaml
     kind: Pod
     result: pass

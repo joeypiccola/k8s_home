@@ -7,7 +7,6 @@ metadata:
 spec:
   containers:
   - name: cpu-demo-ctr
-    dog:
     image: vish/stress
     resources:
       limits:
