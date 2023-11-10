@@ -8,10 +8,10 @@ spec:
   dependsOn:
     - name: infrastructure-networking-traefik-app-crds-install
     - name: infrastructure-networking-metallb-config
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
+  # decryption:
+  #   provider: sops
+  #   secretRef:
+  #     name: sops-age
   interval: 10m0s
   path: ./kubernetes/infrastructure/networking/traefik/app
   prune: true
@@ -28,11 +28,11 @@ metadata:
 spec:
   # dependsOn:
   #   - name: infrastructure-networking-metallb-config
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
-  interval: 10m0s
+  # decryption:
+  #   provider: sops
+  #   secretRef:
+  #     name: sops-age
+  # interval: 10m0s
   path: ./kubernetes/infrastructure/networking/traefik/crds
   prune: true
   sourceRef:

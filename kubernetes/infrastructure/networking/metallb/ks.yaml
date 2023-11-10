@@ -5,10 +5,10 @@ metadata:
   name: infrastructure-networking-metallb-app
   namespace: flux-system
 spec:
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
+  # decryption:
+  #   provider: sops
+  #   secretRef:
+  #     name: sops-age
   interval: 10m0s
   path: ./kubernetes/infrastructure/networking/metallb/app
   prune: true
@@ -25,10 +25,10 @@ metadata:
 spec:
   dependsOn:
     - name: infrastructure-networking-metallb-app
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
+  # decryption:
+  #   provider: sops
+  #   secretRef:
+  #     name: sops-age
   interval: 10m0s
   path: ./kubernetes/infrastructure/networking/metallb/config
   prune: true
