@@ -41,7 +41,7 @@ spec:
           cert-manager.io/cluster-issuer: letsencrypt-staging
 
         hosts:
-          - host: &host "goldilocks.${CLUSTER_NAME}.${NGINX_INGRESS_SECRET_DOMAIN}"
+          - host: &host "goldilocks.${NGINX_INGRESS_SECRET_DOMAIN}"
             paths:
               - path: /
                 type: Prefix
