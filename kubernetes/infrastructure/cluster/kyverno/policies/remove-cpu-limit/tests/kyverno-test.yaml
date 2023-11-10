@@ -1,0 +1,12 @@
+name: remove-cpu-limit
+policies:
+  - ../remove-cpu-limit.yaml
+resources:
+  - resource.yaml
+results:
+  - policy: remove-cpu-limit
+    rule: cpu-limits-remove
+    resource: cpu-limits-remove-pod
+    patchedResource: patchedResource-1.yaml
+    kind: Pod
+    result: pass
