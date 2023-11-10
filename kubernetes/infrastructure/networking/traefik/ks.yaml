@@ -32,7 +32,7 @@ spec:
   #   provider: sops
   #   secretRef:
   #     name: sops-age
-  # interval: 10m0s
+  interval: 10m0s
   path: ./kubernetes/infrastructure/networking/traefik/crds
   prune: true
   sourceRef:
