@@ -174,8 +174,7 @@ spec:
 
 When we bootstrapped the cluster with flux we created the secret `cluster-secrets` in the `flux-system` namespace. This secret contains key/value's that are substituted in to manifest files.
 
-Q: How does this substitution work?
-A: You have a kustomize kustomization that includes flux kustomization(s) (e.g. resources). The flux kustomization(s) leverage `.spec.patches` to patch "target" downstream flux kustomization's with the `.spec.postBuild` element. The `.spec.postBuild` element leverages `.spec.postBuild.substituteFrom` to do post build variable substitution. In the `.spec.postBuild.substituteFrom` element is a list of places to look to perform substitution. In this case, we're pulling from a `Secret` named `cluster-secrets`. An example of the full patch block is below. Note: in order for this to work properly, the secret `cluster-secrets` must use the `.spec.stringData` field.
+So how does this work? You have a kustomize kustomization that includes flux kustomization(s) (e.g. resources). The flux kustomization(s) leverage `.spec.patches` to patch "target" downstream flux kustomization's with the `.spec.postBuild` element. The `.spec.postBuild` element leverages `.spec.postBuild.substituteFrom` to do post build variable substitution. In the `.spec.postBuild.substituteFrom` element is a list of places to look for matching keys to perform substitution with the values into manifest. In this case, we're pulling from a `Secret` named `cluster-secrets`. An example of the full patch block is below. Note: in order for this to work properly, the secret `cluster-secrets` must use the `.spec.stringData` field.
 
 ```yaml
 ---
