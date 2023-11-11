@@ -18,7 +18,7 @@ metadata:
 spec:
   addresses:
     - 10.0.3.208/28 # .208 - .222
-  autoAssign: true
+  # autoAssign: true
 
 ---
 apiVersion: metallb.io/v1beta1
