@@ -41,13 +41,12 @@ spec:
           cert-manager.io/cluster-issuer: letsencrypt-production
 
         hosts:
-          - "goldilocks.${NGINX_INGRESS_SECRET_DOMAIN}"
-          # - host: &host "goldilocks.${NGINX_INGRESS_SECRET_DOMAIN}"
-          #   paths:
-          #     - path: /
-          #       type: Prefix
+          - host: &host "goldilocks.${NGINX_INGRESS_SECRET_DOMAIN}"
+            paths:
+              - path: /
+                type: Prefix
 
         tls:
           - secretName: tls.goldilocks
             hosts:
-              - "goldilocks.${NGINX_INGRESS_SECRET_DOMAIN}"
+              - *host
