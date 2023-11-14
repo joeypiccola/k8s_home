@@ -19,11 +19,11 @@ spec:
 #     metrics:
 #       enabled: true
     defaultArgs:
+      - --kubelet-preferred-address-types=Hostname,InternalIP,ExternalIP #InternalIP,ExternalIP,Hostname # default from chart
 #       - --cert-dir=/tmp # default from chart
-      - --kubelet-preferred-address-types=Hostname #InternalIP,ExternalIP,Hostname # default from chart
-#       - --kubelet-use-node-status-port # default from chart
-#       - --metric-resolution=15s # default from chart
-#       - --kubelet-insecure-tls
-#       # - --secure-port=4443 # not sure what this one does
+      # - --kubelet-use-node-status-port # default from chart
+      # - --metric-resolution=15s # default from chart
+      # - --kubelet-insecure-tls
+      # # - --secure-port=4443 # not sure what this one does
 
 # # todo(joey): re kubelet-insecure-tls, lots of talk here for how not to do this: https://github.com/kubernetes-sigs/metrics-server/issues/196
