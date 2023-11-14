@@ -15,12 +15,12 @@ spec:
         name: kubernetes-sigs-metrics-server
         namespace: flux-system
       interval: 5m
-#   values:
+  values:
 #     metrics:
 #       enabled: true
-#     defaultArgs:
+    defaultArgs:
 #       - --cert-dir=/tmp # default from chart
-#       - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname # default from chart
+      - --kubelet-preferred-address-types=Hostname #InternalIP,ExternalIP,Hostname # default from chart
 #       - --kubelet-use-node-status-port # default from chart
 #       - --metric-resolution=15s # default from chart
 #       - --kubelet-insecure-tls
