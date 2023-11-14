@@ -48,6 +48,7 @@ resource "vsphere_virtual_machine" "talos_nodes" {
   wait_for_guest_net_timeout = -1 # don't wait for guest since talos doesn't have vmtools
   num_cpus                   = local.vmware_config.node_hardware_config[each.value.type].num_cpus
   memory                     = local.vmware_config.node_hardware_config[each.value.type].memory
+  hardware_version           = 17
 
   ovf_deploy {
     remote_ovf_url = local.talos_ovf_url
