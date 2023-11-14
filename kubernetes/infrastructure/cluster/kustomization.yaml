@@ -5,3 +5,4 @@ resources:
   - ./kyverno/ks.yaml
   - ./goldilocks/ks.yaml
   - ./metrics-server/ks.yaml
+  - ./vpa/ks.yaml
