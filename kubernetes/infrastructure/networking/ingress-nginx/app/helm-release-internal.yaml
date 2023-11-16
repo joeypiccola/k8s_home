@@ -86,10 +86,13 @@ spec:
       # extraArgs:
         # default-ssl-certificate: "ingress-nginx/${NGINX_INGRESS_SECRET_DOMAIN/./-}-tls" /
 
-      resources:
+      resources: # goldi Nov16, 2023
         requests:
-          memory: 400Mi
-          cpu: 99m
+          cpu: 15m
+          memory: 127M
+        limits:
+          # cpu: 16m
+          memory: 196M
 
     defaultBackend:
       enabled: true
@@ -101,9 +104,10 @@ spec:
           value: ghost
         - name: SHOW_DETAILS
           value: "false"
-      resources:
+      resources: # goldi Nov16, 2023
         requests:
           cpu: 15m
           memory: 64M
         limits:
+          # cpu: 16m
           memory: 64M
