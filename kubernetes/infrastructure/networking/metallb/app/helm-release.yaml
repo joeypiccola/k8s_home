@@ -16,3 +16,44 @@ spec:
         name: metallb
         namespace: flux-system
       interval: 5m
+  values:
+    controller:
+      resources: # goldi Nov16, 2023
+        requests:
+          cpu: 15m
+          memory: 64M
+        limits:
+          # cpu: 16m
+          memory: 64M
+    speaker:
+      resources: # goldi Nov16, 2023
+        requests:
+          cpu: 10m
+          memory: 24M
+        limits:
+          # cpu: 16m
+          memory: 37M
+      frr:
+        resources: # goldi Nov16, 2023
+          requests:
+            cpu: 10m
+            memory: 37M
+          limits:
+            # cpu: 16m
+            memory: 56M
+      reloader:
+        resources: # goldi Nov16, 2023
+          requests:
+            cpu: 10m
+            memory: 16M
+          limits:
+            # cpu: 16m
+            memory: 18M
+      frrMetrics:
+        resources: # goldi Nov16, 2023
+          requests:
+            cpu: 22m
+            memory: 24M
+          limits:
+            # cpu: 35m
+            memory: 37M
