@@ -26,9 +26,6 @@ spec:
           memory: 174M
 
     dashboard:
-      service:
-        annotations:
-          metallb.universe.tf/allow-shared-ip: goldilocks-dashboard
       replicaCount: 1
       resources:
         requests:
