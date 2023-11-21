@@ -5,4 +5,4 @@ resources:
   - ./infrastructure.yaml
   - ./networking.yaml
   - ./cluster.yaml
-  # - ./storage.yaml
+  - ./storage.yaml
