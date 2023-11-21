@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   # - ./k10/ks.yaml
   - ./rook-ceph/ks.yaml
-  # - ./snapshot-controller/ks.yaml
+  - ./snapshot-controller/ks.yaml

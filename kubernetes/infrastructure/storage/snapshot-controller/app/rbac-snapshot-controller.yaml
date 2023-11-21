@@ -42,6 +42,9 @@ rules:
   - apiGroups: ["snapshot.storage.k8s.io"]
     resources: ["volumesnapshots/status"]
     verbs: ["update", "patch"]
+  - apiGroups: ["storage.k8s.io"] # what is this for? Nov 21 2023
+    resources: ["storageclasses"]
+    verbs: ["get", "list", "watch"]
   # Enable this RBAC rule only when using distributed snapshotting, i.e. when the enable-distributed-snapshotting flag is set to true
   # - apiGroups: [""]
   #   resources: ["nodes"]
