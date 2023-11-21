@@ -1,5 +1,5 @@
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: rook-ceph
@@ -8,3 +8,6 @@ spec:
   interval: 10m
   url: https://charts.rook.io/release
   timeout: 3m
+
+# helm show values rook-release/rook-ceph-cluster > charts/rook-ceph-cluster.yaml
+# helm show values rook-release/rook-ceph > charts/rook-ceph.yaml
