@@ -140,9 +140,9 @@ spec:
         annotations:
           cert-manager.io/cluster-issuer: letsencrypt-production
         # If the dashboard has ssl: true the following will make sure the NGINX Ingress controller can expose the dashboard correctly
-        #   nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
-        #   nginx.ingress.kubernetes.io/server-snippet: |
-        #     proxy_ssl_verify off;
+          nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+          nginx.ingress.kubernetes.io/server-snippet: |
+            proxy_ssl_verify off;
         host:
           name: &host "ceph.${NGINX_INGRESS_SECRET_DOMAIN}"
           path: "/"
