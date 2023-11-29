@@ -28,29 +28,29 @@ spec:
   values:
     cleanPrometheusOperatorObjectNames: true
 
-    alertmanager:
-      ingress:
-        enabled: true
-        ingressClassName: nginx-internal
-        pathType: Prefix
-        annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production
-        hosts:
-          - &host-alert-manager alert-manager.${NGINX_INGRESS_SECRET_DOMAIN}"
-        # paths:
-        #   - /
-        tls:
-          - secretName: tls.alert_manager
-            hosts:
-              - *host-alert-manager
-      alertManagerSpec:
-        storage:
-          volumeClaimTemplate:
-            spec:
-              storageClassName: ceph-block
-              resources:
-                requests:
-                  storage: 10Gi
+    # alertmanager:
+    #   ingress:
+    #     enabled: true
+    #     ingressClassName: nginx-internal
+    #     pathType: Prefix
+    #     annotations:
+    #       cert-manager.io/cluster-issuer: letsencrypt-production
+    #     hosts:
+    #       - &host-alert-manager alert-manager.${NGINX_INGRESS_SECRET_DOMAIN}"
+    #     # paths:
+    #     #   - /
+    #     tls:
+    #       - secretName: tls.alert_manager
+    #         hosts:
+    #           - *host-alert-manager
+    #   alertManagerSpec:
+    #     storage:
+    #       volumeClaimTemplate:
+    #         spec:
+    #           storageClassName: ceph-block
+    #           resources:
+    #             requests:
+    #               storage: 10Gi
 
 
     ###
