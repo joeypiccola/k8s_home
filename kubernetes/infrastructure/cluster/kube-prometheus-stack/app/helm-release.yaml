@@ -10,7 +10,7 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: 54.1.0
+      version: 54.2.1
       sourceRef:
         kind: HelmRepository
         name: prometheus-community-charts
@@ -37,8 +37,8 @@ spec:
           cert-manager.io/cluster-issuer: letsencrypt-production
         hosts:
           - &host-alert-manager alert-manager.${NGINX_INGRESS_SECRET_DOMAIN}"
-        paths:
-          - /
+        # paths:
+        #   - /
         tls:
           - secretName: tls.alert_manager
             hosts:
