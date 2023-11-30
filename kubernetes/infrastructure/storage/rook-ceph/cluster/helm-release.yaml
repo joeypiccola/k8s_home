@@ -149,7 +149,7 @@ spec:
         tls:
           - hosts:
             - *host
-            secretName: testsecret-tls
+            secretName: tls.rookceph
 
     cephBlockPools:
       - name: ceph-blockpool
