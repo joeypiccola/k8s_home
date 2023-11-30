@@ -40,7 +40,7 @@ spec:
         paths:
           - /
         tls:
-          - secretName: tls.alert_manager
+          - secretName: tls.alertmanager
             hosts:
               - *host-alert-manager
       alertManagerSpec:
