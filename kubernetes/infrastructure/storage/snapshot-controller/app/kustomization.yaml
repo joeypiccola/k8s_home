@@ -4,4 +4,5 @@ kind: Kustomization
 resources:
   - rbac-snapshot-controller.yaml
   - setup-snapshot-controller.yaml
-  - volume-snapshot-class.yaml
+  # - volume-snapshot-class.yaml
+  # note(joey): you removed this bc it conflicted with the one that ceph creates
