@@ -267,7 +267,13 @@ spec:
 
     toolbox:
       enabled: true
-
+      resources:
+        requests:
+          cpu: 15m
+          memory: 64M
+        limits:
+          cpu: 15m
+          memory: 64M
     # monitoring:
     #   enabled: true <-- defaults to false
     #   createPrometheusRules: true
