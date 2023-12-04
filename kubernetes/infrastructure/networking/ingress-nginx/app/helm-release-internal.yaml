@@ -84,7 +84,7 @@ spec:
             any: true
 
       extraArgs:
-        default-ssl-certificate: "ingress-nginx/tls.${NGINX_INGRESS_SECRET_DOMAIN/./-}" /
+        default-ssl-certificate: "ingress-nginx/tls.${NGINX_INGRESS_SECRET_DOMAIN/./-}"
 
       resources: # goldi Nov16, 2023
         requests:

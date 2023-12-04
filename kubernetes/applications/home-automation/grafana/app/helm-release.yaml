@@ -250,7 +250,7 @@ spec:
       #     revision: 1
       #     datasource: Prometheus
 
-      # networking:
+      networking:
       #   # opnsense:
       #   #   gnetId: 13386
       #   #   revision: 1
