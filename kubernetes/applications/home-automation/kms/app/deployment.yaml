@@ -1,0 +1,57 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kms
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kms
+  namespace: kms
+  labels:
+    k8s-app: kms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: kms
+  template:
+    metadata:
+      labels:
+        k8s-app: kms
+    spec:
+      containers:
+      - name: kms
+        image: teddysun/kms
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 1688
+          protocol: TCP
+        resources:
+          requests:
+            memory: "64M"
+            cpu: "15m"
+          limits:
+            memory: 64M
+            cpu: 15m
+
+---
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: selfhosted
+  labels:
+    k8s-app: kms
+  name: kms
+spec:
+  ports:
+    - port: 1688
+      targetPort: 1688
+  selector:
+    k8s-app: kms
+  type: LoadBalancer
+  loadBalancerIP: 10.0.3.210
