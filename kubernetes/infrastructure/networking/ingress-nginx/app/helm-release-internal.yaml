@@ -76,12 +76,12 @@ spec:
       #   proxy-buffer-size: "16k"
 
       metrics:
-        enabled: false
-        # serviceMonitor:
-        #   enabled: true
-        #   namespace: ingress-nginx
-        #   namespaceSelector:
-        #     any: true
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          namespace: ingress-nginx
+          namespaceSelector:
+            any: true
 
       # extraArgs:
         # default-ssl-certificate: "ingress-nginx/${NGINX_INGRESS_SECRET_DOMAIN/./-}-tls" /
