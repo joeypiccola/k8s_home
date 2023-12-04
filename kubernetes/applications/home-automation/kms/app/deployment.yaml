@@ -43,7 +43,7 @@ spec:
 kind: Service
 apiVersion: v1
 metadata:
-  namespace: selfhosted
+  namespace: kms
   labels:
     k8s-app: kms
   name: kms
