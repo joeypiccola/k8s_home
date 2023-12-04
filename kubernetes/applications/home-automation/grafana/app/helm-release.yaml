@@ -382,7 +382,7 @@ spec:
 
     persistence:
       enabled: true
-      existingClaim: grafana-config
+      existingClaim: grafana-ceph-pvc
 
     resources:
       requests:
