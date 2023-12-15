@@ -5,3 +5,4 @@ resources:
   - ./git/flux.yaml
   - ./git/k8s-home.yaml
   - ./helm/bjw-s-charts.yaml
+  - ./helm/gitlab-charts.yaml
