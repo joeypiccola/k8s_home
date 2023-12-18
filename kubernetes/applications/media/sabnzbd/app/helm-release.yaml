@@ -109,7 +109,7 @@ spec:
     persistence:
       config:
         enabled: true
-        existingClaim: sabnzbd
+        existingClaim: sabnzbd-ceph-pvc
       tmp:
         type: emptyDir
       # media:
