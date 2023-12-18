@@ -4,7 +4,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: sabnzbd
-  namespace: sabnzbd
+  namespace: media
 spec:
   interval: 30m
   chart:
@@ -84,7 +84,9 @@ spec:
             runAsNonRoot: true
             fsGroup: 568
             fsGroupChangePolicy: OnRootMismatch
-            supplementalGroups: [10000]
+            supplementalGroups:
+              - 65539
+              - 10000
     service:
       main:
         ports:
@@ -113,9 +115,7 @@ spec:
         existingClaim: sabnzbd-ceph-pvc
       tmp:
         type: emptyDir
-      # media:
-      #   type: nfs
-      #   server: expanse.turbo.ac
-      #   path: /eros/Media
-      #   globalMounts:
-      #     - path: /media
+      media:
+        enabled: true
+        existingClaim: media-nfs
+        mountPath: /media
