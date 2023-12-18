@@ -53,67 +53,67 @@ spec:
             # envFrom:
             #   - secretRef:
             #       name: sabnzbd-secret
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api?mode=version
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-              startup:
-                enabled: false
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
-            resources:
-              requests:
-                cpu: 200m
-                memory: 2Gi
-              limits:
-                memory: 12Gi
-        pod:
-          securityContext:
-            # runAsUser: 568
-            # runAsGroup: 568
-            runAsNonRoot: true
-            # fsGroup: 568
-            # fsGroupChangePolicy: OnRootMismatch
-            # supplementalGroups: [10000]
-    service:
-      main:
-        ports:
-          http:
-            port: *port
-    ingress:
-      main:
-        enabled: true
-        className: "nginx-internal"
-        annotations:
-          cert-manager.io/cluster-issuer: letsencrypt-production
-        hosts:
-          - host: &host "sab-k8s.${NGINX_INGRESS_SECRET_DOMAIN}"
-            paths:
-              - path: /
-        tls:
-          - secretName: tls.sabnzbd
-            hosts:
-              - *host
-    persistence:
-      config:
-        enabled: true
-        existingClaim: sabnzbd-ceph-pvc
-      tmp:
-        type: emptyDir
-      # media:
-      #   type: nfs
-      #   server: expanse.turbo.ac
-      #   path: /eros/Media
-      #   globalMounts:
-      #     - path: /media
+    #         probes:
+    #           liveness: &probes
+    #             enabled: true
+    #             custom: true
+    #             spec:
+    #               httpGet:
+    #                 path: /api?mode=version
+    #                 port: *port
+    #               initialDelaySeconds: 0
+    #               periodSeconds: 10
+    #               timeoutSeconds: 1
+    #               failureThreshold: 3
+    #           readiness: *probes
+    #           startup:
+    #             enabled: false
+    #         securityContext:
+    #           allowPrivilegeEscalation: false
+    #           readOnlyRootFilesystem: true
+    #           capabilities: { drop: ["ALL"] }
+    #         resources:
+    #           requests:
+    #             cpu: 200m
+    #             memory: 2Gi
+    #           limits:
+    #             memory: 12Gi
+    #     pod:
+    #       securityContext:
+    #         # runAsUser: 568
+    #         # runAsGroup: 568
+    #         runAsNonRoot: true
+    #         # fsGroup: 568
+    #         # fsGroupChangePolicy: OnRootMismatch
+    #         # supplementalGroups: [10000]
+    # service:
+    #   main:
+    #     ports:
+    #       http:
+    #         port: *port
+    # ingress:
+    #   main:
+    #     enabled: true
+    #     className: "nginx-internal"
+    #     annotations:
+    #       cert-manager.io/cluster-issuer: letsencrypt-production
+    #     hosts:
+    #       - host: &host "sab-k8s.${NGINX_INGRESS_SECRET_DOMAIN}"
+    #         paths:
+    #           - path: /
+    #     tls:
+    #       - secretName: tls.sabnzbd
+    #         hosts:
+    #           - *host
+    # persistence:
+    #   config:
+    #     enabled: true
+    #     existingClaim: sabnzbd-ceph-pvc
+    #   tmp:
+    #     type: emptyDir
+    #   # media:
+    #   #   type: nfs
+    #   #   server: expanse.turbo.ac
+    #   #   path: /eros/Media
+    #   #   globalMounts:
+    #   #     - path: /media
