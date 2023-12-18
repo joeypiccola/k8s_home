@@ -42,14 +42,13 @@ spec:
             env:
               TZ: America/Denver
               SABNZBD__PORT: &port 80
-              # SABNZBD__HOST_WHITELIST_ENTRIES: >-
-              #   sabnzbd,
-              #   sabnzbd.default,
-              #   sabnzbd.default.svc,
-              #   sabnzbd.default.svc.cluster,
-              #   sabnzbd.default.svc.cluster.local,
-              #   sab.devbu.io,
-              #   sabnzbd.devbu.io
+              SABNZBD__HOST_WHITELIST_ENTRIES: >-
+                sabnzbd,
+                sabnzbd.default,
+                sabnzbd.default.svc,
+                sabnzbd.default.svc.cluster,
+                sabnzbd.default.svc.cluster.local,
+                "sab-k8s.${NGINX_INGRESS_SECRET_DOMAIN}"
             # envFrom:
             #   - secretRef:
             #       name: sabnzbd-secret
@@ -80,12 +79,12 @@ spec:
                 memory: 12Gi
         pod:
           securityContext:
-            # runAsUser: 568
-            # runAsGroup: 568
+            runAsUser: 568
+            runAsGroup: 568
             runAsNonRoot: true
-            # fsGroup: 568
-            # fsGroupChangePolicy: OnRootMismatch
-            # supplementalGroups: [10000]
+            fsGroup: 568
+            fsGroupChangePolicy: OnRootMismatch
+            supplementalGroups: [10000]
     service:
       main:
         ports:
