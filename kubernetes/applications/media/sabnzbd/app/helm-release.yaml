@@ -101,6 +101,9 @@ spec:
           - host: &host "sab-k8s.${NGINX_INGRESS_SECRET_DOMAIN}"
             paths:
               - path: /
+                service:
+                  name: main
+                  port: http
         tls:
           - secretName: tls.sabnzbd
             hosts:
