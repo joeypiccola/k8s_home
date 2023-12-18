@@ -95,17 +95,16 @@ spec:
       main:
         enabled: true
         className: "nginx-internal"
+        annotations:
+          cert-manager.io/cluster-issuer: letsencrypt-production
         hosts:
           - host: &host "sab-k8s.${NGINX_INGRESS_SECRET_DOMAIN}"
             paths:
               - path: /
-                service:
-                  name: main
-                  port: http
         tls:
-          - hosts:
+          - secretName: tls.sabnzbd
+            hosts:
               - *host
-              # - *customHost
     persistence:
       config:
         enabled: true
