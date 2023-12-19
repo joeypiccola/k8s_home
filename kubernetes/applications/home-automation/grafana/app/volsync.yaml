@@ -1,0 +1,23 @@
+---
+apiVersion: volsync.backube/v1alpha1
+kind: ReplicationSource
+metadata:
+  name: grafana
+  namespace: grafana
+spec:
+  sourcePVC: grafana-ceph-pvc
+  trigger:
+    schedule: "25 16 * * *"
+  restic:
+    copyMethod: Snapshot
+    pruneIntervalDays: 14
+    repository: grafana-restic-secret
+    cacheCapacity: 8Gi
+    volumeSnapshotClassName: csi-ceph-blockpool
+    storageClassName: ceph-block
+    moverSecurityContext:
+      runAsUser: 472
+      runAsGroup: 472
+      fsGroup: 472
+    retain:
+      daily: 14
