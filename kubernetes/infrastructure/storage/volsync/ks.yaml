@@ -1,0 +1,19 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infrastructure-storage-volsync-app
+  namespace: flux-system
+spec:
+  # decryption:
+  #   provider: sops
+  #   secretRef:
+  #     name: sops-age
+  interval: 10m0s
+  path: ./kubernetes/infrastructure/storage/volsync/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: k8s-home
+  # dependsOn:
+  #   - name: infrastructure-storage-snapshot-controller-crds-install
