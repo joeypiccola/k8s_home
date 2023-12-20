@@ -132,7 +132,7 @@ spec:
             secretName: tls.s3
 
     persistence:
-      config:
+      data:
         enabled: true
         type: nfs
         server: ${SECRET_NAS1}
