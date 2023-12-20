@@ -6,3 +6,4 @@ metadata:
     volsync.backube/privileged-movers: "true"
   labels:
     goldilocks.fairwinds.com/enabled: "true"
+    pod-security.kubernetes.io/enforce: privileged
