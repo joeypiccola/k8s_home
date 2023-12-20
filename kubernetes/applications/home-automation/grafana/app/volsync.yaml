@@ -7,13 +7,13 @@ metadata:
 spec:
   sourcePVC: grafana-ceph-pvc
   trigger:
-    schedule: "25 16 * * *"
+    schedule: "8 40 * * *"
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 14
     repository: grafana-restic-secret
     cacheCapacity: 8Gi
-    volumeSnapshotClassName: csi-ceph-blockpool
+    volumeSnapshotClassName: csi-rbdplugin-snapclass
     storageClassName: ceph-block
     moverSecurityContext:
       runAsUser: 472
