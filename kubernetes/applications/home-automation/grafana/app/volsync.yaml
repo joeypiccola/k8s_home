@@ -7,7 +7,7 @@ metadata:
 spec:
   sourcePVC: grafana-ceph-pvc
   trigger:
-    schedule: "8 45 * * *"
+    schedule: "11 35 * * *"
   restic:
     copyMethod: Snapshot
     pruneIntervalDays: 14
