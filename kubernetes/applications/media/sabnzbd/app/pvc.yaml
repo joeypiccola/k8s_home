@@ -5,7 +5,7 @@ metadata:
   name: sabnzbd-ceph-pvc
   namespace: media
   labels:
-    app.kubernetes.io/name: grafana
+    app.kubernetes.io/name: sabnzbd
 spec:
   accessModes:
     - ReadWriteOnce
