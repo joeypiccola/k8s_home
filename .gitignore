@@ -23,6 +23,6 @@ apps/**
 vars/**
 
 charts/**
-
+backups/**
 
 nginx.conf
