@@ -7,3 +7,4 @@ resources:
   - ./helm/backube-charts.yaml
   - ./helm/bjw-s-charts.yaml
   - ./helm/gitlab-charts.yaml
+  - ./helm/stakater-charts.yaml
