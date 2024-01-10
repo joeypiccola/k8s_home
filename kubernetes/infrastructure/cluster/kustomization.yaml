@@ -6,4 +6,5 @@ resources:
   - ./kube-prometheus-stack/ks.yaml
   - ./kyverno/ks.yaml
   - ./metrics-server/ks.yaml
+  - ./reloader/ks.yaml
   - ./vpa/ks.yaml
