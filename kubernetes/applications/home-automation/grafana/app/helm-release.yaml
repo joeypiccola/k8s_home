@@ -392,4 +392,5 @@ spec:
         memory: 800M
 
     podAnnotations:
-      configmap.reloader.stakater.com/reload: "grafana"
+      configmap.reloader.stakater.com/reload: grafana
+      secret.reloader.stakater.com/reload: grafana-secrets
