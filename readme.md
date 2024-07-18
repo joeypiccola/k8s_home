@@ -2,7 +2,7 @@
 
 Run Kubernetes using Talos Linux in VMware.
 
-## Talos
+## What is Talos
 
 Talos Linux is Linux designed for Kubernetes - secure, immutable, and minimal.
 
@@ -21,10 +21,27 @@ We're going to use `talhelper` to generate talos node configs. Talos node config
 #### Installs
 
 ```shell
-brew tap siderolabs/talos
-brew install talosctl
+brew install siderolabs/tap/talosctl # if not found -> "brew link --overwrite talosctl"
 brew install talhelper
 ```
+
+At the time of this writing: July 18th 2024:
+
+```plaintext
+➜ talosctl version
+Client:
+Tag:         v1.7.5
+➜ talhelper --version
+talhelper version 3.0.4
+```
+
+#### Talos Config Node Patches
+
+Talos supports patching node configs during config generation. This is done one of two ways, 1) in the `talconfig.yaml` file via yaml patching or 2) via a patch file applied to the nodes after provisioning.
+
+##### VMware Tools
+
+VMware tools, more specifically [talos-vmtoolsd](https://github.com/mologie/talos-vmtoolsd), is configured via a yaml patch during talos node config generation (see `talconfig.yaml`). For this to work correctly we also must create the k8s secret `talos-vmtoolsd-config` which we do later. This secret contains a full `talosconfig` file that we also generate later with the appropriate role so the containers running vm tools can run with the correct privileges. More specifically, the `talosconfig` is used with `talosapi.NewLocalClient` to connect to the talos node API to get info that can be reported back to VMware.
 
 #### Generate Talos Configs
 
@@ -43,16 +60,6 @@ talos/clusterconfig
 ├── talos-control-5.piccola.us.yaml
 └── talosconfig
 ```
-
-#### Talos Config Node Patches
-
-Talos support patching node configs during config generation. This is done one of two ways, 1) in the `talosconfig.yaml` file via yaml patching or 2) via a patch file applied to the nodes after provisioning.
-
-##### VMware Tools
-
-VMware tools, more specifically [talos-vmtoolsd](https://github.com/mologie/talos-vmtoolsd), is configured via a yaml patch during talos node config generation. For this to work correctly we also must create the secret `talos-vmtoolsd-config` which we do later. This secret contains a full `talosconfig` file that we generate later with the appropriate role so the containers running vm tools can run with the correct privileges. More specifically, the `talosconfig` is used with `talosapi.NewLocalClient` to connect to the talos node API.
-
-todo(joey): start using `https://github.com/mologie/talos-vmtoolsd/blob/0.3.1/deploy/unstable.yaml` with a ref.
 
 ## SOPS and age
 
@@ -73,6 +80,8 @@ export VSPHERE_PASSWORD=''
 export VSPHERE_SERVER=''
 export VSPHERE_ALLOW_UNVERIFIED_SSL='true'
 ```
+
+Terraform will create VMs leveraging Talos' VMware OVA specific image. The Talos version is dynamically parsed from `talenv.yaml`. Each VM built is passed its specific Talos config via VMware's `guestinfo` mechanism. At boot, Talos knows to grab the config from `guestinfo.talos.config`.
 
 ```shell
 # from repo root
@@ -101,7 +110,7 @@ At this point, Talos will form an etcd cluster, and start the Kubernetes control
 
 `talosctl kubeconfig --nodes 10.0.3.151 --endpoints 10.0.3.151`
 
-### Create and apply talos-vmtoolsd-config secret
+#### Create and apply talos-vmtoolsd-config secret
 
 This secret is used by the `talos-vmtoolsd` daemonset (that we patched in during talos node config generation). Without it, these pods will be stuck in `ContainerCreating`. Again, this is full `talosconfig` that is written to the secret. More info on this back in [VMware Tools](#vmware-tools).
 
@@ -115,7 +124,7 @@ kubectl -n kube-system create secret generic talos-vmtoolsd-config --from-file=t
 rm ./talosconfig_vmtoolsd.yaml
 ```
 
-### Patch control plane machines with admission control
+#### Patch control plane machines with admission control
 
 For this to work `control-1.piccola.us` names must be in DNS. "That is what allows you to run privileges in all namespaces", move away from this using a kyverno policy.
 
@@ -125,112 +134,11 @@ cd talos/clusterconfig
 talosctl patch machineconfig -n control-1.piccola.us,control-2.piccola.us,control-3.piccola.us,control-4.piccola.us,control-5.piccola.us --patch-file ../patches/admissionControl-patch.yaml
 ```
 
-### Flux
+#### talosctl commands
 
-#### Bootstrap the cluster
+Running from somewhere with a valid TALOSCONFIG env var.
 
-**Imperatively** install [flux](https://github.com/fluxcd/flux2) at the version specified in `kubernetes/flux/repositories/git/flux.yaml`. `flux` and `yq` binaries are required here. At the time of this writing the `flux` binary version `2.1.2` is being used.
-
-```shell
-# from repo root
-yq '.spec.ref.tag' kubernetes/flux/repositories/git/flux.yaml | xargs -I{} flux install --components-extra=image-reflector-controller,image-automation-controller --version={} --export | kubectl apply -f -
+```plaintext
+talosctl dashboard
+talosctl memory
 ```
-
-#### Create age secret for SOPS decryption on the cluster
-
-Once installed, create your `sops-age` secret. This is using the `SOPS_AGE_KEY` environment variable set in the `.envrc` file in the root of this repo.
-
-```shell
-# from repo root
-echo "$SOPS_AGE_KEY" | kubectl create secret generic sops-age --namespace=flux-system --from-file=age.agekey=/dev/stdin
-```
-
-#### How cluster secret decryption and substitution works with Flux
-
-Yikes, big topic :grimacing:.
-
-##### Decryption
-
-The `sops-age` secret we created earlier is referenced in various kustomize kustomizations via `.spec.decryption`. This `.spec.decryption` element specifies the encryption provider to use and the name of the secret to fetch (gettign the value) to use to decrypt files. This is a flux specific process that `.spec.decryption` is providing.
-
-At the time of the writing, only a few secrets are encrypted that require the age secret to decrypt. If a secret can simply be substituted into a manifest and is not required to exist in a namespace, then they can go in `kubernetes/flux/vars/cluster-secrets.sops.yaml`. An example of a full `.spec.decryption` is below.
-
-```yaml
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: secrets
-  namespace: flux-system
-spec:
-  # ...omitted for brevity
-  decryption:
-    provider: sops
-    secretRef:
-      name: sops-age
-```
-
-##### Substitution
-
-When we bootstrapped the cluster with flux we created the secret `cluster-secrets` in the `flux-system` namespace. This secret contains key/value's that are substituted in to manifest files.
-
-So how does this work? You have a kustomize kustomization that includes flux kustomization(s) (e.g. resources). The flux kustomization(s) leverage `.spec.patches` to patch "target" downstream flux kustomization's with the `.spec.postBuild` element. The `.spec.postBuild` element leverages `.spec.postBuild.substituteFrom` to do post build variable substitution. In the `.spec.postBuild.substituteFrom` element is a list of places to look for matching keys to perform substitution with the values into manifest. In this case, we're pulling from a `Secret` named `cluster-secrets`. An example of the full patch block is below. Note: in order for this to work properly, the secret `cluster-secrets` must use the `.spec.stringData` field.
-
-```yaml
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
-  name: infrastructure-networking
-  namespace: flux-system
-spec:
-  # ...omitted for brevity
-  patches:
-    - patch: |-
-        apiVersion: kustomize.toolkit.fluxcd.io/v1
-        kind: Kustomization
-        metadata:
-          name: not-used
-        spec:
-          postBuild:
-            substituteFrom:
-              - kind: Secret
-                name: cluster-secrets
-```
-
-### Apply kustomizations
-
-```shell
-# from repo root
-k apply --kustomize kubernetes/flux
-k apply --kustomize kubernetes/infrastructure
-k apply --kustomize kubernetes/applications
-```
-
-## Troubleshooting
-
-### rook-ceph
-
-`kubectl --namespace rook-ceph get cephcluster` to get the status of the cluster.
-
-### helm charts
-
-The following are a few commands for working with Helm charts and their releases.
-
-`helm repo list` to list chart repositories.
-
-`helm repo update` to update information of available charts locally from chart repositories.
-
-`helm repo add metallb https://metallb.github.io/metallb` for adding the `metallb` repo locally.
-
-`helm search repo metallb --versions` to list chart versions / releases.
-
-`helm list --all-namespaces --all` to list installed charts.
-
-`k delete hr -n pihole pihole` to delete a HelmRelease named pihole in the pihole namespace.
-
-### kustomizations with flux
-
-`k get kustomizations.kustomize.toolkit.fluxcd.io -n flux-system` to list kustomization in `flux-system` namespace
-
-`flux reconcile kustomization flux-install` to reconcile the `flux-install` kustomization
