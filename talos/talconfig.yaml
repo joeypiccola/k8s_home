@@ -97,11 +97,11 @@ controlPlane:
       - op: replace
         path: /cluster/extraManifests
         value:
-          - "https://raw.githubusercontent.com/mologie/talos-vmtoolsd/master/deploy/unstable.yaml"
+          - "https://raw.githubusercontent.com/siderolabs/talos-vmtoolsd/v0.5.1/deploy/latest.yaml"
 worker:
   patches:
     - |-
       - op: replace
         path: /cluster/extraManifests
         value:
-          - "https://raw.githubusercontent.com/mologie/talos-vmtoolsd/master/deploy/unstable.yaml"
+          - "https://raw.githubusercontent.com/siderolabs/talos-vmtoolsd/v0.5.1/deploy/latest.yaml"
