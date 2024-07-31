@@ -12,8 +12,9 @@ spec:
     targetRevision: 1.0.52
     helm:
       releaseName: reloader
-      values: |
+      valuesObject:
         reloader:
+          enableHA: true
           deployment:
             replicas: 2
   destination:
