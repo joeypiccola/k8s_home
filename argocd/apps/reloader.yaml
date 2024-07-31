@@ -16,7 +16,7 @@ spec:
         reloader:
           enableHA: true
           deployment:
-            replicas: 2
+            replicas: 3
   destination:
     name: in-cluster
     namespace: reloader
