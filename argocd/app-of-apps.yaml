@@ -11,6 +11,10 @@ spec:
     repoURL: https://github.com/joeypiccola/k8s_home.git
     targetRevision: main
   project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
     # helm:
     #   valueFiles:
     #     - ref+envsubst://$ARGOCD_AOA_VALUES_PATH
