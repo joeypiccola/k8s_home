@@ -21,3 +21,28 @@ spec:
       allowEmpty: false # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/#automatic-pruning-with-allow-empty-v18
     syncOptions:
       - CreateNamespace=true
+
+
+
+
+# see https://github.com/argoproj/argo-cd/issues/10456 for details as to why this may be needed one day
+# if it is needed value it in via valuesObject: configs.cm.resource.exclusions
+# data:
+#   resource.exclusions: |
+#     - apiGroups:
+#       - cilium.io
+#       kinds:
+#       - CiliumIdentity
+#       clusters:
+#       - "*"
+
+# example of oob argocd/argocd-cm (configmap)
+# data:
+#   admin.enabled: "true"
+#   application.instanceLabelKey: argocd.argoproj.io/instance
+#   exec.enabled: "false"
+#   server.rbac.log.enforce.enable: "false"
+#   statusbadge.enabled: "false"
+#   timeout.hard.reconciliation: 0s
+#   timeout.reconciliation: 180s
+#   url: https://argocd.example.com
