@@ -1,23 +1,23 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: argocd
-#   namespace: argocd
-# spec:
-#   project: default
-#   source:
-#     repoURL: https://argoproj.github.io/argo-helm
-#     chart: argo-cd
-#     targetRevision: 7.3.3
-#     helm:
-#       releaseName: argocd
-#   destination:
-#     name: in-cluster
-#     namespace: argocd
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#       allowEmpty: false # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/#automatic-pruning-with-allow-empty-v18
-#     syncOptions:
-#       - CreateNamespace=true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    targetRevision: 7.3.3
+    helm:
+      releaseName: argocd
+  destination:
+    name: in-cluster
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+      allowEmpty: false # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/#automatic-pruning-with-allow-empty-v18
+    syncOptions:
+      - CreateNamespace=true
