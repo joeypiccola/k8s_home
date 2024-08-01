@@ -142,3 +142,39 @@ Running from somewhere with a valid TALOSCONFIG env var.
 talosctl dashboard
 talosctl memory
 ```
+
+## ArgoCD Notes
+
+Once the cluster is up create argo namespace.
+
+```plaintext
+kubectl create namespace argocd
+kubectl config set-context --current --namespace=argocd
+```
+
+Use helm to imperatively install argo.
+
+```plaintext
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+helm template argocd argo/argo-cd -n argocd --version 7.3.3 | kubectl apply -f -
+```
+
+The following is optional if you want to view the argo dashboard before ingress setup.
+
+```plaintext
+# get the argo password
+argocd admin initial-password -n argocd
+# create a port forward to `argocd-server` pod
+# login
+argocd login localhost:8080 --username admin
+# update the password
+argocd account update-password
+```
+
+Kick off the app of apps
+
+```plaintext
+# from the repo root
+k apply -n argocd -f argocd/app-of-apps.yaml
+```
