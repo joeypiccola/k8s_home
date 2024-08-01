@@ -6,13 +6,13 @@ metadata:
 spec:
   project: default
   source:
-    chart: argo-cd
     repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
     targetRevision: 7.3.3
     helm:
       releaseName: argocd
   destination:
-    server: https://kubernetes.default.svc
+    name: in-cluster
     namespace: argocd
   syncPolicy:
     automated:
