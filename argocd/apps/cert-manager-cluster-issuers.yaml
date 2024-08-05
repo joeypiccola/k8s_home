@@ -1,0 +1,25 @@
+# Possible values: https://github.com/stakater/Reloader/blob/master/deployments/kubernetes/chart/reloader/values.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cert-manager-cluster-issuers
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/joeypiccola/k8s_home.git
+    path: argocd/cert-manager-cluster-issuers
+    targetRevision: main
+    directory:
+      include: '*.yaml'
+  destination:
+    name: in-cluster
+    namespace: cert-manager
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
