@@ -18,7 +18,7 @@ spec:
       name: argocd-vault-plugin
       env:
         - name: FILE_NAME # i think ARGOCD_ENV_ get appended to this when ref'd in the ConfigManagementPlugin
-          value: avp.yaml
+          value: cluster-issuers.yaml
   destination:
     name: in-cluster
     namespace: cert-manager
