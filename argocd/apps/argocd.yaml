@@ -35,7 +35,7 @@ spec:
               volumeMounts:
                 - mountPath: /custom-tools
                   name: custom-tools
-          containers:
+          extraContainers:
             - name: avp
               command: [/var/run/argocd/argocd-cmp-server]
               image: registry.access.redhat.com/ubi8
@@ -64,29 +64,30 @@ spec:
                   mountPath: /usr/local/bin/argocd-vault-plugin
           extraObjects:
             - apiVersion: v1
-            kind: ConfigMap
-            metadata:
-              name: cmp-plugin
-            data:
-              avp.yaml: |
-                apiVersion: argoproj.io/v1alpha1
-                kind: ConfigManagementPlugin
-                metadata:
-                  name: argocd-vault-plugin
-                spec:
-                  allowConcurrency: true
-                  discover:
-                    find:
+              kind: ConfigMap
+              metadata:
+                name: cmp-plugin
+              data:
+                avp.yaml: |
+                  apiVersion: argoproj.io/v1alpha1
+                  kind: ConfigManagementPlugin
+                  metadata:
+                    name: argocd-vault-plugin
+                    namespace: argocd
+                  spec:
+                    allowConcurrency: true
+                    discover:
+                      find:
+                        command:
+                          - sh
+                          - "-c"
+                          - "find . -name '*.yaml' | xargs -I {} grep \"<path\\|avp\\.kubernetes\\.io\" {} | grep ."
+                    generate:
                       command:
-                        - sh
-                        - "-c"
-                        - "find . -name '*.yaml' | xargs -I {} grep \"<path\\|avp\\.kubernetes\\.io\" {} | grep ."
-                  generate:
-                    command:
-                      - argocd-vault-plugin
-                      - generate
-                      - "."
-                  lockRepo: false
+                        - argocd-vault-plugin
+                        - generate
+                        - "."
+                    lockRepo: false
   destination:
     name: in-cluster
     namespace: argocd
