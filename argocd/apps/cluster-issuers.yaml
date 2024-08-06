@@ -17,6 +17,8 @@ spec:
   destination:
     name: in-cluster
     namespace: cert-manager
+  plugin:
+    name: argocd-vault-plugin
   syncPolicy:
     automated:
       prune: true
