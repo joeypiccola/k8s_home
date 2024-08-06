@@ -24,7 +24,7 @@ metadata:
   name: letsencrypt-production
 spec:
   acme:
-    email: argocd.<path:cluster-secrets#test-item>
+    email: argocd.<path:cluster-secrets:cluster-secrets#personalemail> # path:namespace:secret-name#key
     preferredChain: ""
     privateKeySecretRef:
       name: letsencrypt-production
