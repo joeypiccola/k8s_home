@@ -11,6 +11,26 @@ spec:
     targetRevision: 7.3.3
     helm:
       releaseName: argocd
+      valuesObject:
+        repoServer:
+          volumes:
+            - name: custom-tools
+              emptyDir: {}
+          initContainers:
+            - name: download-tools # download argo vault plugin and copy it to custom-tools volume (we mount this in the repo server above)
+              image: registry.access.redhat.com/ubi8
+              env:
+                - name: AVP_VERSION
+                  value: 1.17.0
+              command: [sh, -c]
+              args:
+                - >-
+                  curl -L https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v$(AVP_VERSION)/argocd-vault-plugin_$(AVP_VERSION)_linux_$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) -o argocd-vault-plugin &&
+                  chmod +x argocd-vault-plugin &&
+                  mv argocd-vault-plugin /custom-tools/
+              volumeMounts:
+                - mountPath: /custom-tools
+                  name: custom-tools
   destination:
     name: in-cluster
     namespace: argocd
@@ -21,7 +41,6 @@ spec:
       allowEmpty: false # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/#automatic-pruning-with-allow-empty-v18
     syncOptions:
       - CreateNamespace=true
-
 
 
 
