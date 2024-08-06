@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/joeypiccola/k8s_home.git
-    path: argocd/cert-manager-cluster-issuers
+    path: argocd/cluster-issuers
     targetRevision: main
     directory:
       include: '*.yaml'
