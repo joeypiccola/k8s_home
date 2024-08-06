@@ -79,17 +79,12 @@ spec:
                   namespace: argocd
                 spec:
                   allowConcurrency: true
-                  discover:
-                    find:
-                      command:
-                        - sh
-                        - "-c"
-                        - "find . -name '*.yaml' | xargs -I {} grep \"<path\\|avp\\.kubernetes\\.io\" {} | grep ."
                   generate:
                     command:
-                      - argocd-vault-plugin
-                      - generate
-                      - "."
+                      - bash
+                      - "-c"
+                      - |
+                        argocd-vault-plugin generate $ARGOCD_ENV_FILE_NAME
                   lockRepo: false
   destination:
     name: in-cluster
