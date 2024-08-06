@@ -5,7 +5,7 @@ metadata:
   name: letsencrypt-staging
 spec:
   acme:
-    # email: "${LE_EMAIL}"
+    email: <path:cluster-secrets:cluster-secrets#personalemail> # path:namespace:secret-name#key
     preferredChain: ""
     privateKeySecretRef:
       name: letsencrypt-staging
@@ -24,7 +24,7 @@ metadata:
   name: letsencrypt-production
 spec:
   acme:
-    email: argocd.<path:cluster-secrets:cluster-secrets#personalemail> # path:namespace:secret-name#key
+    email: <path:cluster-secrets:cluster-secrets#personalemail> # path:namespace:secret-name#key
     preferredChain: ""
     privateKeySecretRef:
       name: letsencrypt-production
