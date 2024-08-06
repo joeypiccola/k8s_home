@@ -2,7 +2,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager-cluster-issuers
+  name: cluster-issuers
   namespace: argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io
