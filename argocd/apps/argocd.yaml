@@ -13,15 +13,24 @@ spec:
       releaseName: argocd
       valuesObject:
         repoServer:
-          rbac: # i think this lets argo get secrets which is needed fo when AVP_TYPE is kubernetessecret
-            - apiGroups: [""]
-              resources: ["secrets"]
-              verbs: ["get", "watch", "list"]
+          # rbac: # i think this lets argo get secrets which is needed fo when AVP_TYPE is kubernetessecret
+          #   - apiGroups: [""]
+          #     resources: ["secrets"]
+          #     verbs: ["get", "watch", "list"]
+          clusterRoleRules:
+            enabled: true
+            rules:
+              - apiGroups: [""]
+                resources: ["secrets"]
+                resourceNames: ["cluster-secrets"]
+                verbs: ["get", "watch", "list"]
           volumes:
             - configMap:
                 name: cmp-plugin
               name: cmp-plugin
             - name: custom-tools
+              emptyDir: {}
+            - name: cmp-tmp
               emptyDir: {}
           initContainers:
             - name: download-tools
@@ -51,32 +60,32 @@ spec:
               volumeMounts:
                 - mountPath: /var/run/argocd
                   name: var-files
+
                 - mountPath: /home/argocd/cmp-server/plugins
                   name: plugins
+
                 - mountPath: /tmp
-                  name: tmp
+                  name: cmp-tmp
 
-                # Register plugins into sidecar
                 - mountPath: /home/argocd/cmp-server/config/plugin.yaml
-                  subPath: avp.yaml
                   name: cmp-plugin
+                  subPath: avp.yaml
 
-                # Important: Mount tools into $PATH
-                - name: custom-tools
+                - mountPath: /usr/local/bin/argocd-vault-plugin
+                  name: custom-tools
                   subPath: argocd-vault-plugin
-                  mountPath: /usr/local/bin/argocd-vault-plugin
         extraObjects:
           - apiVersion: v1
             kind: ConfigMap
             metadata:
               name: cmp-plugin
+              namespace: argocd
             data:
               avp.yaml: |
                 apiVersion: argoproj.io/v1alpha1
                 kind: ConfigManagementPlugin
                 metadata:
                   name: argocd-vault-plugin
-                  namespace: argocd
                 spec:
                   allowConcurrency: true
                   generate:
