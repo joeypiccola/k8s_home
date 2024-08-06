@@ -13,10 +13,7 @@ spec:
       releaseName: argocd
       valuesObject:
         repoServer:
-          env:
-          - name: AVP_TYPE
-            value: kubernetessecret
-          rbac: # not sure this is needed, is this what allows argo to get secrets (erg)
+          rbac: # i think this lets argo get secrets which is needed fo when AVP_TYPE is kubernetessecret
             - apiGroups: [""]
               resources: ["secrets"]
               verbs: ["get", "watch", "list"]
@@ -24,20 +21,72 @@ spec:
             - name: custom-tools
               emptyDir: {}
           initContainers:
-            - name: download-tools # download argo vault plugin and copy it to custom-tools volume (we mount this in the repo server above)
+            - name: download-tools
               image: registry.access.redhat.com/ubi8
               env:
                 - name: AVP_VERSION
-                  value: 1.17.0
+                  value: 1.16.1
               command: [sh, -c]
               args:
                 - >-
-                  curl -L https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v$(AVP_VERSION)/argocd-vault-plugin_$(AVP_VERSION)_linux_$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) -o argocd-vault-plugin &&
+                  curl -L https://github.com/argoproj-labs/argocd-vault-plugin/releases/download/v$(AVP_VERSION)/argocd-vault-plugin_$(AVP_VERSION)_linux_amd64 -o argocd-vault-plugin &&
                   chmod +x argocd-vault-plugin &&
                   mv argocd-vault-plugin /custom-tools/
               volumeMounts:
                 - mountPath: /custom-tools
                   name: custom-tools
+          containers:
+            - name: avp
+              command: [/var/run/argocd/argocd-cmp-server]
+              image: registry.access.redhat.com/ubi8
+              env:
+                - name: AVP_TYPE
+                  value: kubernetessecret
+              securityContext:
+                runAsNonRoot: true
+                runAsUser: 999
+              volumeMounts:
+                - mountPath: /var/run/argocd
+                  name: var-files
+                - mountPath: /home/argocd/cmp-server/plugins
+                  name: plugins
+                - mountPath: /tmp
+                  name: tmp
+
+                # Register plugins into sidecar
+                - mountPath: /home/argocd/cmp-server/config/plugin.yaml
+                  subPath: avp.yaml
+                  name: cmp-plugin
+
+                # Important: Mount tools into $PATH
+                - name: custom-tools
+                  subPath: argocd-vault-plugin
+                  mountPath: /usr/local/bin/argocd-vault-plugin
+          extraObjects:
+            - apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: cmp-plugin
+            data:
+              avp.yaml: |
+                apiVersion: argoproj.io/v1alpha1
+                kind: ConfigManagementPlugin
+                metadata:
+                  name: argocd-vault-plugin
+                spec:
+                  allowConcurrency: true
+                  discover:
+                    find:
+                      command:
+                        - sh
+                        - "-c"
+                        - "find . -name '*.yaml' | xargs -I {} grep \"<path\\|avp\\.kubernetes\\.io\" {} | grep ."
+                  generate:
+                    command:
+                      - argocd-vault-plugin
+                      - generate
+                      - "."
+                  lockRepo: false
   destination:
     name: in-cluster
     namespace: argocd
