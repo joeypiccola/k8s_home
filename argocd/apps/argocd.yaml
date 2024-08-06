@@ -65,32 +65,32 @@ spec:
                 - name: custom-tools
                   subPath: argocd-vault-plugin
                   mountPath: /usr/local/bin/argocd-vault-plugin
-          extraObjects:
-            - apiVersion: v1
-              kind: ConfigMap
-              metadata:
-                name: cmp-plugin
-              data:
-                avp.yaml: |
-                  apiVersion: argoproj.io/v1alpha1
-                  kind: ConfigManagementPlugin
-                  metadata:
-                    name: argocd-vault-plugin
-                    namespace: argocd
-                  spec:
-                    allowConcurrency: true
-                    discover:
-                      find:
-                        command:
-                          - sh
-                          - "-c"
-                          - "find . -name '*.yaml' | xargs -I {} grep \"<path\\|avp\\.kubernetes\\.io\" {} | grep ."
-                    generate:
+        extraObjects:
+          - apiVersion: v1
+            kind: ConfigMap
+            metadata:
+              name: cmp-plugin
+            data:
+              avp.yaml: |
+                apiVersion: argoproj.io/v1alpha1
+                kind: ConfigManagementPlugin
+                metadata:
+                  name: argocd-vault-plugin
+                  namespace: argocd
+                spec:
+                  allowConcurrency: true
+                  discover:
+                    find:
                       command:
-                        - argocd-vault-plugin
-                        - generate
-                        - "."
-                    lockRepo: false
+                        - sh
+                        - "-c"
+                        - "find . -name '*.yaml' | xargs -I {} grep \"<path\\|avp\\.kubernetes\\.io\" {} | grep ."
+                  generate:
+                    command:
+                      - argocd-vault-plugin
+                      - generate
+                      - "."
+                  lockRepo: false
   destination:
     name: in-cluster
     namespace: argocd
