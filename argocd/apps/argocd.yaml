@@ -18,6 +18,9 @@ spec:
               resources: ["secrets"]
               verbs: ["get", "watch", "list"]
           volumes:
+            - configMap:
+                name: cmp-plugin
+              name: cmp-plugin
             - name: custom-tools
               emptyDir: {}
           initContainers:
