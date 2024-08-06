@@ -13,6 +13,10 @@ spec:
       releaseName: argocd
       valuesObject:
         repoServer:
+          rbac: # not sure this is needed, is this what allows argo to get secrets (erg)
+            - apiGroups: [""]
+              resources: ["secrets"]
+              verbs: ["get", "watch", "list"]
           volumes:
             - name: custom-tools
               emptyDir: {}
