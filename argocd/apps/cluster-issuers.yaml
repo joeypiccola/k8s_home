@@ -12,8 +12,8 @@ spec:
     repoURL: https://github.com/joeypiccola/k8s_home.git
     path: argocd/cluster-issuers
     targetRevision: main
-    # directory:
-    #   include: '*.yaml'
+    directory:
+      include: '*.yaml'
     # plugin:
     #   name: argocd-vault-plugin
     #   env:
