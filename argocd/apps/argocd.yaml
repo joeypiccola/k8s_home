@@ -13,14 +13,14 @@ spec:
       releaseName: argocd
       valuesObject:
         repoServer:
-          # rbac: # i think this lets argo get secrets which is needed fo when AVP_TYPE is kubernetessecret
+          # rbac: # this would be used if the cluster-secret secret lived in the argocd namespace
           #   - apiGroups: [""]
           #     resources: ["secrets"]
           #     verbs: ["get", "watch", "list"]
           clusterRoleRules:
             enabled: true
             rules:
-              - apiGroups: [""]
+              - apiGroups: [""] # allow argo repo server access to the cluster-secrets secret
                 resources: ["secrets"]
                 resourceNames: ["cluster-secrets"]
                 verbs: ["get", "watch", "list"]
@@ -88,12 +88,17 @@ spec:
                   name: argocd-vault-plugin
                 spec:
                   allowConcurrency: true
+                  discover:
+                    find:
+                      command:
+                        - sh
+                        - "-c"
+                        - "find . -name '*.yaml' | xargs -I {} grep \"<path\\|avp\\.kubernetes\\.io\" {} | grep ."
                   generate:
                     command:
-                      - bash
-                      - "-c"
-                      - |
-                        argocd-vault-plugin generate $ARGOCD_ENV_FILE_NAME
+                      - argocd-vault-plugin
+                      - generate
+                      - "."
                   lockRepo: false
   destination:
     name: in-cluster
