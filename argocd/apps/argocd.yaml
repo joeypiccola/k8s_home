@@ -8,19 +8,15 @@ spec:
   source:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-cd
-    targetRevision: 7.3.3
+    targetRevision: 7.4.1
     helm:
       releaseName: argocd
       valuesObject:
         repoServer:
-          # rbac: # this would be used if the cluster-secret secret lived in the argocd namespace
-          #   - apiGroups: [""]
-          #     resources: ["secrets"]
-          #     verbs: ["get", "watch", "list"]
           clusterRoleRules:
             enabled: true
             rules:
-              - apiGroups: [""] # allow argo repo server access to the cluster-secrets secret
+              - apiGroups: [""] # allow argo repo server access to the cluster-secrets secret in the cluster-secrets ns
                 resources: ["secrets"]
                 resourceNames: ["cluster-secrets"]
                 verbs: ["get", "watch", "list"]
