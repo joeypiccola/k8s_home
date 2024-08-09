@@ -26,3 +26,6 @@ charts/**
 backups/**
 
 nginx.conf
+
+scratch/*
+bootstrap/*
