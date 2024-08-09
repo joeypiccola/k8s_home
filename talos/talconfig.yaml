@@ -2,7 +2,7 @@ clusterName: ${clusterName}
 endpoint: https://${clusterName}.${domainName}:6443
 talosVersion: ${talosVersion}
 kubernetesVersion: ${kubernetesVersion}
-allowSchedulingOnMasters: true # this value sets allowSchedulingOnControlPlanes to true in the talos node config
+# allowSchedulingOnMasters: true # this value sets allowSchedulingOnControlPlanes to true in the talos node config
 
 nodes:
   - hostname: control-1.${domainName}
@@ -94,7 +94,12 @@ nodes:
 controlPlane:
   patches:
     - "@./patches/cni_none.yaml"
-    # - "@./patches/cilium_1.15.6.yaml" # used long ago when cilium was installed inline
+    - |-
+      cluster:
+        allowSchedulingOnMasters: true
+        # This must be disabled or else cilium kube-proxy will conflict
+        proxy:
+          disabled: true
     - |-
       - op: replace
         path: /cluster/extraManifests
