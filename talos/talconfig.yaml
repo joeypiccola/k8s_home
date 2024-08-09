@@ -93,13 +93,8 @@ nodes:
 
 controlPlane:
   patches:
-    - |-
-      - op: replace
-        path: /cluster/extraManifests
-        value:
-          - "https://raw.githubusercontent.com/siderolabs/talos-vmtoolsd/v0.5.1/deploy/latest.yaml"
-worker:
-  patches:
+    - "@./patches/cni_none.yaml"
+    # - "@./patches/cilium_1.15.6.yaml" # used long ago when cilium was installed inline
     - |-
       - op: replace
         path: /cluster/extraManifests
