@@ -16,6 +16,8 @@ spec:
     helm:
       releaseName: cilium
       valuesObject:
+        gatewayAPI:
+          enabled: true
         bgpControlPlane:
           enabled: true
         ipam:
