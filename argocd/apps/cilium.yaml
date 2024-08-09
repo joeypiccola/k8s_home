@@ -16,13 +16,15 @@ spec:
     helm:
       releaseName: cilium
       valuesObject:
+        k8sServiceHost: localhost
+        k8sServicePort: 7445
         gatewayAPI:
           enabled: true
         bgpControlPlane:
           enabled: true
         ipam:
           mode: kubernetes
-        kubeProxyReplacement: false
+        kubeProxyReplacement: true # use Cilium,
         cgroup:
           autoMount:
             enabled: false
