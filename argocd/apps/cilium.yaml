@@ -16,6 +16,8 @@ spec:
     helm:
       releaseName: cilium
       valuesObject:
+        bgpControlPlane:
+          enabled: false
         ipam:
           mode: kubernetes
         kubeProxyReplacement: disabled
