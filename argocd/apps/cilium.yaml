@@ -22,7 +22,7 @@ spec:
           enabled: true
         ipam:
           mode: kubernetes
-        kubeProxyReplacement: disabled
+        kubeProxyReplacement: false
         cgroup:
           autoMount:
             enabled: false
