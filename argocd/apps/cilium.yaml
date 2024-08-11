@@ -16,8 +16,8 @@ spec:
     helm:
       releaseName: cilium
       valuesObject:
-        k8sServiceHost: talos.piccola.us
-        k8sServicePort: 6443
+        k8sServiceHost: localhost
+        k8sServicePort: 7445
         gatewayAPI:
           enabled: true
         bgpControlPlane:
