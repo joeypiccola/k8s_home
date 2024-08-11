@@ -3,3 +3,9 @@ kind: Kustomization
 
 resources:
 - https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.1.0/standard-install.yaml
+- https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+
+# cilium-operator-7cb584d9bb-2n6pz cilium-operator time="2024-08-11T17:25:28Z"
+# level=error msg="Required GatewayAPI resources are not found, please refer to
+# docs for installation instructions" error="customresourcedefinitions.apiextensions.k8s.io
+# \"tlsroutes.gateway.networking.k8s.io\" not found" subsys=gateway-api
