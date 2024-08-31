@@ -16,6 +16,8 @@ spec:
     helm:
       releaseName: cert-manager
       valuesObject:
+        config:
+          enableGatewayAPI: true
         installCRDs: true
         # webhook:
           # enabled: true
