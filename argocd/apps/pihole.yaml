@@ -1,0 +1,41 @@
+# Possible values: https://github.com/stakater/pihole/blob/master/deployments/kubernetes/chart/pihole/values.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pihole
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://mojo2600.github.io/pihole-kubernetes
+    chart: pihole
+    targetRevision: 2.26.1
+    helm:
+      releaseName: pihole
+      valuesObject:
+        DNS1: "10.0.3.24"
+        adminPassword: <path:cluster-secrets:cluster-secrets#pihole-admin-password> # path:namespace:secret-name#key
+        # serviceDns:
+          # type: LoadBalancer # was NodePort jjp
+          # loadBalancerIP: "10.0.3.209"
+          # annotations: # {}
+            # metallb.universe.tf/allow-shared-ip: pihole-svc
+        serviceDhcp:
+          enabled: false # was true jjp
+        virtualHost: pihole-k8s.<path:cluster-secrets:cluster-secrets#domain>
+        # persistentVolumeClaim:
+        #   enabled: true
+        #   existingClaim: pihole-ceph-pvc
+        ingress:
+          enabled: false
+  destination:
+    name: in-cluster
+    namespace: pihole
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
