@@ -24,22 +24,22 @@ spec:
       releaseName: goldilocks
       valuesObject:
 
----
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: HTTPRoute
-metadata:
-  name: goldilocks-route
-  namespace: goldilocks
-spec:
-  hostnames:
-    - goldilocks-k8s.<path:cluster-secrets:cluster-secrets#domain>
-  parentRefs:
-  - name: internal
-    namespace: gateway
-  rules:
-  - backendRefs:
-    - name: goldilocks-dashboard
-      port: 80
+# ---
+# apiVersion: gateway.networking.k8s.io/v1beta1
+# kind: HTTPRoute
+# metadata:
+#   name: goldilocks-route
+#   namespace: goldilocks
+# spec:
+#   hostnames:
+#     - goldilocks-k8s.<path:cluster-secrets:cluster-secrets#domain>
+#   parentRefs:
+#   - name: internal
+#     namespace: gateway
+#   rules:
+#   - backendRefs:
+#     - name: goldilocks-dashboard
+#       port: 80
 
 # ---
 # apiVersion: external-secrets.io/v1beta1
