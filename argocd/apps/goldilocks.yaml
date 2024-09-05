@@ -3,6 +3,8 @@ kind: Application
 metadata:
   name: goldilocks
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "18"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
