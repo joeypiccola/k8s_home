@@ -40,3 +40,21 @@ spec:
   - backendRefs:
     - name: goldilocks-dashboard
       port: 80
+
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: cert-manager-secrets
+  namespace: goldilocks # for cert-manager to access 'cloudflare-api-token-secret' it must exists in cert-manager's ns
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    creationPolicy: Owner
+  data:
+    - secretKey: cloudflare-api-token-secret # this is the name of the native k8s secret to create
+      remoteRef:
+        key: cluster-secrets # this is the title of the item in 1password
+        property: cloudflare-token # this is the name of the property on the 1password item
