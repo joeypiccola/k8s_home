@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-of-apps
+spec:
+  destination:
+    name: in-cluster
+    namespace: argocd
+  source:
+    path: argocd/infra
+    repoURL: https://github.com/joeypiccola/k8s_home.git
+    targetRevision: main
+  project: default
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    # helm:
+    #   valueFiles:
+    #     - ref+envsubst://$ARGOCD_AOA_VALUES_PATH
+#   syncPolicy: {}
+# operation:
+#   initiatedBy:
+#     username: bootstrap
+#   sync:
+#     syncStrategy:
+#       hook: {}
