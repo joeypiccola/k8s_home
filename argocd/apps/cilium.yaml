@@ -10,48 +10,16 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
-  source:
-    chart: cilium
-    repoURL: https://helm.cilium.io/
-    targetRevision: 1.16.1 # 1.15.8
-    helm:
-      releaseName: cilium
-      valuesObject:
-        k8sServiceHost: localhost # talos' KubePrism
-        k8sServicePort: 7445
-        kubeProxyReplacement: true # use Cilium
-        gatewayAPI:
-          enabled: true
-        bgpControlPlane:
-          enabled: true
-        l7Proxy: true
-        bgp:
-          announce:
-            loadbalancerIP: true
-        ipam:
-          mode: kubernetes
-        cgroup:
-          autoMount:
-            enabled: false
-          hostRoot: /sys/fs/cgroup
-        securityContext:
-          capabilities:
-            cleanCiliumState:
-              - NET_ADMIN
-              - SYS_ADMIN
-              - SYS_RESOURCE
-            ciliumAgent:
-              - CHOWN
-              - KILL
-              - NET_ADMIN
-              - NET_RAW
-              - IPC_LOCK
-              - SYS_ADMIN
-              - SYS_RESOURCE
-              - DAC_OVERRIDE
-              - FOWNER
-              - SETGID
-              - SETUID
+  sources:
+    - chart: cilium
+      repoURL: https://helm.cilium.io/
+      targetRevision: 1.16.1 # 1.15.8
+      helm:
+        valueFiles:
+          - $values/argocd/helm_values/cilium.yaml
+    - repoURL: https://github.com/joeypiccola/k8s_home
+      targetRevision: main
+      rev: values
   destination:
     name: in-cluster
     namespace: kube-system
