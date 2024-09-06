@@ -8,7 +8,7 @@ spec:
   hostnames:
     - argocd-k8s.<path:cluster-secrets:cluster-secrets#domain>
   parentRefs:
-  - name: argocd-gateway
+  - name: internal
     namespace: argocd
   rules:
     - matches:
