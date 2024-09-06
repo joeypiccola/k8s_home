@@ -9,7 +9,7 @@ spec:
     - argocd-k8s.<path:cluster-secrets:cluster-secrets#domain>
   parentRefs:
   - name: internal
-    namespace: argocd
+    namespace: gateway
   rules:
   - backendRefs:
     - name: argocd-server
