@@ -4,6 +4,8 @@ k8sServicePort: 7445
 kubeProxyReplacement: true # use Cilium
 gatewayAPI:
   enabled: true
+  gatewayClass:
+    create: true
 bgpControlPlane:
   enabled: true
 l7Proxy: true
