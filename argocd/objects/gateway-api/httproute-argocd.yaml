@@ -12,6 +12,9 @@ spec:
     namespace: argocd
   rules:
     - matches:
+        - path:
+            type: PathPrefix
+            value: /
       backendRefs:
         - name: argocd-server
           port: 80
