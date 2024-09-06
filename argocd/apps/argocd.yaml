@@ -13,7 +13,7 @@ spec:
       targetRevision: 7.4.1
       helm:
         valueFiles:
-          - $values/argocd/helm_values/argocd.yaml
+        - $values/argocd/helm_values/argocd.yaml
     - repoURL: https://github.com/joeypiccola/k8s_home.git
       targetRevision: main
       rev: values
