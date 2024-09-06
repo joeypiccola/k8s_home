@@ -1,0 +1,66 @@
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterSecretStore
+metadata:
+  name: onepassword
+  namespace: cluster-secrets
+spec:
+  provider:
+    onepassword:
+      connectHost: http://onepassword-connect.onepassword.svc.cluster.local:8080
+      vaults:
+        k8s_home: 1
+      auth:
+        secretRef:
+          connectTokenSecretRef:
+            name: onepassword-token
+            namespace: onepassword
+            key: token
+
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: cluster-secrets
+  namespace: cluster-secrets
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    creationPolicy: Owner
+  data:
+    - secretKey: test-item
+      remoteRef:
+        key: cluster-secrets
+        property: test-item
+    - secretKey: personalemail
+      remoteRef:
+        key: cluster-secrets
+        property: personalemail
+    - secretKey: domain
+      remoteRef:
+        key: cluster-secrets
+        property: domain
+    - secretKey: pihole-admin-password
+      remoteRef:
+        key: cluster-secrets
+        property: pihole-admin-password
+
+--- # this one is a bit special, it is created for cert-manager to access 'cloudflare-api-token-secret' it must exists in cert-manager's ns
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: cert-manager-secrets
+  namespace: cert-manager
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    creationPolicy: Owner
+  data:
+    - secretKey: cloudflare-api-token-secret # this is the name of the native k8s secret to create
+      remoteRef:
+        key: cluster-secrets # this is the title of the item in 1password
+        property: cloudflare-token # this is the name of the property on the 1password item

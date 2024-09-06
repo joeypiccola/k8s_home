@@ -4,7 +4,7 @@ metadata:
   name: goldilocks
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "18"
+    argocd.argoproj.io/sync-wave: "20"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:

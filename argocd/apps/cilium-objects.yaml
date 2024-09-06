@@ -2,28 +2,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: reloader
+  name: cilium-objects
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "20"
+    argocd.argoproj.io/sync-wave: "3"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
-    repoURL: https://stakater.github.io/stakater-charts
-    chart: reloader
-    targetRevision: 1.0.52
-    helm:
-      releaseName: reloader
-      valuesObject:
-        reloader:
-          enableHA: true
-          deployment:
-            replicas: 2
+    repoURL: https://github.com/joeypiccola/k8s_home.git
+    path: argocd/objects/cilium
+    targetRevision: main
   destination:
     name: in-cluster
-    namespace: reloader
+    namespace: cilium
   syncPolicy:
     automated:
       prune: true
