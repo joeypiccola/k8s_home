@@ -16,7 +16,7 @@ spec:
         - $values/argocd/helm_values/argocd.yaml
     - repoURL: https://github.com/joeypiccola/k8s_home.git
       targetRevision: main
-      rev: values
+      ref: values
   destination:
     name: in-cluster
     namespace: argocd
