@@ -20,12 +20,12 @@ spec:
         DNS1: "10.0.3.24"
         adminPassword: <path:cluster-secrets:cluster-secrets#pihole-admin-password> # path:namespace:secret-name#key
         serviceDns:
+          mixedService: true
           type: LoadBalancer # was NodePort jjp
           # loadBalancerIP: "10.0.3.212"
           annotations: # {}
             # io.cilium/lb-ipam-ips: 10.0.3.212
-            io.cilium/lb-ipam-sharing-key: pihole
-            lbipam.cilium.io/sharing-cross-namespace: "*"
+            # io.cilium/lb-ipam-sharing-key: pihole
         serviceDhcp:
           enabled: false # was true jjp
         virtualHost: pihole-k8s.<path:cluster-secrets:cluster-secrets#domain>
@@ -43,3 +43,8 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+
+
+serviceDns:
+  # -- deploys a mixed (TCP + UDP) Service instead of separate ones
+  mixedService: false
