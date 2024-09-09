@@ -19,8 +19,8 @@ spec:
       valuesObject:
         DNS1: "10.0.3.24"
         adminPassword: <path:cluster-secrets:cluster-secrets#pihole-admin-password> # path:namespace:secret-name#key
-        # serviceDns:
-          # type: LoadBalancer # was NodePort jjp
+        serviceDns:
+          type: LoadBalancer # was NodePort jjp
           # loadBalancerIP: "10.0.3.209"
           # annotations: # {}
             # metallb.universe.tf/allow-shared-ip: pihole-svc
