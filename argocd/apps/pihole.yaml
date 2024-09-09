@@ -18,13 +18,14 @@ spec:
       releaseName: pihole
       valuesObject:
         DNS1: "10.0.3.24"
-        adminPassword: <path:cluster-secrets:cluster-secrets#pihole-admin-password> # path:namespace:secret-name#key
+        adminPassword: <path:cluster-secrets:cluster-secrets#pihole-admin-password>
         serviceDns:
+          # this is true as the cilium "io.cilium/lb-ipam-sharing-key" svc annotation does not work on services with different ports, that said create a single dual protocol service
           mixedService: true
           type: LoadBalancer # was NodePort jjp
-          # loadBalancerIP: "10.0.3.212"
-          annotations: # {}
-            # io.cilium/lb-ipam-ips: 10.0.3.212
+          annotations:
+            # use last ip from 10.0.5.208/28
+            io.cilium/lb-ipam-ips: 10.0.3.222
             # io.cilium/lb-ipam-sharing-key: pihole
         serviceDhcp:
           enabled: false # was true jjp
