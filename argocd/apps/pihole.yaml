@@ -21,12 +21,12 @@ spec:
         adminPassword: <path:cluster-secrets:cluster-secrets#pihole-admin-password>
         serviceDns:
           # this is true as the cilium "io.cilium/lb-ipam-sharing-key" svc annotation does not work on services with different ports, that said create a single dual protocol service
-          mixedService: true
+          # mixedService: true
           type: LoadBalancer # was NodePort jjp
           annotations:
             # use last ip from 10.0.5.208/28
             io.cilium/lb-ipam-ips: 10.0.5.222
-            # io.cilium/lb-ipam-sharing-key: pihole
+            io.cilium/lb-ipam-sharing-key: pihole
         serviceDhcp:
           enabled: false # was true jjp
         virtualHost: pihole-k8s.<path:cluster-secrets:cluster-secrets#domain>
