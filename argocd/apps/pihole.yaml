@@ -22,8 +22,8 @@ spec:
         serviceDns:
           type: LoadBalancer # was NodePort jjp
           # loadBalancerIP: "10.0.3.209"
-          # annotations: # {}
-            # metallb.universe.tf/allow-shared-ip: pihole-svc
+          annotations: # {}
+            io.cilium/lb-ipam-sharing-key: pi-hole
         serviceDhcp:
           enabled: false # was true jjp
         virtualHost: pihole-k8s.<path:cluster-secrets:cluster-secrets#domain>
