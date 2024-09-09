@@ -44,8 +44,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-
-
-serviceDns:
-  # -- deploys a mixed (TCP + UDP) Service instead of separate ones
-  mixedService: false
