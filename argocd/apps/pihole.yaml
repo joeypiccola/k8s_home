@@ -25,7 +25,7 @@ spec:
           annotations: # {}
             # io.cilium/lb-ipam-ips: 10.0.3.212
             io.cilium/lb-ipam-sharing-key: pihole
-            lbipam.cilium.io/sharing-cross-namespace: *
+            lbipam.cilium.io/sharing-cross-namespace: "*"
         serviceDhcp:
           enabled: false # was true jjp
         virtualHost: pihole-k8s.<path:cluster-secrets:cluster-secrets#domain>
