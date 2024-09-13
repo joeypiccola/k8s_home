@@ -20,5 +20,5 @@ spec:
           preUpgradeChecker:
             jobEnabled: false
   destination:
-    server: https://kubernetes.default.svc
+    server: in-cluster
     namespace: longhorn-system
