@@ -23,5 +23,5 @@ spec:
           preUpgradeChecker:
             jobEnabled: false
   destination:
-    server: in-cluster
+    name: in-cluster
     namespace: longhorn-system
