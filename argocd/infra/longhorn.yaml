@@ -10,6 +10,9 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+    managedNamespaceMetadata:
+      annotations:
+        pod-security.kubernetes.io/enforce: privileged
   project: default
   sources:
     - chart: longhorn
