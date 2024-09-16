@@ -64,3 +64,25 @@ spec:
       remoteRef:
         key: cluster-secrets # this is the title of the item in 1password
         property: cloudflare-token # this is the name of the property on the 1password item
+
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: cifs-secret
+  namespace: longhorn-system
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    creationPolicy: Owner
+  data:
+    - secretKey: CIFS_USERNAME # this is the name of the native k8s secret to create
+      remoteRef:
+        key: longhorn-cifs-username # this is the title of the item in 1password
+        property: longhorn-cifs-username # this is the name of the property on the 1password item
+    - secretKey: CIFS_PASSWORD # this is the name of the native k8s secret to create
+      remoteRef:
+        key: longhorn-cifs-password # this is the title of the item in 1password
+        property: longhorn-cifs-password # this is the name of the property on the 1password item
