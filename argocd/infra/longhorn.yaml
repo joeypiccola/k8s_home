@@ -4,6 +4,10 @@ metadata:
   name: longhorn
   namespace: argocd
 spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: longhorn-system
   syncPolicy:
     automated:
       prune: true
@@ -13,7 +17,6 @@ spec:
     managedNamespaceMetadata:
       labels:
         pod-security.kubernetes.io/enforce: privileged
-  project: default
   sources:
     - chart: longhorn
       repoURL: https://charts.longhorn.io/
@@ -25,7 +28,5 @@ spec:
           defaultSettings:
             # -- Default path for storing data on a host. The default value is "/var/lib/longhorn/".
             defaultDataPath: /var/mnt/longhorn
-        type: bind
-  destination:
-    name: in-cluster
-    namespace: longhorn-system
+            # storageReservedPercentageForDefaultDisk: 10
+        # type: bind
