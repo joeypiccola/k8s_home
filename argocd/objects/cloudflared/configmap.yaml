@@ -12,7 +12,7 @@ data:
     ingress:
       - hostname: "goldilocks.<path:cluster-secrets:cluster-secrets#domain>"
         # service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
-        service: http://goldilocks-dashboard:80
+        service: http://goldilocks-dashboard.goldilocks.svc.cluster.local:80
 
       # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
       # issues. If hello.example.com resolves and tunnel.example.com does not, then the problem is
