@@ -25,6 +25,10 @@ spec:
     helm:
       releaseName: vpa
       valuesObject:
+        # Goldilocks doesn't do any recommending of resource requests/limits
+        # by itself. It utilizes a Kubernetes project called Vertical Pod Autoscaler (VPA)
+        # (opens new window). More specifically, it uses the Recommender (opens new window)
+        # portion of the VPA.
         recommender:
           enabled: true
           resources:
