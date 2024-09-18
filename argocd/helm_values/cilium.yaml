@@ -5,7 +5,7 @@ kubeProxyReplacement: true # use Cilium
 gatewayAPI:
   enabled: true
   gatewayClass:
-    create: "true" # Expected: string, given: boolean
+    create: "true" # neesd quots or else "Expected: string, given: boolean"
 bgpControlPlane:
   enabled: true
 l7Proxy: true
