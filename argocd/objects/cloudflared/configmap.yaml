@@ -15,6 +15,7 @@ data:
         service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
         originRequest:
           originServerName: "goldilocks.<path:cluster-secrets:cluster-secrets#domain>"
+          noTLSVerify: true
 
 
       # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
