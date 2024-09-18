@@ -10,12 +10,12 @@ data:
     metrics: 0.0.0.0:2000
     no-autoupdate: true
     ingress:
-      - hostname: "goldilocks.<path:cluster-secrets:cluster-secrets#domain>"
+      - hostname: "goldilocks-k8s.<path:cluster-secrets:cluster-secrets#domain>"
         # service: http://goldilocks-dashboard.goldilocks.svc.cluster.local:80
         service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
         originRequest:
-          # originServerName: "goldilocks.<path:cluster-secrets:cluster-secrets#domain>"
           noTLSVerify: true
+          # originServerName: "goldilocks-k8s.<path:cluster-secrets:cluster-secrets#domain>"
 
 
       # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
