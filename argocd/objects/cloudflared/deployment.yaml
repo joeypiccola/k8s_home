@@ -5,10 +5,13 @@ metadata:
     app: cloudflared
   name: cloudflared
   namespace: cloudflared
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   selector:
     matchLabels:
       app: cloudflared
+  # replicas: 2 # You could also consider elastic scaling for this deployment
   template:
     metadata:
       labels:
@@ -36,18 +39,23 @@ spec:
           #     memory: 64Mi
           #   limits:
           #     memory: 512Mi
-          # volumeMounts:
-          #   - name: config
-          #     mountPath: /etc/cloudflared/config/config.yaml
-          #     subPath: config.yaml
-          #   - name: credentials
-          #     mountPath: /etc/cloudflared/credentials
-          #     readOnly: true
+          volumeMounts:
+            - name: config
+              mountPath: /etc/cloudflared/config/config.yaml
+              subPath: config.yaml
+            - name: credentials
+              mountPath: /etc/cloudflared/credentials
+              readOnly: true
       restartPolicy: Always
-      # volumes:
-      #   - name: config
-      #     configMap:
-      #       name: config
-      #   - name: credentials
-      #     secret:
-      #       secretName: tunnel-credentials
+      volumes:
+        - name: config
+          configMap:
+            name: cloudflared-config
+        - name: credentials
+          secret:
+            secretName: tunnel-credentials
+
+
+
+
+
