@@ -14,7 +14,7 @@ data:
         # service: http://goldilocks-dashboard.goldilocks.svc.cluster.local:80
         service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
         originRequest:
-          originServerName: "goldilocks.<path:cluster-secrets:cluster-secrets#domain>"
+          # originServerName: "goldilocks.<path:cluster-secrets:cluster-secrets#domain>"
           noTLSVerify: true
 
 
