@@ -1,18 +1,18 @@
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   name: cloudflared-config
-#   namespace: cloudflared
-# data:
-#   config.yaml: |
-#     tunnel: k8shome
-#     credentials-file: /etc/cloudflared/credentials/credentials.json
-#     metrics: 0.0.0.0:2000
-#     no-autoupdate: true
-#     ingress:
-#       - hostname: "*.<path:cluster-secrets:cluster-secrets#domain>"
-#         service: https://cilium-gateway-external.gateway.svc.cluster.local:443
-#       - hostname: "hello.<path:cluster-secrets:cluster-secrets#domain>"
-#         service: hello_world
-#       # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
-#       - service: http_status:404
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+  namespace: cloudflared
+data:
+  config.yaml: |
+    tunnel: k8shome
+    credentials-file: /etc/cloudflared/credentials/credentials.json
+    metrics: 0.0.0.0:2000
+    no-autoupdate: true
+    ingress:
+      - hostname: "goldilocks.<path:cluster-secrets:cluster-secrets#domain>"
+        service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
+      - hostname: "hello.<path:cluster-secrets:cluster-secrets#domain>"
+        service: hello_world
+      # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
+      - service: http_status:404
