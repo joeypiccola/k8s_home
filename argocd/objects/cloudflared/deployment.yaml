@@ -26,6 +26,16 @@ spec:
             - --config
             - /etc/cloudflared/config/config.yaml
             - run
+            - $(TunnelID)
+          env:
+            # https://github.com/cloudflare/cloudflared/blob/master/cmd/cloudflared/tunnel/cmd.go
+            # https://github.com/cloudflare/cloudflared/blob/master/cmd/cloudflared/tunnel/subcommands.go
+            - name: TunnelID
+              valueFrom:
+                secretKeyRef:
+                  name: cloudflared-secrets
+                  key: TunnelID
+
           livenessProbe:
             httpGet:
               path: /ready
@@ -53,7 +63,7 @@ spec:
             name: cloudflared-config
         - name: credentials
           secret:
-            secretName: tunnel-credentials
+            secretName: cloudflared-secrets
 
 
 
