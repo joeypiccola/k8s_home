@@ -13,7 +13,7 @@ data:
     originRequest:
       originServerName: cloudflared.<path:cluster-secrets:cluster-secrets#domain>"
     ingress:
-      - service: https://cilium-gateway-external.gateway.svc.cluster.local:443
+      - service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
 
 
     # ingress:
