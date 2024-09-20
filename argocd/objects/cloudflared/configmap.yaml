@@ -10,28 +10,28 @@ data:
     metrics: 0.0.0.0:2000
     no-autoupdate: true
 
-    originRequest:
-      originServerName: cloudflared.<path:cluster-secrets:cluster-secrets#domain>"
-    ingress:
-      - service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
-
-
+    # originRequest:
+    #   originServerName: cloudflared.<path:cluster-secrets:cluster-secrets#domain>"
     # ingress:
-    #   - hostname: "*.<path:cluster-secrets:cluster-secrets#domain>"
-    #     service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
-    #     originRequest:
-    #       originServerName: "*.<path:cluster-secrets:cluster-secrets#domain>"
-    #   - hostname: <path:cluster-secrets:cluster-secrets#domain>
-    #     service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
-    #     originRequest:
-    #       originServerName: <path:cluster-secrets:cluster-secrets#domain>
+    #   - service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
 
-          # noTLSVerify: true
+
+    ingress:
+      - hostname: "goldilocks-k8s.<path:cluster-secrets:cluster-secrets#domain>"
+        service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
+        originRequest:
+          originServerName: "goldilocks-k8s.<path:cluster-secrets:cluster-secrets#domain>"
       # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
       # issues. If hello.example.com resolves and tunnel.example.com does not, then the problem is
       # in the connection from cloudflared to your local service, not from the internet to cloudflared.
-      # - hostname: "hello.<path:cluster-secrets:cluster-secrets#domain>"
-      #   service: hello_world
+      - hostname: "hello.<path:cluster-secrets:cluster-secrets#domain>"
+        service: hello_world
 
       # # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
       # - service: http_status:404
+
+      # - hostname: <path:cluster-secrets:cluster-secrets#domain>
+      #   service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
+      #   originRequest:
+      #     originServerName: <path:cluster-secrets:cluster-secrets#domain>
+          # noTLSVerify: true
