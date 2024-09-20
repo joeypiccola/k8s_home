@@ -27,8 +27,8 @@ data:
       - hostname: "hello.<path:cluster-secrets:cluster-secrets#domain>"
         service: hello_world
 
-      # # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
-      # - service: http_status:404
+      # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
+      - service: http_status:404
 
       # - hostname: <path:cluster-secrets:cluster-secrets#domain>
       #   service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
