@@ -21,6 +21,10 @@ data:
         service: http://goldilocks-dashboard.goldilocks.svc.cluster.local:80
         originRequest:
           originServerName: "goldilocks-k8s.<path:cluster-secrets:cluster-secrets#domain>"
+      - hostname: "n.<path:cluster-secrets:cluster-secrets#domain>"
+        service: http://nginx-service.pihole.svc.cluster.local:80
+        originRequest:
+          originServerName: "n.<path:cluster-secrets:cluster-secrets#domain>"
       # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
       # issues. If hello.example.com resolves and tunnel.example.com does not, then the problem is
       # in the connection from cloudflared to your local service, not from the internet to cloudflared.
