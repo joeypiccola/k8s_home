@@ -21,14 +21,14 @@ data:
       #   service: http://goldilocks-dashboard.goldilocks.svc.cluster.local:80
       #   originRequest:
       #     originServerName: "goldilocks-k8s.<path:cluster-secrets:cluster-secrets#domain>"
-      - hostname: "n.<path:cluster-secrets:cluster-secrets#domain>"
-        service: http://nginx-service.pihole.svc.cluster.local:80
-        originRequest:
-          originServerName: "n.<path:cluster-secrets:cluster-secrets#domain>"
-      - hostname: "n2.<path:cluster-secrets:cluster-secrets#domain>"
-        service: http://10.0.3.121:8834/
-        originRequest:
-          originServerName: "n2.<path:cluster-secrets:cluster-secrets#domain>"
+      # - hostname: "n.<path:cluster-secrets:cluster-secrets#domain>"
+      #   service: http://nginx-service.pihole.svc.cluster.local:80
+      #   originRequest:
+      #     originServerName: "n.<path:cluster-secrets:cluster-secrets#domain>"
+      # - hostname: "n2.<path:cluster-secrets:cluster-secrets#domain>"
+      #   service: http://10.0.3.121:8834/
+      #   originRequest:
+      #     originServerName: "n2.<path:cluster-secrets:cluster-secrets#domain>"
 
 
 
