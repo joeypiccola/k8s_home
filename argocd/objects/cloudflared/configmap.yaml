@@ -25,6 +25,13 @@ data:
         service: http://nginx-service.pihole.svc.cluster.local:80
         originRequest:
           originServerName: "n.<path:cluster-secrets:cluster-secrets#domain>"
+      - hostname: "n2.<path:cluster-secrets:cluster-secrets#domain>"
+        service: http://10.0.3.121:8834/
+        originRequest:
+          originServerName: "n2.<path:cluster-secrets:cluster-secrets#domain>"
+
+
+
       # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
       # issues. If hello.example.com resolves and tunnel.example.com does not, then the problem is
       # in the connection from cloudflared to your local service, not from the internet to cloudflared.
