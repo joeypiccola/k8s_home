@@ -30,9 +30,9 @@ spec:
         serviceDhcp:
           enabled: false # was true jjp
         virtualHost: pihole-k8s.<path:cluster-secrets:cluster-secrets#domain>
-        persistentVolumeClaim:
-          enabled: true
-          existingClaim: pihole
+        # persistentVolumeClaim:
+        #   enabled: true
+        #   existingClaim: pihole
         ingress:
           enabled: false
   destination:
