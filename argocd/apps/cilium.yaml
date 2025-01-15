@@ -13,7 +13,7 @@ spec:
   sources:
     - chart: cilium
       repoURL: https://helm.cilium.io/
-      targetRevision: 1.16.1 # 1.15.8
+      targetRevision: 1.16.5 # 1.15.8
       helm:
         valueFiles:
         - $values/argocd/helm_values/cilium.yaml
