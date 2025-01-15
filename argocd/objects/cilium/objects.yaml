@@ -1,23 +1,23 @@
----
-apiVersion: cilium.io/v2alpha1
-kind: CiliumBGPPeeringPolicy
-metadata:
-  name: homelab
-spec:
-  virtualRouters:
-  - exportPodCIDR: false
-    localASN: 64502
-    neighbors:
-    - connectRetryTimeSeconds: 120
-      eBGPMultihopTTL: 1
-      holdTimeSeconds: 90
-      keepAliveTimeSeconds: 30
-      peerASN: 64501
-      peerAddress:  10.0.5.1/32
-      # peerPort: 179
-    serviceSelector:
-     matchExpressions:
-       - { key: somekey, operator: NotIn, values: ["will-match-and-announce-all-services"]}
+# ---
+# apiVersion: cilium.io/v2alpha1
+# kind: CiliumBGPPeeringPolicy
+# metadata:
+#   name: homelab
+# spec:
+#   virtualRouters:
+#   - exportPodCIDR: false
+#     localASN: 64502
+#     neighbors:
+#     - connectRetryTimeSeconds: 120
+#       eBGPMultihopTTL: 1
+#       holdTimeSeconds: 90
+#       keepAliveTimeSeconds: 30
+#       peerASN: 64501
+#       peerAddress:  10.0.5.1/32
+#       # peerPort: 179
+#     serviceSelector:
+#      matchExpressions:
+#        - { key: somekey, operator: NotIn, values: ["will-match-and-announce-all-services"]}
 
 ---
 # No selector, match all
