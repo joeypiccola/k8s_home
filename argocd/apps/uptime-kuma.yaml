@@ -25,3 +25,5 @@ spec:
     helm:
       releaseName: uptime-kuma
       valuesObject:
+        volume:
+          enabled: false
