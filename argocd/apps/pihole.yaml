@@ -32,7 +32,7 @@ spec:
         virtualHost: pihole-k8s.<path:cluster-secrets:cluster-secrets#domain>
         persistentVolumeClaim:
           enabled: true
-          existingClaim: pihole/pvc-fc3638c3-5425-476c-b785-e82c9d840984
+          existingClaim: pvc-fc3638c3-5425-476c-b785-e82c9d840984
         ingress:
           enabled: false
   destination:
