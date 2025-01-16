@@ -1,35 +1,35 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: longhorn
-#   namespace: argocd
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "15"
-# spec:
-#   project: default
-#   destination:
-#     name: in-cluster
-#     namespace: longhorn-system
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
-#     managedNamespaceMetadata:
-#       labels:
-#         goldilocks.fairwinds.com/enabled: "true"
-#         pod-security.kubernetes.io/enforce: privileged
-#   sources:
-#     - chart: longhorn
-#       repoURL: https://charts.longhorn.io/
-#       targetRevision: v1.7.1 # Replace with the Longhorn version you'd like to install or upgrade to
-#       helm:
-#         values: |
-#           preUpgradeChecker:
-#             jobEnabled: false
-#           defaultSettings:
-#             defaultDataPath: /var/mnt/longhorn
-#             backupTarget: cifs://10.0.3.23/longhorn_backups?cifsOptions=vers=2.0
-#             backupTargetCredentialSecret: cifs-secret
-#             # storageReservedPercentageForDefaultDisk: 10
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "15"
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: longhorn-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+        pod-security.kubernetes.io/enforce: privileged
+  sources:
+    - chart: longhorn
+      repoURL: https://charts.longhorn.io/
+      targetRevision: v1.7.2 # Replace with the Longhorn version you'd like to install or upgrade to
+      helm:
+        values: |
+          preUpgradeChecker:
+            jobEnabled: false
+          defaultSettings:
+            defaultDataPath: /var/mnt/longhorn
+            backupTarget: cifs://10.0.3.23/longhorn_backups?cifsOptions=vers=2.0
+            backupTargetCredentialSecret: cifs-secret
+            # storageReservedPercentageForDefaultDisk: 10
