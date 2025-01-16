@@ -39,6 +39,8 @@ spec:
     - repoURL: https://github.com/joeypiccola/k8s_home.git
       path: argocd/objects/pihole
       targetRevision: main
+      directory:
+        include: '*.yaml'
   destination:
     name: in-cluster
     namespace: pihole
