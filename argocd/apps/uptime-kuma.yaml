@@ -26,4 +26,7 @@ spec:
       releaseName: uptime-kuma
       valuesObject:
         volume:
-          enabled: false
+          enabled: true
+          accessMode: ReadWriteOnce
+          size: 4Gi
+          existingClaim: uptime-kuma
