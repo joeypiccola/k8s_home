@@ -15,8 +15,8 @@ spec:
       path: argocd/objects/pihole
       targetRevision: main
     - repoURL: https://mojo2600.github.io/pihole-kubernetes
-      # chart: pihole
-      path: charts/pihole
+      chart: pihole
+      # path: charts/pihole
       targetRevision: 2.26.1
       helm:
         releaseName: pihole
