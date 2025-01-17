@@ -89,8 +89,10 @@ data:
     # E.g. `cloudflared tunnel route dns example-tunnel tunnel.example.com`.
     ingress:
     # The first rule proxies traffic to the httpbin sample Service defined in app.yaml
-    - hostname: pihole-k8s.piccola.us
-      service: http://web-service.pihole.svc.cluster.local:80
+    # - hostname: pihole-k8s.piccola.us
+    #   service: http://web-service.pihole.svc.cluster.local:80
+    - hostname: status.piccola.us
+      service: http://uptime-kuma.uptime-kuma.svc.cluster.local:3001/status/media
     # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
     # issues. If hello.example.com resolves and tunnel.example.com does not, then the problem is
     # in the connection from cloudflared to your local service, not from the internet to cloudflared.
