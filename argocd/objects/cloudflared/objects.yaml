@@ -3,6 +3,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: cloudflared
+  namespace: cloudflared
+  annotations:
+    reloader.stakater.com/auto: "true"
 spec:
   selector:
     matchLabels:
@@ -91,12 +94,13 @@ data:
     # The first rule proxies traffic to the httpbin sample Service defined in app.yaml
     # - hostname: pihole-k8s.piccola.us
     #   service: http://web-service.pihole.svc.cluster.local:80
-    - hostname: status.piccola.us
-      service: http://uptime-kuma.uptime-kuma.svc.cluster.local:3001
+    - hostname: *.<path:cluster-secrets:cluster-secrets#domain>
+      # service: http://uptime-kuma.uptime-kuma.svc.cluster.local:3001
+      service: https://cilium-gateway-internal.gateway.svc.cluster.local:443
     # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
     # issues. If hello.example.com resolves and tunnel.example.com does not, then the problem is
     # in the connection from cloudflared to your local service, not from the internet to cloudflared.
-    - hostname: hello.example.com
+    - hostname: hello.piccola.us
       service: hello_world
     # This rule matches any traffic which didn't match a previous rule, and responds with HTTP 404.
     - service: http_status:404
