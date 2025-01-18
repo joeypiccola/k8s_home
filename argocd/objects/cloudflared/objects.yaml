@@ -96,7 +96,7 @@ data:
     #   service: http://web-service.pihole.svc.cluster.local:80
     - hostname: status.<path:cluster-secrets:cluster-secrets#domain>
       service: http://uptime-kuma.uptime-kuma.svc.cluster.local:3001
-      path: /status/media
+      # path: /status/media
       # service: https://cilium-gateway-internal.gateway.svc.cluster.local:443 # this does not work
     # This rule sends traffic to the built-in hello-world HTTP server. This can help debug connectivity
     # issues. If hello.example.com resolves and tunnel.example.com does not, then the problem is
