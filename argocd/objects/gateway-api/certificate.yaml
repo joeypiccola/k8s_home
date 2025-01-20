@@ -10,5 +10,5 @@ spec:
     - '<path:cluster-secrets:cluster-secrets#domain>'
   issuerRef:
     kind: ClusterIssuer
-    name: letsencrypt-staging
+    name: letsencrypt-production
   secretName: cert-<path:cluster-secrets:cluster-secrets#domain>
