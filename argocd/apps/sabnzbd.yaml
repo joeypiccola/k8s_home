@@ -46,7 +46,7 @@ spec:
                       sabnzbd.sabnzbd.svc,
                       sabnzbd.sabnzbd.svc.cluster,
                       sabnzbd.sabnzbd.svc.cluster.local,
-                      sabnzbd-k8s.picccola.us
+                      sabnzbd-k8s.piccola.us
                     # SABNZBD__API_KEY:
                     #   valueFrom:
                     #     secretKeyRef:
