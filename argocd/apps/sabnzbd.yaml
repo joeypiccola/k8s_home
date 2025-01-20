@@ -12,7 +12,7 @@ spec:
   project: default
   sources:
     - repoURL: https://bjw-s.github.io/helm-charts
-      chart: bjw-s/app-template
+      chart: app-template
       # path: charts/sabnzbd
       targetRevision: 3.6.1
       helm:
