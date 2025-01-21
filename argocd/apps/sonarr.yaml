@@ -65,29 +65,29 @@ spec:
                     SONARR__APPLICATION_URL: sonarr-k8s.<path:cluster-secrets:cluster-secrets#domain>
                     # SONARR__UPDATE__BRANCH: develop
                     TZ: 'America/Denver'
-                  probes:
-                    liveness:
-                      enabled: true
-                      custom: true
-                      spec:
-                        httpGet:
-                          path: /ping
-                          port: 8989
-                        initialDelaySeconds: 0
-                        periodSeconds: 10
-                        timeoutSeconds: 1
-                        failureThreshold: 3
-                    readiness:
-                      enabled: true
-                      custom: true
-                      spec:
-                        httpGet:
-                          path: /ping
-                          port: 8989
-                        initialDelaySeconds: 0
-                        periodSeconds: 10
-                        timeoutSeconds: 1
-                        failureThreshold: 3
+                  # probes:
+                  #   liveness:
+                  #     enabled: true
+                  #     custom: true
+                  #     spec:
+                  #       httpGet:
+                  #         path: /ping
+                  #         port: 8989
+                  #       initialDelaySeconds: 0
+                  #       periodSeconds: 10
+                  #       timeoutSeconds: 1
+                  #       failureThreshold: 3
+                  #   readiness:
+                  #     enabled: true
+                  #     custom: true
+                  #     spec:
+                  #       httpGet:
+                  #         path: /ping
+                  #         port: 8989
+                  #       initialDelaySeconds: 0
+                  #       periodSeconds: 10
+                  #       timeoutSeconds: 1
+                  #       failureThreshold: 3
                   # resources:
                   #   requests:
                   #     cpu: 20m
