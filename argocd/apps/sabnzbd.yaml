@@ -185,9 +185,9 @@ spec:
               server: freenas.<path:cluster-secrets:cluster-secrets#domain>
               path: /mnt/storage/media
               globalMounts:
-                # take /mnt/storage/media/downloads and mount it to /media
+                # take /mnt/storage/media/ and mount it to /media
                 - path: /media
-                  subPath: downloads
+                  # subPath: downloads
             temp:
               type: emptyDir
               advancedMounts:
