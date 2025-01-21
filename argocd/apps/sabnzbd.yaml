@@ -185,7 +185,8 @@ spec:
               server: freenas.<path:cluster-secrets:cluster-secrets#domain>
               path: /mnt/storage/media
               globalMounts:
-                - path: /downloads # this may be redundant of the downloads persistent key
+                # take /mnt/storage/media/downloads and mount it to /media
+                - path: /media
                   subPath: downloads
             temp:
               type: emptyDir
