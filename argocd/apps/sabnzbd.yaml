@@ -184,9 +184,9 @@ spec:
               type: nfs
               server: freenas.<path:cluster-secrets:cluster-secrets#domain>
               path: /mnt/storage/media
-              # globalMounts:
-              #   - path: /downloads
-                  # subPath: Downloads/sabnzbd
+              globalMounts:
+                - path: /downloads # this may be redundant of the downloads persistent key
+                  subPath: downloads
             temp:
               type: emptyDir
               advancedMounts:
