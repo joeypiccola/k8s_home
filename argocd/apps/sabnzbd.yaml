@@ -10,6 +10,18 @@ metadata:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
+  destination:
+    name: in-cluster
+    namespace: sabnzbd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
   sources:
     - repoURL: https://bjw-s.github.io/helm-charts
       chart: app-template
@@ -207,16 +219,5 @@ spec:
             #       app:
             #         - path: /config/scripts
 
-  destination:
-    name: in-cluster
-    namespace: sabnzbd
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-    managedNamespaceMetadata:
-      labels:
-        goldilocks.fairwinds.com/enabled: "true"
+
 
