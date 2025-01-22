@@ -59,7 +59,7 @@ spec:
                     SONARR__AUTH__METHOD: Forms
                     SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
                     SONARR__LOG__DBENABLED: "False"
-                    SONARR__LOG__LEVEL: debug
+                    SONARR__LOG__LEVEL: info
                     SONARR__SERVER__PORT: 8989
                     SONARR__THEME: dark
                     SONARR__APPLICATION_URL: sonarr-k8s.<path:cluster-secrets:cluster-secrets#domain>
