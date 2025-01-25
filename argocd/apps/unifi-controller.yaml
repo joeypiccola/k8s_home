@@ -174,7 +174,7 @@ spec:
           persistence:
             config:
               type: persistentVolumeClaim
-              existingClaim: unifi-controller-config
+              existingClaim: unifi-config
               advancedMounts:
                 unifi-controller: # <- the controller
                   app:   # <- the container
