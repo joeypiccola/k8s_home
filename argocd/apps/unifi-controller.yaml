@@ -188,12 +188,12 @@ spec:
             #     # take /mnt/storage/media/ and mount it to /media
             #     - path: /media
             #       # subPath: downloads
-            # temp:
-            #   type: emptyDir
-            #   advancedMounts:
-            #     unifi-controller:
-            #       app:
-            #         - path: /tmp
+            temp:
+              type: emptyDir
+              advancedMounts:
+                unifi-controller:
+                  app:
+                    - path: /tmp
             # ephemeral:
             #   type: custom
             #   volumeSpec:
