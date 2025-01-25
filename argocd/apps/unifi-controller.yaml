@@ -1,0 +1,224 @@
+# Possible values: https://github.com/stakater/unifi-controller/blob/master/deployments/kubernetes/chart/unifi-controller/values.yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: unifi-controller
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: unifi-controller
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+  sources:
+    - repoURL: https://bjw-s.github.io/helm-charts
+      chart: app-template
+      # path: charts/unifi-controller
+      targetRevision: 3.6.1
+      helm:
+        releaseName: unifi-controller
+        valuesObject:
+          controllers:
+            unifi-controller:
+              annotations:
+                reloader.stakater.com/auto: "true"
+
+              pod:
+                securityContext:
+                  runAsUser: 1000
+                  runAsGroup: 1000
+                  runAsNonRoot: true
+                  fsGroup: 1000
+                  fsGroupChangePolicy: OnRootMismatch
+                  # supplementalGroups:
+                  #   - 65542 # gladius:external-services
+
+              containers:
+                app:
+                  image:
+                    repository: lscr.io/linuxserver/unifi-controller
+                    tag: 8.0.24
+                  # env:
+                  #   UNIFI-CONTROLLER__PORT: 8080
+                  #   UNIFI-CONTROLLER__HOST_WHITELIST_ENTRIES: >-
+                  #     unifi-controller,
+                  #     unifi-controller.unifi-controller,
+                  #     unifi-controller.unifi-controller.svc,
+                  #     unifi-controller.unifi-controller.svc.cluster,
+                  #     unifi-controller.unifi-controller.svc.cluster.local,
+                  #     unifi-controller-k8s.piccola.us
+                  #   # UNIFI-CONTROLLER__API_KEY:
+                  #   #   valueFrom:
+                  #   #     secretKeyRef:
+                  #   #       name: unifi-controller-secret
+                  #   #       key: api_key
+                  #   # UNIFI-CONTROLLER__NZB_KEY:
+                  #   #   valueFrom:
+                  #   #     secretKeyRef:
+                  #   #       name: unifi-controller-secret
+                  #   #       key: nzb_key
+                  #   # XSEED_HOST: cross-seed.downloads.svc.cluster.local
+                  #   # XSEED_PORT: 2468
+                  #   # XSEED_APIKEY:
+                  #   #   valueFrom:
+                  #   #     secretKeyRef:
+                  #   #       name: unifi-controller-secret
+                  #   #       key: xseed_api_key
+                  # probes:
+                  #   liveness:
+                  #     enabled: true
+                  #     custom: true
+                  #     spec:
+                  #       httpGet:
+                  #         path: /api?mode=version
+                  #         port: 8080
+                  #       initialDelaySeconds: 0
+                  #       periodSeconds: 10
+                  #       timeoutSeconds: 1
+                  #       failureThreshold: 3
+                  #   readiness:
+                  #     enabled: true
+                  #     custom: true
+                  #     spec:
+                  #       httpGet:
+                  #         path: /api?mode=version
+                  #         port: 8080
+                  #       initialDelaySeconds: 0
+                  #       periodSeconds: 10
+                  #       timeoutSeconds: 1
+                  #       failureThreshold: 3
+                  # resources:
+                  #   requests:
+                  #     cpu: 5m
+                  #     memory: 1024Mi
+                  #   limits:
+                  #     memory: 6144Mi
+                  securityContext:
+                    allowPrivilegeEscalation: false
+                    readOnlyRootFilesystem: true
+                    capabilities:
+                      drop:
+                        - ALL
+
+          service:
+            app:
+              controller: unifi-controller
+              ports:
+                http:
+                  port: 8443
+
+          route:
+            # -- Enable and configure route settings for the chart under this key.
+            main:
+              parentRefs:
+                - name: internal
+                  namespace: gateway
+                  # sectionName: gateway-section
+              hostnames:
+                - unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  backendRefs:
+                    - kind: Service
+                      port: 8443
+                      name: unifi-controller
+                      namespace: unifi-controller
+                      weight: 1
+                # - matches:
+                #     - path:
+                #         type: PathPrefix
+                #         value: /notifications/hub/negotiate
+                #   backendRefs:
+                #     - kind: Service
+                #       port: 80
+                #       name: main
+                #       namespace: default
+                #       weight: 1
+                # - matches:
+                #     - path:
+                #         type: PathPrefix
+                #         value: /notifications/hub
+                #   backendRefs:
+                #     - kind: Service
+                #       port: 3012
+                #       name: main
+                #       namespace: default
+                #       weight: 1
+
+          # ingress:
+          #   app:
+          #     className: "internal-nginx"
+          #     hosts:
+          #       - host: unifi-controller.bjw-s.dev
+          #         paths:
+          #           - path: /
+          #             service:
+          #               identifier: app
+          #               port: http
+
+          persistence:
+            config:
+              type: persistentVolumeClaim
+              existingClaim: unifi-controller-config
+              advancedMounts:
+                unifi-controller: # <- the controller
+                  app:   # <- the container
+                    - path: /config
+            # downloads:
+            #   enabled: true
+            #   type: nfs
+            #   server: freenas.<path:cluster-secrets:cluster-secrets#domain>
+            #   path: /mnt/storage/media
+            #   globalMounts:
+            #     # take /mnt/storage/media/ and mount it to /media
+            #     - path: /media
+            #       # subPath: downloads
+            # temp:
+            #   type: emptyDir
+            #   advancedMounts:
+            #     unifi-controller:
+            #       app:
+            #         - path: /tmp
+            # ephemeral:
+            #   type: custom
+            #   volumeSpec:
+            #     ephemeral:
+            #       volumeClaimTemplate:
+            #         spec:
+            #           accessModes:
+            #             - ReadWriteOnce
+            #           storageClassName: "openebs-hostpath"
+            #           resources:
+            #             requests:
+            #               storage: 100Gi
+            #   advancedMounts:
+            #     unifi-controller:
+            #       app:
+            #         - path: /incomplete
+            #           subPath: incomplete
+            # scripts:
+            #   type: configMap
+            #   name: unifi-controller-scripts
+            #   defaultMode: 0775
+            #   advancedMounts:
+            #     unifi-controller:
+            #       app:
+            #         - path: /config/scripts
+
+
+
