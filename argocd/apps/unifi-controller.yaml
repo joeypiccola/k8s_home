@@ -105,12 +105,12 @@ spec:
                   #     memory: 1024Mi
                   #   limits:
                   #     memory: 6144Mi
-                  securityContext:
-                    allowPrivilegeEscalation: false
-                    readOnlyRootFilesystem: true
-                    capabilities:
-                      drop:
-                        - ALL
+                  # securityContext:
+                  #   allowPrivilegeEscalation: false
+                  #   readOnlyRootFilesystem: true
+                  #   capabilities:
+                  #     drop:
+                  #       - ALL
 
           service:
             app:
