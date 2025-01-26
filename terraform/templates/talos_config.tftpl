@@ -1,0 +1,40 @@
+machine:
+  kubelet:
+    extraMounts:
+      - destination: /var/mnt/longhorn
+        type: bind
+        source: /var/mnt/longhorn
+        options:
+          - bind
+          - rshared
+          - rw
+  disks:
+    - device: /dev/sdb
+      partitions:
+        - mountpoint: /var/mnt/longhorn
+  network:
+    hostname: ${hostname}
+    interfaces:
+      - interface: eth0
+        addresses:
+          - ${ip}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: 10.0.5.1
+        dhcp: true
+        vip:
+          ip: 10.0.5.200
+    nameservers:
+      - 10.0.3.24
+      - 10.0.3.22
+  install:
+    disk: /dev/sda
+    image: ${image}
+    wipe: false
+cluster:
+  network:
+    cni:
+      name: none
+  proxy:
+    disabled: true
+  allowSchedulingOnMasters: true
