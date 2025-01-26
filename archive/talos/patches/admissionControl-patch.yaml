@@ -1,0 +1,10 @@
+# Removes admission control value
+- op: remove
+  path: /cluster/apiServer/admissionControl
+
+
+# talosctl gen config \
+
+#     my-cluster https://mycluster.local:6443 \
+
+#     --config-patch-control-plane '[{"op": "remove", "path": "/cluster/apiServer/admissionControl"}]'

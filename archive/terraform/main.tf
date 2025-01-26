@@ -7,14 +7,14 @@ locals {
       worker = {
         memory = 16384
         num_cpus = 4
-        disk_size = 60
-        ceph_disk_size = 80
+        disk_size = 50
+        longhorn_disk_size = 100
       }
       controlplane = {
-        memory = 16384 #
+        memory = 16384
         num_cpus = 4
-        disk_size = 60
-        ceph_disk_size = 80
+        disk_size = 50
+        longhorn_disk_size = 100
       }
     }
   }
@@ -24,7 +24,9 @@ locals {
   talhelper_talenv_file         = file("${local.talhelper_working_dir}/talenv.yaml")
   talhelper_clusterName         = yamldecode(local.talhelper_talenv_file)["clusterName"]
   talhelper_talosVersion        = yamldecode(local.talhelper_talenv_file)["talosVersion"]
-  talos_ovf_url                 = "https://github.com/siderolabs/talos/releases/download/${local.talhelper_talosVersion}/vmware-amd64.ova"
+  # this is an image factory url generated with https://factory.talos.dev/ (includes iscsi-tools and vmtoolsd-guest-agent). used Cloud Server/vmware as Hardware Type
+  talos_ovf_url                 = "https://factory.talos.dev/image/dfd1ac9abdf529ca644694b17af0ce1a2ae23a5cccdff39439aa7f0774901e90/${local.talhelper_talosVersion}/vmware-amd64.ova"
+  # talos_ovf_url                 = "https://github.com/siderolabs/talos/releases/download/${local.talhelper_talosVersion}/vmware-amd64.ova"
 
   talos_nodes = {
     for node in local.talhelper_clusterconfig_files:
@@ -63,7 +65,7 @@ resource "vsphere_virtual_machine" "talos_nodes" {
   # Disk for ceph
   disk {
     label       = "disk1"
-    size        = local.vmware_config.node_hardware_config[each.value.type].ceph_disk_size
+    size        = local.vmware_config.node_hardware_config[each.value.type].longhorn_disk_size
     unit_number = 1
   }
 

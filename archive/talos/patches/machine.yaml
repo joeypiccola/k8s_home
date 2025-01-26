@@ -1,0 +1,33 @@
+# machine:
+#   kubelet:
+#     extraMounts:
+#       - destination: /var/mnt/longhorn
+#         type: bind
+#         source: /var/mnt/longhorn
+#         options:
+#           - bind
+#           - rshared
+#           - rw
+#   disks:
+#     - device: /dev/sdb
+#       partitions:
+#         - mountpoint: /var/mnt/longhorn
+          # size: 80 GB not used
+
+
+
+# machine:
+#   kubelet:
+#     extraMounts:
+#       - destination: /var/mnt/storage
+#         type: bind
+#         source: /var/mnt/storage
+#         options:
+#           - bind
+#           - rshared
+#           - rw
+
+#   disks:
+#       - device: /dev/sdX # The name of the disk to use.
+#         partitions:
+#           - mountpoint: /var/mnt/storage #

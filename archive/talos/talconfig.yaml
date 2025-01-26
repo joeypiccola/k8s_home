@@ -56,52 +56,52 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: ${gateway}
-  - hostname: control-4.${domainName}
-    installDisk: /dev/sda
-    ipAddress: ${controlPlaneIP_4}
-    controlPlane: true
-    nameservers:
-      - ${ns1}
-      - ${ns2}
-    networkInterfaces:
-      - interface: eth0
-        vip:
-          ip: ${vip}
-        dhcp: false
-        addresses:
-          - ${controlPlaneIP_4}/24
-        routes:
-          - network: 0.0.0.0/0
-            gateway: ${gateway}
-  - hostname: control-5.${domainName}
-    installDisk: /dev/sda
-    ipAddress: ${controlPlaneIP_5}
-    controlPlane: true
-    nameservers:
-      - ${ns1}
-      - ${ns2}
-    networkInterfaces:
-      - interface: eth0
-        vip:
-          ip: ${vip}
-        dhcp: false
-        addresses:
-          - ${controlPlaneIP_5}/24
-        routes:
-          - network: 0.0.0.0/0
-            gateway: ${gateway}
+  # - hostname: control-4.${domainName}
+  #   installDisk: /dev/sda
+  #   ipAddress: ${controlPlaneIP_4}
+  #   controlPlane: true
+  #   nameservers:
+  #     - ${ns1}
+  #     - ${ns2}
+  #   networkInterfaces:
+  #     - interface: eth0
+  #       vip:
+  #         ip: ${vip}
+  #       dhcp: false
+  #       addresses:
+  #         - ${controlPlaneIP_4}/24
+  #       routes:
+  #         - network: 0.0.0.0/0
+  #           gateway: ${gateway}
+  # - hostname: control-5.${domainName}
+  #   installDisk: /dev/sda
+  #   ipAddress: ${controlPlaneIP_5}
+  #   controlPlane: true
+  #   nameservers:
+  #     - ${ns1}
+  #     - ${ns2}
+  #   networkInterfaces:
+  #     - interface: eth0
+  #       vip:
+  #         ip: ${vip}
+  #       dhcp: false
+  #       addresses:
+  #         - ${controlPlaneIP_5}/24
+  #       routes:
+  #         - network: 0.0.0.0/0
+  #           gateway: ${gateway}
 
 controlPlane:
   patches:
-    - "@./patches/cni_none.yaml"
-    - |-
-      cluster:
-        allowSchedulingOnMasters: true
-        # This must be disabled or else cilium kube-proxy will conflict
-        proxy:
-          disabled: true
-    - |-
-      - op: replace
-        path: /cluster/extraManifests
-        value:
-          - "https://raw.githubusercontent.com/siderolabs/talos-vmtoolsd/v0.5.1/deploy/latest.yaml"
+    - "@./patches/cluster.yaml"
+    # - "@./patches/machine.yaml"
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+            - siderolabs/iscsi-tools
+            - siderolabs/mei
+            - siderolabs/qemu-guest-agent
+

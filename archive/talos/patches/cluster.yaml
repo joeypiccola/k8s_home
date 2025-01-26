@@ -1,0 +1,11 @@
+cluster:
+  network:
+    cni:
+      name: none
+  allowSchedulingOnMasters: true
+  # This must be disabled or else cilium kube-proxy will conflict
+  proxy:
+    disabled: true
+  # extraManifests: # this has beem moved to be part of image factory image via an extension
+  #   - https://raw.githubusercontent.com/siderolabs/talos-vmtoolsd/v0.5.1/deploy/latest.yaml
+
