@@ -28,4 +28,4 @@ backups/**
 nginx.conf
 
 scratch/*
-bootstrap/*
+# bootstrap/*

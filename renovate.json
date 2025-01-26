@@ -5,5 +5,8 @@
   ],
   "assignees": [
     "joeypiccola"
+  ],
+  "ignorePaths": [
+        "archive/"
   ]
 }
