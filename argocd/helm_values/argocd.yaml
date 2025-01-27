@@ -23,6 +23,7 @@ repoServer:
       image: registry.access.redhat.com/ubi8
       env:
         - name: AVP_VERSION
+          # renovate: datasource=github-releases depName=argoproj-labs/argocd-vault-plugin
           value: 1.16.1
       command: [sh, -c]
       args:
