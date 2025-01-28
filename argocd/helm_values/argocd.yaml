@@ -20,7 +20,7 @@ repoServer:
       emptyDir: {}
   initContainers:
     - name: download-tools
-      image: registry.access.redhat.com/ubi8
+      image: registry.access.redhat.com/ubi8:8.10-1161.1735829865
       env:
         - name: AVP_VERSION
           # renovate: datasource=github-releases depName=argoproj-labs/argocd-vault-plugin
