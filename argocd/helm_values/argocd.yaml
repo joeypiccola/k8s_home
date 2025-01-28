@@ -23,8 +23,7 @@ repoServer:
       image: registry.access.redhat.com/ubi8
       env:
         - name: AVP_VERSION
-          # renovate: datasource=github-releases depName=argoproj-labs/argocd-vault-plugin
-          value: 1.16.1
+          value: 1.16.1 # renovate: datasource=github-releases depName=argoproj-labs/argocd-vault-plugin
       command: [sh, -c]
       args:
         - >-
@@ -37,7 +36,7 @@ repoServer:
   extraContainers:
     - name: avp
       command: [/var/run/argocd/argocd-cmp-server]
-      image: registry.access.redhat.com/ubi8
+      image: registry.access.redhat.com/ubi8:8.10
       env:
         - name: AVP_TYPE
           value: kubernetessecret
