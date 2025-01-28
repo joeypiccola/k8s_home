@@ -24,7 +24,7 @@ repoServer:
       env:
         - name: AVP_VERSION
           # renovate: datasource=github-releases depName=argoproj-labs/argocd-vault-plugin
-          value: 1.16.1
+          value: 1.18.1
       command: [sh, -c]
       args:
         - >-
