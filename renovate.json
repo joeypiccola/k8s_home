@@ -12,13 +12,12 @@
   ],
   "kubernetes": {
     "fileMatch": [
-      "argocd/.+\\.yml$",
-      "argocd/.+\\.yaml$"
+      "^argocd\/.+ya?ml$"
     ]
   },
   "terraform": {
     "fileMatch": [
-      "terraform/.+\\.tf$"
+      "^terraform\/.+\\.tf$"
     ]
   }
 }
