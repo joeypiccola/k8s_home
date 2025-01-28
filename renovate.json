@@ -6,7 +6,19 @@
   "assignees": [
     "joeypiccola"
   ],
-  "ignorePaths": [
-        "archive/"
-  ]
+  "includePaths": [
+    "argocd",
+    "terraform"
+  ],
+  "kubernetes": {
+    "fileMatch": [
+      "argocd/.+\\.yml$",
+      "argocd/.+\\.yaml$"
+    ]
+  },
+  "terraform": {
+    "fileMatch": [
+      "terraform/.+\\.tf$"
+    ]
+  }
 }
