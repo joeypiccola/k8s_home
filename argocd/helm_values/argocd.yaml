@@ -20,7 +20,7 @@ repoServer:
       emptyDir: {}
   initContainers:
     - name: download-tools
-      image: registry.access.redhat.com/ubi8:8.10-1161.1735829865
+      image: registry.access.redhat.com/ubi8:8.10-1184
       env:
         - name: AVP_VERSION
           # renovate: datasource=github-releases depName=argoproj-labs/argocd-vault-plugin
@@ -37,7 +37,7 @@ repoServer:
   extraContainers:
     - name: avp
       command: [/var/run/argocd/argocd-cmp-server]
-      image: registry.access.redhat.com/ubi8:8.10-1161.1735829865
+      image: registry.access.redhat.com/ubi8:8.10-1184
       env:
         - name: AVP_TYPE
           value: kubernetessecret
