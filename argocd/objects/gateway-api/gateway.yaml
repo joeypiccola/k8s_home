@@ -8,6 +8,17 @@ spec:
   gatewayClassName: cilium
   listeners:
     - protocol: HTTPS
+      port: 8443
+      name: https-unifi-k8s-domain-gateway
+      hostname: 'unifi.k8s.<path:cluster-secrets:cluster-secrets#domain>'
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: cert-<path:cluster-secrets:cluster-secrets#domain>
+      allowedRoutes:
+        namespaces:
+          from: All
+    - protocol: HTTPS
       port: 443
       name: https-gateway
       hostname: '*.<path:cluster-secrets:cluster-secrets#domain>'
@@ -22,17 +33,6 @@ spec:
       port: 443
       name: https-domain-gateway
       hostname: '<path:cluster-secrets:cluster-secrets#domain>'
-      tls:
-        certificateRefs:
-          - kind: Secret
-            name: cert-<path:cluster-secrets:cluster-secrets#domain>
-      allowedRoutes:
-        namespaces:
-          from: All
-    - protocol: HTTPS
-      port: 8443
-      name: https-unifi-k8s-domain-gateway
-      hostname: 'unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>'
       tls:
         certificateRefs:
           - kind: Secret
