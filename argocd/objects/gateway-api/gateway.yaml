@@ -31,7 +31,7 @@ spec:
           from: All
     - protocol: HTTPS
       port: 8443
-      name: https-domain-gateway
+      name: https-unifi-k8s-domain-gateway
       hostname: 'unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>'
       tls:
         certificateRefs:
