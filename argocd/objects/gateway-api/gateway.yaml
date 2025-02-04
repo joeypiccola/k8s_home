@@ -10,7 +10,7 @@ spec:
     - protocol: HTTPS
       port: 8443
       name: https-unifi-k8s-domain-gateway
-      hostname: 'unifi.k8s.<path:cluster-secrets:cluster-secrets#domain>'
+      hostname: 'unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>'
       tls:
         certificateRefs:
           - kind: Secret
