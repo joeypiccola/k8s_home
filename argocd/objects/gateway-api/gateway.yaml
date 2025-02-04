@@ -7,14 +7,12 @@ metadata:
 spec:
   gatewayClassName: cilium
   listeners:
-    - protocol: HTTPS
-      port: 8443
-      name: https-unifi-k8s-domain-gateway
-      hostname: 'unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>'
+    - protocol: TLS
+      port: 443
+      name: unifi-tls
+      hostname: "unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>"
       tls:
-        certificateRefs:
-          - kind: Secret
-            name: cert-<path:cluster-secrets:cluster-secrets#domain>
+        mode: Passthrough
       allowedRoutes:
         namespaces:
           from: All
