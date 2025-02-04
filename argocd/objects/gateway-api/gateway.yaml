@@ -12,7 +12,7 @@ spec:
       name: unifi-tls
       hostname: "unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>"
       tls:
-        # mode: Passthrough
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: cert-<path:cluster-secrets:cluster-secrets#domain>
