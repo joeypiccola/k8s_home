@@ -26,10 +26,11 @@ resource "talos_machine_configuration_apply" "talos_nodes" {
   node                        = each.value.ip
   config_patches              = [templatefile("${path.module}/templates/talos_config.tftpl", {
     hostname = each.value.hostname,
+    virtual  = each.value.virtual,
     ip       = each.value.ip,
     image    = format("factory.talos.dev/installer/%s:%s",
-      coalesce(local.console_logging, talos_image_factory_schematic.this.id),
-      data.talos_image_factory_extensions_versions.this.talos_version
+      each.value.virtual ? talos_image_factory_schematic.virtual.id : talos_image_factory_schematic.physical.id,
+      data.talos_image_factory_extensions_versions.virtual.talos_version # <-- doesn't matter if we pick virtual or physical, same talos_version
     )
   })]
 }
@@ -42,7 +43,7 @@ resource "talos_machine_bootstrap" "this" {
   client_configuration = talos_machine_secrets.this.client_configuration
 }
 
-# output "mc" {
-#   value = data.talos_machine_configuration.this.machine_configuration
-#   sensitive = true
-# }
+output "mc" {
+  value = data.talos_machine_configuration.this.machine_configuration
+  sensitive = true
+}

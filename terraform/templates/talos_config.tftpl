@@ -9,13 +9,13 @@ machine:
           - rshared
           - rw
   disks:
-    - device: /dev/sdb
+    - device: %{ if virtual }/dev/sdb%{ else }/dev/nvme0n1%{ endif }
       partitions:
         - mountpoint: /var/mnt/longhorn
   network:
     hostname: ${hostname}
     interfaces:
-      - interface: eth0
+      - interface: %{ if virtual }eth0%{ else }eno1%{ endif }
         addresses:
           - ${ip}/24
         routes:
@@ -31,6 +31,8 @@ machine:
     disk: /dev/sda
     image: ${image}
     wipe: false
+  nodeLabels:
+    platform: %{ if virtual }virtual%{ else }physical%{ endif }
 cluster:
   network:
     cni:

@@ -2,55 +2,85 @@ locals {
   talos_version          = "v1.9.1"
   talos_cluster_name     = "talos"
   talos_cluster_endpoint = "https://talos.k8s.piccola.us:6443"
-  talos_nodes = [
+  virtual_talos_nodes    = [ for node in local.talos_nodes : node if node.virtual ]
+  physical_talos_nodes   = [ for node in local.talos_nodes : node if node.virtual == false ]
+    console_logging      = "" # "e88202574e1c65f86d35d171ab7f08eddbe6c8e78cb45b9cb0470d6b0c394876"
+  talos_nodes            = [
     {
       hostname = "control-1.k8s.piccola.us"
-      ip   = "10.0.5.201"
-      vm_id = 201
+      ip       = "10.0.5.201"
+      vm_id    = 201
+      virtual  = true
     },
     {
       hostname = "control-2.k8s.piccola.us"
-      ip   = "10.0.5.202"
-      vm_id = 202
+      ip       = "10.0.5.202"
+      vm_id    = 202
+      virtual  = true
     },
     {
       hostname = "control-3.k8s.piccola.us"
-      ip   = "10.0.5.203"
-      vm_id = 203
+      ip       = "10.0.5.203"
+      vm_id    = 203
+      virtual  = true
     },
     {
       hostname = "control-4.k8s.piccola.us"
-      ip   = "10.0.5.204"
-      vm_id = 204
+      ip       = "10.0.5.204"
+      vm_id    = 204
+      virtual  = true
     },
     {
       hostname = "control-5.k8s.piccola.us"
-      ip   = "10.0.5.205"
-      vm_id = 205
+      ip       = "10.0.5.205"
+      vm_id    = 205
+      virtual  = true
+    },
+    {
+      hostname = "control-6.k8s.piccola.us"
+      ip       = "10.0.5.206"
+      virtual  = false
     }
   ]
-  console_logging = ""# "e88202574e1c65f86d35d171ab7f08eddbe6c8e78cb45b9cb0470d6b0c394876"
 }
 
-data "talos_image_factory_extensions_versions" "this" {
+data "talos_image_factory_extensions_versions" "virtual" {
   talos_version = local.talos_version
   filters = {
     names = [
       "iscsi-tools",
-      "qemu-guest-agent",
-      # "i915-ucode",
-      # "intel-ucode",
-      # "mei"
+      "qemu-guest-agent"
     ]
   }
 }
 
-resource "talos_image_factory_schematic" "this" {
+data "talos_image_factory_extensions_versions" "physical" {
+  talos_version = local.talos_version
+  filters = {
+    names = [
+      "iscsi-tools"
+    ]
+  }
+}
+
+resource "talos_image_factory_schematic" "virtual" {
   schematic = yamlencode(
     {
       customization = {
         systemExtensions = {
-          officialExtensions = data.talos_image_factory_extensions_versions.this.extensions_info.*.name
+          officialExtensions = data.talos_image_factory_extensions_versions.virtual.extensions_info.*.name
+        }
+      }
+    }
+  )
+}
+
+resource "talos_image_factory_schematic" "physical" {
+  schematic = yamlencode(
+    {
+      customization = {
+        systemExtensions = {
+          officialExtensions = data.talos_image_factory_extensions_versions.physical.extensions_info.*.name
         }
       }
     }
@@ -62,17 +92,17 @@ resource "proxmox_virtual_environment_download_file" "talos_image" {
   datastore_id = "isos"
   node_name    = "pve"
   url          = format("https://factory.talos.dev/image/%s/%s/nocloud-amd64.iso",
-    coalesce(local.console_logging, talos_image_factory_schematic.this.id),
-    data.talos_image_factory_extensions_versions.this.talos_version
+    talos_image_factory_schematic.virtual.id,
+    data.talos_image_factory_extensions_versions.virtual.talos_version
   )
 }
 
 resource "proxmox_virtual_environment_vm" "talos_nodes" {
-  for_each = { for node in local.talos_nodes : node.hostname => node }
+  for_each = { for node in local.virtual_talos_nodes : node.hostname => node }
 
   name            = each.value.hostname
   node_name       = "pve"
-  scsi_hardware   = "virtio-scsi-single" # "lsi53c895a" #  <- not supported in the provider when done manually the VM boots but talo disk list shows no disks (not sure why)
+  scsi_hardware   = "virtio-scsi-single"
   stop_on_destroy = true
   tags            = sort(["terraform", "linux", "kubernetes", "talos"])
   vm_id           = each.value.vm_id
@@ -86,7 +116,7 @@ resource "proxmox_virtual_environment_vm" "talos_nodes" {
   }
   memory {
     dedicated = 12288
-    floating  = 12288 # set equal to dedicated to enable ballooning
+    floating  = 12288
   }
   disk {
     datastore_id = "local-nvme"
