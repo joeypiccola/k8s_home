@@ -39,8 +39,8 @@ spec:
             limits:
               memory: 48Mi
   destination:
-    name: system
-    namespace: onepassword
+    name: in-cluster
+    namespace: system
   syncPolicy:
     automated:
       prune: true

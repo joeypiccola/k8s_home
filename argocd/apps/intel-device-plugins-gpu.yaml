@@ -19,8 +19,8 @@ spec:
         name: intel-gpu-plugin
         sharedDevNum: 3
   destination:
-    name: system
-    namespace: onepassword
+    name: in-cluster
+    namespace: system
   syncPolicy:
     automated:
       prune: true
