@@ -1,0 +1,52 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: node-feature-discovery
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "50"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    chart: node-feature-discovery
+    repoURL: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+    targetRevision: 0.17.1
+    helm:
+      releaseName: node-feature-discovery
+      valuesObject:
+        prometheus:
+          enable: false
+        master:
+          resources:
+            requests:
+              cpu: 21m
+              memory: 51Mi
+            limits:
+              memory: 51Mi
+        worker:
+          config:
+            core:
+              sources:
+                - pci
+                - system
+                - usb
+          resources:
+            requests:
+              cpu: 5m
+              memory: 48Mi
+            limits:
+              memory: 48Mi
+  destination:
+    name: system
+    namespace: onepassword
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
