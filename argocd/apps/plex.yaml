@@ -76,6 +76,11 @@ spec:
                   #     memory: 4282M
                   #   limits:
                   #     memory: 16Gi
+                  resources:
+                    requests:
+                      gpu.intel.com/i915: "1"
+                    limits:
+                      gpu.intel.com/i915: "1"
           service:
             app:
               controller: plex
