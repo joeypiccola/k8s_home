@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/joeypiccola/k8s_home.git
-    path: argocd/aoa_apps/objects/longhorn
+    path: argocd/aoa_apps/objects/pvcs
     targetRevision: main
   destination:
     name: in-cluster
