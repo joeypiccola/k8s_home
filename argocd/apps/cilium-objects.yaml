@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/joeypiccola/k8s_home.git
-    path: argocd/objects/cilium
+    path: argocd/apps/objects/cilium
     targetRevision: main
   destination:
     name: in-cluster

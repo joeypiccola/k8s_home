@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/joeypiccola/k8s_home.git
-    path: argocd/objects/cert-manager
+    path: argocd/apps/objects/cert-manager
     targetRevision: main
   destination:
     name: in-cluster

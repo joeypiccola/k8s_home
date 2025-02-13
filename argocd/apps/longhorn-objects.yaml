@@ -2,27 +2,24 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cloudflared-objects
+  name: longhorn-objects
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "60"
+    argocd.argoproj.io/sync-wave: "20"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
     repoURL: https://github.com/joeypiccola/k8s_home.git
-    path: argocd/apps/objects/cloudflared
+    path: argocd/apps/objects/longhorn
     targetRevision: main
   destination:
     name: in-cluster
-    namespace: cloudflared
+    namespace: longhorn-system
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-    managedNamespaceMetadata:
-      labels:
-        goldilocks.fairwinds.com/enabled: "true"
