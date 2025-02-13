@@ -4,7 +4,7 @@ locals {
   talos_cluster_endpoint = "https://talos.k8s.piccola.us:6443"
   virtual_talos_nodes    = [ for node in local.talos_nodes : node if node.virtual ]
   physical_talos_nodes   = [ for node in local.talos_nodes : node if node.virtual == false ]
-    console_logging      = "" # "e88202574e1c65f86d35d171ab7f08eddbe6c8e78cb45b9cb0470d6b0c394876"
+  console_logging        = "" # "e88202574e1c65f86d35d171ab7f08eddbe6c8e78cb45b9cb0470d6b0c394876"
   talos_nodes            = [
     {
       hostname = "control-1.k8s.piccola.us"
@@ -58,7 +58,8 @@ data "talos_image_factory_extensions_versions" "physical" {
   talos_version = local.talos_version
   filters = {
     names = [
-      "iscsi-tools"
+      "iscsi-tools",
+      "i915"
     ]
   }
 }
@@ -115,14 +116,14 @@ resource "proxmox_virtual_environment_vm" "talos_nodes" {
     type  = "x86-64-v2-AES"
   }
   memory {
-    dedicated = 12288
-    floating  = 12288
+    dedicated = 16384
+    floating  = 16384
   }
   disk {
     datastore_id = "local-nvme"
     file_id      = proxmox_virtual_environment_download_file.talos_image.id
     interface    = "scsi0"
-    size         = 50
+    size         = 40
     iothread     = true
     ssd          = true
     discard      = "on"
@@ -131,7 +132,7 @@ resource "proxmox_virtual_environment_vm" "talos_nodes" {
   disk {
     datastore_id = "local-nvme"
     interface    = "scsi1"
-    size         = 40
+    size         = 80
     iothread     = true
     ssd          = true
     discard      = "on"
