@@ -7,7 +7,7 @@ spec:
     name: in-cluster
     namespace: argocd
   source:
-    path: argocd/apps
+    path: argocd/aoa_apps/apps
     repoURL: https://github.com/joeypiccola/k8s_home.git
     targetRevision: main
   project: default
@@ -15,13 +15,3 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    # helm:
-    #   valueFiles:
-    #     - ref+envsubst://$ARGOCD_AOA_VALUES_PATH
-#   syncPolicy: {}
-# operation:
-#   initiatedBy:
-#     username: bootstrap
-#   sync:
-#     syncStrategy:
-#       hook: {}

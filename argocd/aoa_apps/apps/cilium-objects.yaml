@@ -2,21 +2,21 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: cert-manager-objects
+  name: cilium-objects
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "30"
+    argocd.argoproj.io/sync-wave: "50"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
 spec:
   project: default
   source:
     repoURL: https://github.com/joeypiccola/k8s_home.git
-    path: argocd/apps/objects/cert-manager
+    path: argocd/aoa_apps/objects/cilium
     targetRevision: main
   destination:
     name: in-cluster
-    namespace: cert-manager
+    namespace: cilium
   syncPolicy:
     automated:
       prune: true
