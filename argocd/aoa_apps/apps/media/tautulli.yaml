@@ -92,7 +92,7 @@ spec:
                         value: /
                   backendRefs:
                     - kind: Service
-                      port: 8989
+                      port: 80
                       name: tautulli
                       namespace: tautulli
                       weight: 1
