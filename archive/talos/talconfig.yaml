@@ -56,6 +56,24 @@ nodes:
         routes:
           - network: 0.0.0.0/0
             gateway: ${gateway}
+
+controlPlane:
+  patches:
+    - "@./patches/cluster.yaml"
+    # - "@./patches/machine.yaml"
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+            - siderolabs/i915-ucode
+            - siderolabs/intel-ucode
+            - siderolabs/iscsi-tools
+            - siderolabs/mei
+            - siderolabs/qemu-guest-agent
+
+
+
+
   # - hostname: control-4.${domainName}
   #   installDisk: /dev/sda
   #   ipAddress: ${controlPlaneIP_4}
@@ -90,18 +108,3 @@ nodes:
   #       routes:
   #         - network: 0.0.0.0/0
   #           gateway: ${gateway}
-
-controlPlane:
-  patches:
-    - "@./patches/cluster.yaml"
-    # - "@./patches/machine.yaml"
-  schematic:
-    customization:
-      systemExtensions:
-        officialExtensions:
-            - siderolabs/i915-ucode
-            - siderolabs/intel-ucode
-            - siderolabs/iscsi-tools
-            - siderolabs/mei
-            - siderolabs/qemu-guest-agent
-
