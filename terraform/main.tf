@@ -21,24 +21,16 @@ locals {
     {
       hostname = "control-3.k8s.piccola.us"
       ip       = "10.0.5.203"
-      vm_id    = 203
-      virtual  = true
+      virtual  = false
     },
     {
       hostname = "control-4.k8s.piccola.us"
       ip       = "10.0.5.204"
-      vm_id    = 204
-      virtual  = true
+      virtual  = false
     },
     {
       hostname = "control-5.k8s.piccola.us"
       ip       = "10.0.5.205"
-      vm_id    = 205
-      virtual  = true
-    },
-    {
-      hostname = "control-6.k8s.piccola.us"
-      ip       = "10.0.5.206"
       virtual  = false
     }
   ]
@@ -132,7 +124,7 @@ resource "proxmox_virtual_environment_vm" "talos_nodes" {
   disk {
     datastore_id = "local-nvme"
     interface    = "scsi1"
-    size         = 80
+    size         = 100
     iothread     = true
     ssd          = true
     discard      = "on"
