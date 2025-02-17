@@ -12,7 +12,7 @@ spec:
   project: default
   source:
     repoURL: https://github.com/joeypiccola/k8s_home.git
-    path: argocd/infra/objects/namespaces
+    path: argocd/aoa_infra/objects/namespaces
     targetRevision: main
     # directory:
     #   include: '*.yaml'
