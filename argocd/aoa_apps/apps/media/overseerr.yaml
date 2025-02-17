@@ -1,0 +1,115 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: overseerr
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: overseerr
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+  sources:
+    - repoURL: https://bjw-s.github.io/helm-charts
+      chart: app-template
+      # path: charts/sonarr
+      targetRevision: 3.7.1
+      helm:
+        releaseName: overseerr
+        valuesObject:
+          controllers:
+            overseerr:
+              annotations:
+                reloader.stakater.com/auto: "true"
+              containers:
+                app:
+                  image:
+                    repository: ghcr.io/sct/overseerr
+                    tag: 1.33.2@sha256:714ea6db2bc007a2262d112bef7eec74972eb33d9c72bddb9cbd98b8742de950
+                  env:
+                    TZ: America/Denver
+                    LOG_LEVEL: "info"
+                    PORT: &port 80
+                  probes:
+                    liveness: &probes
+                      enabled: true
+                      custom: true
+                      spec:
+                        httpGet:
+                          path: /api/v1/status
+                          port: *port
+                        initialDelaySeconds: 0
+                        periodSeconds: 10
+                        timeoutSeconds: 1
+                        failureThreshold: 3
+                    readiness: *probes
+                  securityContext:
+                    allowPrivilegeEscalation: false
+                    readOnlyRootFilesystem: true
+                    capabilities: { drop: ["ALL"] }
+                  resources:
+                    requests:
+                      cpu: 10m
+                    limits:
+                      memory: 1Gi
+          defaultPodOptions:
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              fsGroup: 1000
+              fsGroupChangePolicy: OnRootMismatch
+          service:
+            app:
+              controller: overseerr
+              ports:
+                http:
+                  port: *port
+          route:
+            # -- Enable and configure route settings for the chart under this key.
+            main:
+              parentRefs:
+                - name: internal
+                  namespace: gateway
+                  # sectionName: gateway-section
+              hostnames:
+                - overseerr-k8s.<path:cluster-secrets:cluster-secrets#domain>
+                - requests.<path:cluster-secrets:cluster-secrets#domain>
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  backendRefs:
+                    - kind: Service
+                      port: 80
+                      name: overseerr
+                      namespace: overseerr
+                      weight: 1
+          persistence:
+            config:
+              existingClaim: overseerr-config
+              globalMounts:
+                - path: /app/config
+            cache:
+              existingClaim: overseerr-cache
+              globalMounts:
+                - path: /app/config/cache
+            logs:
+              type: emptyDir
+              globalMounts:
+                - path: /app/config/logs
+            tmp:
+              type: emptyDir

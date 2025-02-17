@@ -47,3 +47,10 @@ metadata:
   name: tautulli
   labels:
     goldilocks.fairwinds.com/enabled: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: overseerr
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"
