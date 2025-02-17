@@ -42,8 +42,3 @@ resource "talos_machine_bootstrap" "this" {
   node                 = "10.0.5.201" # this is the first controlplane node
   client_configuration = talos_machine_secrets.this.client_configuration
 }
-
-output "mc" {
-  value = data.talos_machine_configuration.this.machine_configuration
-  sensitive = true
-}
