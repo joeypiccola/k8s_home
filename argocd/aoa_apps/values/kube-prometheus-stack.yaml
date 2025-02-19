@@ -1,3 +1,5 @@
+crds:
+  enabled: true
 cleanPrometheusOperatorObjectNames: true # unset this after first install
 prometheus:
   route:
