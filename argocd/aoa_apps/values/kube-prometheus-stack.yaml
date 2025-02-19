@@ -1,0 +1,92 @@
+cleanPrometheusOperatorObjectNames: true # unset this after first install
+prometheus:
+  route:
+    main:
+      enabled: true
+      hostnames:
+      - prometheus.<path:cluster-secrets:cluster-secrets#domain>
+      parentRefs:
+      - name: internal
+        namespace: gateway
+
+prometheusSpec:
+  replicas: 1
+  enableFeatures:
+    - auto-gomaxprocs
+    - memory-snapshot-on-shutdown
+    - new-service-discovery-manager
+  retention: 7d
+  retentionSize: 25GB
+  scrapeInterval: 1m # Must match interval in Grafana Helm chart
+  storageSpec:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: longhorn
+        resources:
+          requests:
+            storage: 30Gi
+  walCompression: true
+  # ruleSelectorNilUsesHelmValues: false
+  # scrapeConfigSelectorNilUsesHelmValues: false
+  # serviceMonitorSelectorNilUsesHelmValues: false
+
+
+## bundles the install of grafana (we'll handle this outside of this chart)
+grafana:
+  enabled: false
+
+## Deploys the windows-exporter and Windows-specific dashboards
+windowsMonitoring:
+  enabled: false
+
+## Configuration for alertmanager
+alertmanager:
+  enabled: false
+
+## Component scraping the kube api server
+kubeApiServer:
+  enabled: true
+
+## Component scraping the kube controller manager
+kubeControllerManager:
+  enabled: false
+
+## Component scraping the kubelet and kubelet-hosted cAdvisor
+kubelet:
+  enabled: true
+
+## Component scraping etcd
+kubeEtcd:
+  enabled: true
+
+## Flag to disable all the kubernetes component scrapers
+kubernetesServiceMonitors:
+  enabled: true
+
+## Component scraping coreDns.
+coreDns:
+  enabled: true
+
+## Component scraping kubeDns. Use either this or coreDns
+kubeDns:
+  enabled: false
+
+## Component scraping kube scheduler
+kubeScheduler:
+  enabled: false
+
+## Component scraping kube proxy
+kubeProxy:
+  enabled: false
+
+## Component scraping kube state metrics
+kubeStateMetrics:
+  enabled: false
+
+## Deploy node exporter as a daemonset to all nodes (we'll handle this outside of this chart)
+nodeExporter:
+  enabled: false
+
+## Manages Prometheus and Alertmanager components
+prometheusOperator:
+  enabled: true
