@@ -1,0 +1,112 @@
+annotations:
+  configmap.reloader.stakater.com/reload: grafana
+  # secret.reloader.stakater.com/reload: grafana-admin-secret
+
+replicas: 1
+
+plugins:
+  - grafana-clock-panel
+  - grafana-piechart-panel
+  - grafana-worldmap-panel
+  - natel-discrete-panel
+  - pr0ps-trackmap-panel
+  - vonage-status-panel
+
+serviceAccount:
+  create: true
+  autoMount: true
+
+serviceMonitor:
+  enabled: true
+
+serviceAccount:
+  create: true
+  automountServiceAccountToken: true
+
+persistence:
+  enabled: false
+
+ingress:
+  enabled: false
+
+env:
+  GF_ANALYTICS_CHECK_FOR_UPDATES: false
+  GF_ANALYTICS_CHECK_FOR_PLUGIN_UPDATES: false
+  GF_ANALYTICS_REPORTING_ENABLED: false
+  GF_AUTH_ANONYMOUS_ENABLED: false
+  GF_AUTH_BASIC_ENABLED: false
+  GF_DATE_FORMATS_USE_BROWSER_LOCALE: true
+  # GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH: /tmp/dashboards/home.json
+  GF_EXPLORE_ENABLED: true
+  GF_FEATURE_TOGGLES_ENABLE: publicDashboards
+  GF_LOG_MODE: console
+  GF_NEWS_NEWS_FEED_ENABLED: false
+  GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: natel-discrete-panel,pr0ps-trackmap-panel,panodata-map-panel
+  GF_SECURITY_COOKIE_SAMESITE: grafana
+  GF_SERVER_ROOT_URL: https://grafana-k8s.piccola.us
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - access: proxy
+        name: Prometheus
+        type: prometheus
+        url: http://prometheus-operated.kube-prometheus-stack.svc.cluster.local:9090
+        isDefault: true
+        jsonData:
+          prometheusType: Prometheus
+
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: default
+            disableDeletion: false
+            editable: true
+            folder: ""
+            options:
+              path: /var/lib/grafana/dashboards/default
+            orgId: 1
+            type: file
+          - name: kubernetes
+            orgId: 1
+            folder: Kubernetes
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/kubernetes
+
+    dashboards:
+      kubernetes:
+        k8s-system-api-server:
+          # renovate: dashboardName="Kubernetes / System / API Server"
+          gnetId: 15761
+          revision: 19
+          datasource: Prometheus
+        k8s-views-global:
+          # renovate: dashboardName="Kubernetes / Views / Global"
+          gnetId: 15757
+          revision: 43
+          datasource: Prometheus
+        k8s-views-nodes:
+          # renovate: dashboardName="Kubernetes / Views / Nodes"
+          gnetId: 15759
+          revision: 34
+          datasource: Prometheus
+        k8s-views-namespaces:
+          # renovate: dashboardName="Kubernetes / Views / Namespaces"
+          gnetId: 15758
+          revision: 42
+          datasource: Prometheus
+        k8s-views-pods:
+          # renovate: dashboardName="Kubernetes / Views / Pods"
+          gnetId: 15760
+          revision: 36
+          datasource: Prometheus
+        k8s-volumes:
+          # renovate: dashboardName="K8s / Storage / Volumes / Cluster"
+          gnetId: 11454
+          revision: 14
+          datasource: Prometheus
