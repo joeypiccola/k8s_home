@@ -79,6 +79,12 @@ dashboardProviders:
           path: /var/lib/grafana/dashboards/kubernetes
 
 dashboards:
+  default:
+    node-exporter-full:
+      # renovate: depName="Node Exporter Full"
+      gnetId: 1860
+      revision: 32
+      datasource: Prometheus
   kubernetes:
     k8s-system-api-server:
       # renovate: dashboardName="Kubernetes / System / API Server"
