@@ -21,13 +21,13 @@ prometheus:
     retention: 7d
     retentionSize: 25GB
     scrapeInterval: 1m # Must match interval in Grafana Helm chart
-    storageSpec:
-      volumeClaimTemplate:
-        spec:
-          storageClassName: longhorn
-          resources:
-            requests:
-              storage: 30Gi
+    # storageSpec:
+    #   volumeClaimTemplate:
+    #     spec:
+    #       storageClassName: longhorn
+    #       resources:
+    #         requests:
+    #           storage: 30Gi
     walCompression: true
     # ruleSelectorNilUsesHelmValues: false
     # scrapeConfigSelectorNilUsesHelmValues: false
