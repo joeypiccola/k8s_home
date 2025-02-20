@@ -32,7 +32,10 @@ prometheus:
     # ruleSelectorNilUsesHelmValues: false
     # scrapeConfigSelectorNilUsesHelmValues: false
     # serviceMonitorSelectorNilUsesHelmValues: false
-
+    # additionalScrapeConfigs:
+    #   - job_name: node
+    #     static_configs:
+    #     - targets: ['localhost:9100']
 
 ## bundles the install of grafana (we'll handle this outside of this chart)
 grafana:
@@ -89,7 +92,21 @@ kubeProxy:
 
 ## Component scraping kube state metrics
 kubeStateMetrics:
-  enabled: false
+  enabled: true
+
+kube-state-metrics:
+  metricLabelsAllowlist:
+    - "persistentvolumeclaims=[*]"
+  prometheus:
+    monitor:
+      enabled: true
+      relabelings:
+        - action: replace
+          regex: (.*)
+          replacement: $1
+          sourceLabels:
+            - __meta_kubernetes_pod_node_name
+          targetLabel: kubernetes_node
 
 ## Deploy node exporter as a daemonset to all nodes (we'll handle this outside of this chart)
 nodeExporter:
