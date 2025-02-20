@@ -4,14 +4,14 @@ cleanPrometheusOperatorObjectNames: true # unset this after first install
 prometheus:
   route:
     main:
-      enabled: true
-      hostnames:
-      - prometheus-k8s.piccola.us # not sure AVP can do sub in values
-      parentRefs:
-      - group: gateway.networking.k8s.io
-        kind: Gateway
-        name: internal
-        namespace: gateway
+      enabled: false
+      # hostnames:
+      # - prometheus-k8s.piccola.us # not sure AVP can do sub in values
+      # parentRefs:
+      # - group: gateway.networking.k8s.io
+      #   kind: Gateway
+      #   name: internal
+      #   namespace: gateway
 
 prometheusSpec:
   replicas: 1
