@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: prometheus-node-exporter
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: prometheus-node-exporter
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+        pod-security.kubernetes.io/enforce: "privileged"
+  source:
+    chart: prometheus-node-exporter
+    repoURL: https://prometheus-community.github.io/helm-charts
+    targetRevision: 5.30.0
+    helm:
+      releaseName: prometheus-node-exporter
+      valuesObject:
+        fullnameOverride: node-exporter
+
+        image:
+          registry: quay.io
+          repository: prometheus/node-exporter
+
+        prometheus:
+          monitor:
+            enabled: true
+            jobLabel: app.kubernetes.io/instance
+
+            relabelings:
+              - action: replace
+                regex: (.*)
+                replacement: $1
+                sourceLabels:
+                  - __meta_kubernetes_pod_node_name
+                targetLabel: kubernetes_node
+              - action: replace
+                regex: (.*)
+                replacement: $1
+                sourceLabels:
+                  - __meta_kubernetes_pod_node_name
+                targetLabel: nodename
+              - action: replace
+                regex: (.*)
+                replacement: $1.k8s.piccola.us:9100
+                sourceLabels:
+                  - kubernetes_node
+                targetLabel: instance
+
+        hostNetwork: false
