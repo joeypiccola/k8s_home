@@ -93,7 +93,7 @@ kubeStateMetrics:
 
 ## Deploy node exporter as a daemonset to all nodes (we'll handle this outside of this chart)
 nodeExporter:
-  enabled: false
+  enabled: true
 
 ## Manages Prometheus and Alertmanager components
 prometheusOperator:
