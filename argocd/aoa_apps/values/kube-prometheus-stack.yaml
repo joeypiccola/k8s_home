@@ -37,6 +37,11 @@ prometheus:
 ## bundles the install of grafana (we'll handle this outside of this chart)
 grafana:
   enabled: false
+  forceDeployDashboards: true
+  sidecar:
+    dashboards:
+      annotations:
+        grafana_folder: Kubernetes
 
 ## Deploys the windows-exporter and Windows-specific dashboards
 windowsMonitoring:
