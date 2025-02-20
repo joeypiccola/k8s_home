@@ -5,13 +5,13 @@ prometheus:
   route:
     main:
       enabled: false
-      # hostnames:
-      # - prometheus-k8s.piccola.us # not sure AVP can do sub in values
-      # parentRefs:
-      # - group: gateway.networking.k8s.io
-      #   kind: Gateway
-      #   name: internal
-      #   namespace: gateway
+      hostnames:
+      - prometheus-k8s.piccola.us # not sure AVP can do sub in values
+      parentRefs:
+      - group: gateway.networking.k8s.io
+        kind: Gateway
+        name: internal
+        namespace: gateway
 
 prometheusSpec:
   replicas: 1
