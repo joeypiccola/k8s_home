@@ -54,3 +54,10 @@ metadata:
   name: overseerr
   labels:
     goldilocks.fairwinds.com/enabled: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kube-prometheus-stack
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"

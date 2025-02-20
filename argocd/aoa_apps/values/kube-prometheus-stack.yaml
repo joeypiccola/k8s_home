@@ -12,27 +12,26 @@ prometheus:
         kind: Gateway
         name: internal
         namespace: gateway
-
-prometheusSpec:
-  replicas: 1
-  enableFeatures:
-    - auto-gomaxprocs
-    - memory-snapshot-on-shutdown
-    - new-service-discovery-manager
-  retention: 7d
-  retentionSize: 25GB
-  scrapeInterval: 1m # Must match interval in Grafana Helm chart
-  storageSpec:
-    volumeClaimTemplate:
-      spec:
-        storageClassName: longhorn
-        resources:
-          requests:
-            storage: 30Gi
-  walCompression: true
-  # ruleSelectorNilUsesHelmValues: false
-  # scrapeConfigSelectorNilUsesHelmValues: false
-  # serviceMonitorSelectorNilUsesHelmValues: false
+  prometheusSpec:
+    replicas: 1
+    enableFeatures:
+      - auto-gomaxprocs
+      - memory-snapshot-on-shutdown
+      - new-service-discovery-manager
+    retention: 7d
+    retentionSize: 25GB
+    scrapeInterval: 1m # Must match interval in Grafana Helm chart
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          resources:
+            requests:
+              storage: 30Gi
+    walCompression: true
+    # ruleSelectorNilUsesHelmValues: false
+    # scrapeConfigSelectorNilUsesHelmValues: false
+    # serviceMonitorSelectorNilUsesHelmValues: false
 
 
 ## bundles the install of grafana (we'll handle this outside of this chart)
