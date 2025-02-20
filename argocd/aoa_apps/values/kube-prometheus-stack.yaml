@@ -4,7 +4,7 @@ cleanPrometheusOperatorObjectNames: true # unset this after first install
 prometheus:
   route:
     main:
-      enabled: true
+      enabled: false # you do this in gateway-api-objects
       hostnames:
       - prometheus-k8s.piccola.us # not sure AVP can do sub in values
       parentRefs:

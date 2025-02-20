@@ -1,17 +1,17 @@
-# ---
-# apiVersion: gateway.networking.k8s.io/v1beta1
-# kind: HTTPRoute
-# metadata:
-#   name: kps-route
-#   namespace: kube-prometheus-stack-prometheus
-# spec:
-#   hostnames:
-#     - prometheus-k8s.<path:cluster-secrets:cluster-secrets#domain>
-#     - kps.<path:cluster-secrets:cluster-secrets#domain>
-#   parentRefs:
-#   - name: internal
-#     namespace: gateway
-#   rules:
-#   - backendRefs:
-#     - name: kube-prometheus-stack-prometheus
-#       port: 9090
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: kps-route
+  namespace: kube-prometheus-stack
+spec:
+  hostnames:
+    - prometheus-k8s.<path:cluster-secrets:cluster-secrets#domain>
+    - kps.<path:cluster-secrets:cluster-secrets#domain>
+  parentRefs:
+  - name: internal
+    namespace: gateway
+  rules:
+  - backendRefs:
+    - name: kube-prometheus-stack-prometheus
+      port: 9090
