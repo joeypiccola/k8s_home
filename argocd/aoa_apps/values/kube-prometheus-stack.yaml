@@ -8,7 +8,9 @@ prometheus:
       hostnames:
       - prometheus-k8s.piccola.us # not sure AVP can do sub in values
       parentRefs:
-      - name: internal
+      - group: gateway.networking.k8s.io
+        kind: Gateway
+        name: internal
         namespace: gateway
 
 prometheusSpec:
