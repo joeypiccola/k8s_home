@@ -32,10 +32,10 @@ prometheus:
     # ruleSelectorNilUsesHelmValues: false
     # scrapeConfigSelectorNilUsesHelmValues: false
     # serviceMonitorSelectorNilUsesHelmValues: false
-    # additionalScrapeConfigs:
-    #   - job_name: node
-    #     static_configs:
-    #     - targets: ['localhost:9100']
+    additionalScrapeConfigs:
+      - job_name: opnsense
+        static_configs:
+        - targets: [10.0.3.1:9100]
 
 ## bundles the install of grafana (we'll handle this outside of this chart)
 grafana:
