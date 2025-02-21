@@ -7,6 +7,8 @@ metadata:
     argocd.argoproj.io/sync-wave: "50"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
+    # - post-delete-finalizer.argocd.argoproj.io
+    # - post-delete-finalizer.argocd.argoproj.io/cleanup
 spec:
   project: default
   source:
