@@ -77,14 +77,14 @@ dashboardProviders:
         editable: true
         options:
           path: /var/lib/grafana/dashboards/kubernetes
-      - name: opnsense
-        orgId: 1
-        folder: OPNsense
-        type: file
-        disableDeletion: false
-        editable: true
-        options:
-          path: /var/lib/grafana/dashboards/opnsense
+      # - name: opnsense
+      #   orgId: 1
+      #   folder: OPNsense
+      #   type: file
+      #   disableDeletion: false
+      #   editable: true
+      #   options:
+      #     path: /var/lib/grafana/dashboards/opnsense
 
 dashboards:
   default:
@@ -93,7 +93,6 @@ dashboards:
       gnetId: 1860
       revision: 32
       datasource: Prometheus
-  opnsense:
     opnsense:
       gnetId: 19366
       revision: 5
