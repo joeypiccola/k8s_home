@@ -68,7 +68,7 @@ kubelet:
 
 ## Component scraping etcd
 kubeEtcd:
-  enabled: true
+  enabled: false
 
 ## Flag to disable all the kubernetes component scrapers
 kubernetesServiceMonitors:
