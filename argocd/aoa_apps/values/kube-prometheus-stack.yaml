@@ -37,7 +37,7 @@ prometheus:
         static_configs:
         - targets: [10.0.3.1:9100]
     additionalScrapeConfigs:
-      - job_name: opnsense
+      - job_name: argocd
         static_configs:
         - targets: [https://argocd-application-controller-metrics.piccola.us:443]
 
