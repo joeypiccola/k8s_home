@@ -77,14 +77,14 @@ dashboardProviders:
         editable: true
         options:
           path: /var/lib/grafana/dashboards/kubernetes
-      # - name: opnsense
-      #   orgId: 1
-      #   folder: OPNsense
-      #   type: file
-      #   disableDeletion: false
-      #   editable: true
-      #   options:
-      #     path: /var/lib/grafana/dashboards/opnsense
+      - name: argocd
+        orgId: 1
+        folder: ArgoCD
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/argocd
 
 dashboards:
   default:
@@ -93,9 +93,10 @@ dashboards:
       gnetId: 1860
       revision: 32
       datasource: Prometheus
-    opnsense:
-      gnetId: 19366
-      revision: 5
+  argocd:
+    argocd:
+      gnetId: 14584
+      revision: 1
       datasource: Prometheus
   kubernetes:
     k8s-system-api-server:
