@@ -39,7 +39,7 @@ prometheus:
     additionalScrapeConfigs:
       - job_name: opnsense
         static_configs:
-        - targets: [argocd-application-controller-metrics.piccola.us:443]
+        - targets: [https://argocd-application-controller-metrics.piccola.us:443]
 
 ## bundles the install of grafana (we'll handle this outside of this chart)
 grafana:
