@@ -31,7 +31,8 @@ serviceAccount:
   automountServiceAccountToken: true
 
 persistence:
-  enabled: false
+  enabled: true
+  existingClaim: grafana-pvc
 
 ingress:
   enabled: false
