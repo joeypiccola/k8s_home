@@ -6,6 +6,14 @@ controller:
   metrics:
     enabled: true
 repoServer:
+  metrics:
+    enabled: redis
+server:
+  metrics:
+    enabled: true
+repoServer:
+  metrics:
+    enabled: true
   clusterRoleRules:
     enabled: true
     rules:
