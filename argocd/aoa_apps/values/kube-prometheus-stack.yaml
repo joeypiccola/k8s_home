@@ -36,10 +36,10 @@ prometheus:
       - job_name: opnsense
         static_configs:
         - targets: [10.0.3.1:9100]
-      # - job_name: argocd
-      #   static_configs:
-      #   - targets: [argocd-application-controller-metrics.piccola.us:443]
-      #   scheme: https
+      - job_name: argocd
+        static_configs:
+        - targets: [argocd-application-controller-metrics.piccola.us:443]
+        scheme: https
 
 ## bundles the install of grafana (we'll handle this outside of this chart)
 grafana:
