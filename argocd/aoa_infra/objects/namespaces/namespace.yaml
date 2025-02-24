@@ -61,3 +61,10 @@ metadata:
   name: kube-prometheus-stack
   labels:
     goldilocks.fairwinds.com/enabled: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: grafana
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"
