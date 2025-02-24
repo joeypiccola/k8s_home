@@ -5,9 +5,9 @@ configs:
 controller:
   metrics:
     enabled: true
-repoServer:
+redis:
   metrics:
-    enabled: redis
+    enabled: true
 server:
   metrics:
     enabled: true
