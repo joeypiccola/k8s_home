@@ -40,7 +40,7 @@ prometheus:
         static_configs:
         # - targets: [argocd-application-controller-metrics.piccola.us:443]
         - targets: [argocd-application-controller-metrics.argocd.svc.cluster.local:8082]
-        scheme: https
+        # scheme: https
 
 ## bundles the install of grafana (we'll handle this outside of this chart)
 grafana:
