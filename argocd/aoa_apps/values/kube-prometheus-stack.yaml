@@ -39,7 +39,11 @@ prometheus:
       - job_name: argocd
         static_configs:
         # - targets: [argocd-application-controller-metrics.piccola.us:443]
-        - targets: [argocd-application-controller-metrics.argocd.svc.cluster.local:8082]
+        - targets:
+            - argocd-application-controller-metrics.argocd.svc.cluster.local:8082
+            - argocd-redis-metrics.argocd.svc.cluster.local:9121
+            - argocd-repo-server-metrics.argocd.svc.cluster.local:8084
+            - argocd-server-metrics.argocd.svc.cluster.local:8083
         # scheme: https
 
 ## bundles the install of grafana (we'll handle this outside of this chart)
