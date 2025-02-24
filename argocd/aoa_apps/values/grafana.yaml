@@ -4,6 +4,13 @@ annotations:
 
 replicas: 1
 
+# Use an existing secret for the admin user.
+admin:
+  ## Name of the secret. Can be templated.
+  existingSecret: "grafana-secrets"
+  userKey: grafana-admin-user
+  passwordKey: grafana-admin-password
+
 plugins:
   - grafana-clock-panel
   - grafana-piechart-panel
