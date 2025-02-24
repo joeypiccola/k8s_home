@@ -32,13 +32,13 @@ prometheus:
     # ruleSelectorNilUsesHelmValues: false
     # scrapeConfigSelectorNilUsesHelmValues: false
     # serviceMonitorSelectorNilUsesHelmValues: false
-    # additionalScrapeConfigs:
-    #   - job_name: opnsense
-    #     static_configs:
-    #     - targets: [10.0.3.1:9100]
-    #   - job_name: argocd
-    #     static_configs:
-    #     - targets: [https://argocd-application-controller-metrics.piccola.us:443]
+    additionalScrapeConfigs:
+      - job_name: opnsense
+        static_configs:
+        - targets: [10.0.3.1:9100]
+      - job_name: argocd
+        static_configs:
+        - targets: [https://argocd-application-controller-metrics.piccola.us:443]
 
 ## bundles the install of grafana (we'll handle this outside of this chart)
 grafana:
