@@ -35,4 +35,4 @@ spec:
             storageReservedPercentageForDefaultDisk: 10
           metrics:
             serviceMonitor:
-              enabled: ftrue
+              enabled: true
