@@ -1,0 +1,80 @@
+version: '3'
+
+tasks:
+
+  terraform_apply:
+    desc: Apply Terraform
+    silent: true
+    cmds:
+      - terraform -chdir=terraform_proxmox apply
+
+  set_k8s_context:
+    desc: Set the k8s context to Talos
+    silent: true
+    cmds:
+      - kubectl config set-context admin@talos
+
+  install_gateway_api_crds:
+    desc: Install Gateway API CRDs
+    silent: true
+    deps: [set_k8s_context]
+    cmds:
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+
+  install_cilium:
+    desc: Install Cilium
+    silent: true
+    cmds:
+      - |
+        helm repo add cilium https://helm.cilium.io/
+        helm repo update cilium
+        cilium_helm_release=$(yq '.spec.sources[0].targetRevision' ./argocd/aoa_apps/apps/cilium.yaml)
+        helm template cilium cilium/cilium --version $cilium_helm_release --namespace kube-system --values ./argocd/aoa_apps/values/cilium.yaml | kubectl apply -f -
+
+  install_argocd:
+    desc: Install ArgoCD
+    silent: true
+    cmds:
+      - |
+        kubectl get namespace argocd >/dev/null 2>&1 || kubectl create namespace argocd
+        kubectl config set-context --current --namespace=argocd
+        helm repo add argo https://argoproj.github.io/argo-helm
+        helm repo update argo
+        argo_helm_release=$(yq '.spec.sources[0].targetRevision' ./argocd/aoa_apps/apps/argocd.yaml)
+        helm template argocd argo/argo-cd --version $argo_helm_release --namespace argocd --values ./argocd/aoa_apps/values/argocd.yaml | kubectl apply -f -
+
+  stage_onepassword_secrets:
+    desc: Stage OnePassword Secrets
+    silent: true
+    cmds:
+      - |
+        kubectl get namespace onepassword >/dev/null 2>&1 || kubectl create namespace onepassword
+        onepass_creds_b64=$(op document get 'talos Credentials File' | base64)
+        onepass_token=$(op item get 'talos Access Token Kubernetes operator' --format json --fields credential | jq -r .value)
+        onepass_helm_release=connect-$(yq '.spec.source.targetRevision' argocd/infra/apps/onepassword.yaml)
+        onepass_token=$onepass_token onepass_helm_release=$onepass_helm_release yq '.stringData.token = env(onepass_token), .metadata.labels."helm.sh/chart" = env(onepass_helm_release)' ./bootstrap/onepassword-token.yaml | kubectl apply -f -
+        onepass_creds_b64=$onepass_creds_b64 onepass_helm_release=$onepass_helm_release yq '.stringData."1password-credentials.json" = env(onepass_creds_b64), .metadata.labels."helm.sh/chart" = env(onepass_helm_release)' ./bootstrap/op-credentials.yaml | kubectl apply -f -
+
+  talos:genconfig:
+    desc: Generate talos configs with talhelper
+    silent: true
+    dir: talos
+    cmds:
+      - talhelper genconfig
+
+  talos:apply-config:
+    desc: Apply generated talos configs
+    silent: true
+    env:
+      TALOSCONFIG: terraform/talosconfig
+    cmds:
+      - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-1.k8s.piccola.us.yaml -n control-1.k8s.piccola.us
+      - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-2.k8s.piccola.us.yaml -n control-2.k8s.piccola.us
+      - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-3.k8s.piccola.us.yaml -n control-3.k8s.piccola.us
+      - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-4.k8s.piccola.us.yaml -n control-4.k8s.piccola.us
+      - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-5.k8s.piccola.us.yaml -n control-5.k8s.piccola.us

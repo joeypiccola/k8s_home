@@ -1,0 +1,102 @@
+clusterName: ${clusterName}
+endpoint: https://${clusterName}.${domainName}:6443
+talosVersion: ${talosVersion}
+kubernetesVersion: ${kubernetesVersion}
+
+controlPlane:
+  patches:
+    - "@./patches/cluster.yaml"
+    - "@./patches/machine.yaml"
+  schematic:
+    customization:
+      systemExtensions:
+        officialExtensions:
+            - siderolabs/i915
+            - siderolabs/iscsi-tools
+
+nodes:
+  - hostname: control-1.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${controlPlaneIP_1}
+    controlPlane: true
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eno1
+        vip:
+          ip: ${vip}
+        dhcp: false
+        addresses:
+          - ${controlPlaneIP_1}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+  - hostname: control-2.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${controlPlaneIP_2}
+    controlPlane: true
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eno1
+        vip:
+          ip: ${vip}
+        dhcp: false
+        addresses:
+          - ${controlPlaneIP_2}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+  - hostname: control-3.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${controlPlaneIP_3}
+    controlPlane: true
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eno1
+        vip:
+          ip: ${vip}
+        dhcp: false
+        addresses:
+          - ${controlPlaneIP_3}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+  - hostname: control-4.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${controlPlaneIP_3}
+    controlPlane: true
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eno1
+        vip:
+          ip: ${vip}
+        dhcp: false
+        addresses:
+          - ${controlPlaneIP_4}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}
+  - hostname: control-5.${domainName}
+    installDisk: /dev/sda
+    ipAddress: ${controlPlaneIP_3}
+    controlPlane: true
+    nameservers:
+      - ${ns1}
+      - ${ns2}
+    networkInterfaces:
+      - interface: eno1
+        vip:
+          ip: ${vip}
+        dhcp: false
+        addresses:
+          - ${controlPlaneIP_5}/24
+        routes:
+          - network: 0.0.0.0/0
+            gateway: ${gateway}

@@ -1,9 +1,0 @@
----
-customization:
-    systemExtensions:
-        officialExtensions:
-            - siderolabs/i915-ucode
-            - siderolabs/intel-ucode
-            - siderolabs/iscsi-tools
-            - siderolabs/mei
-            - siderolabs/qemu-guest-agent
