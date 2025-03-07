@@ -71,7 +71,7 @@ tasks:
     desc: Apply generated talos configs
     silent: true
     env:
-      TALOSCONFIG: terraform/talosconfig
+      TALOSCONFIG: talos/clusterconfig/talosconfig
     cmds:
       - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-1.k8s.piccola.us.yaml -n control-1.k8s.piccola.us
       - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-2.k8s.piccola.us.yaml -n control-2.k8s.piccola.us
