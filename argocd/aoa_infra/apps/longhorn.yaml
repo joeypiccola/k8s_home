@@ -33,6 +33,6 @@ spec:
             backupTarget: cifs://10.0.3.23/longhorn_backups?cifsOptions=vers=2.0
             backupTargetCredentialSecret: cifs-secret
             storageReservedPercentageForDefaultDisk: 10
-          metrics:
-            serviceMonitor:
-              enabled: true
+          # metrics:
+          #   serviceMonitor:
+          #     enabled: true
