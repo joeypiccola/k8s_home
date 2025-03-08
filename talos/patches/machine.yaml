@@ -9,6 +9,6 @@ machine:
           - rshared
           - rw
   disks:
-    - device: /dev/dev/nvme0n1
+    - device: /dev/nvme0n1
       partitions:
         - mountpoint: /var/mnt/longhorn
