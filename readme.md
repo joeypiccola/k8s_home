@@ -41,23 +41,23 @@ The `.sops.yaml` file defines rules for what files via path filtering are in sco
 
 ## Rebuild from scratch
 
-regenerate configs if needed
+regenerate configs if needed.
 
 `> task talos:genconfig`
 
-apply the configs
+apply the configs.
 
 `> talos:apply-config`
 
-initiate bootstrap
+initiate bootstrap.
 
 `> task talos:bootstrap`
 
-get kubeconfig if needed, only required if new talos secrets were generated
+get kubeconfig if needed, only required if new talos secrets were generated.
 
 `> task talos:get-kubeconfig`
 
-begin to install core infra
+begin to install core infra. cilium and argocd will be managed under argocd later.
 
 ```plaintext
 > task install:gateway_api_crds
@@ -66,15 +66,15 @@ begin to install core infra
 > task stage:onepassword_secrets
 ```
 
-install argo app of apps `infra`
+install argo app of apps `infra`.
 
 `> k apply -n argocd -f argocd/aoa_infra.yaml`
 
-now that longhorn is installed, proceed to the longhorn UI to restore volumes
+now that longhorn is installed, proceed to the longhorn UI to restore volumes.
 
 - restore volumes one at a time, checking "Use Previous Name"
 - restore volume PV/PVC, checking create both pv and pvc
 
-install argo app of apps `apps`
+install argo app of apps `apps`.
 
 `> k apply -n argocd -f argocd/aoa_apps.yaml`
