@@ -14,7 +14,7 @@ tasks:
     cmds:
       - kubectl config set-context admin@talos
 
-  install_gateway_api_crds:
+  install:gateway_api_crds:
     desc: Install Gateway API CRDs
     silent: true
     deps: [set_k8s_context]
@@ -26,17 +26,17 @@ tasks:
       - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
       - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.1.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
 
-  install_cilium:
+  install:cilium:
     desc: Install Cilium
     silent: true
     cmds:
       - |
         helm repo add cilium https://helm.cilium.io/
         helm repo update cilium
-        cilium_helm_release=$(yq '.spec.sources[0].targetRevision' ./argocd/aoa_apps/apps/cilium.yaml)
+        cilium_helm_release=$(yq '.spec.sources[0].targetRevision' ./argocd/aoa_apps/apps/networking/cilium.yaml)
         helm template cilium cilium/cilium --version $cilium_helm_release --namespace kube-system --values ./argocd/aoa_apps/values/cilium.yaml | kubectl apply -f -
 
-  install_argocd:
+  install:argocd:
     desc: Install ArgoCD
     silent: true
     cmds:
@@ -48,7 +48,7 @@ tasks:
         argo_helm_release=$(yq '.spec.sources[0].targetRevision' ./argocd/aoa_apps/apps/argocd.yaml)
         helm template argocd argo/argo-cd --version $argo_helm_release --namespace argocd --values ./argocd/aoa_apps/values/argocd.yaml | kubectl apply -f -
 
-  stage_onepassword_secrets:
+  stage:onepassword_secrets:
     desc: Stage OnePassword Secrets
     silent: true
     cmds:
@@ -56,7 +56,7 @@ tasks:
         kubectl get namespace onepassword >/dev/null 2>&1 || kubectl create namespace onepassword
         onepass_creds_b64=$(op document get 'talos Credentials File' | base64)
         onepass_token=$(op item get 'talos Access Token Kubernetes operator' --format json --fields credential | jq -r .value)
-        onepass_helm_release=connect-$(yq '.spec.source.targetRevision' argocd/infra/apps/onepassword.yaml)
+        onepass_helm_release=connect-$(yq '.spec.source.targetRevision' argocd/aoa_infra/apps/onepassword.yaml)
         onepass_token=$onepass_token onepass_helm_release=$onepass_helm_release yq '.stringData.token = env(onepass_token), .metadata.labels."helm.sh/chart" = env(onepass_helm_release)' ./bootstrap/onepassword-token.yaml | kubectl apply -f -
         onepass_creds_b64=$onepass_creds_b64 onepass_helm_release=$onepass_helm_release yq '.stringData."1password-credentials.json" = env(onepass_creds_b64), .metadata.labels."helm.sh/chart" = env(onepass_helm_release)' ./bootstrap/op-credentials.yaml | kubectl apply -f -
 
@@ -78,3 +78,56 @@ tasks:
       - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-3.k8s.piccola.us.yaml -n control-3.k8s.piccola.us
       - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-4.k8s.piccola.us.yaml -n control-4.k8s.piccola.us
       - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-5.k8s.piccola.us.yaml -n control-5.k8s.piccola.us
+
+  talos:bootstrap:
+    desc: Bootstrap the talos cluster
+    silent: true
+    env:
+      TALOSCONFIG: talos/clusterconfig/talosconfig
+    cmds:
+      - talosctl bootstrap -n control-1.k8s.piccola.us -e control-1.k8s.piccola.us
+
+  talos:get-kubeconfig:
+    desc: Get and merge the cluster kubeconfig (only required if you gen'd new talos secrets)
+    silent: true
+    env:
+      TALOSCONFIG: talos/clusterconfig/talosconfig
+    cmds:
+      - talosctl kubeconfig --nodes control-1.k8s.piccola.us --endpoints control-1.k8s.piccola.us
+
+  talos:reset-nodes:
+    desc: Reset all talos nodes and reboot
+    silent: true
+    env:
+      TALOSCONFIG: talos/clusterconfig/talosconfig
+    cmds:
+      - echo "you need uncomment this task's command for it to work"
+      # - talosctl reset --reboot --graceful=false -n 10.0.5.201,10.0.5.202,10.0.5.203,10.0.5.204,10.0.5.205
+
+  argocd:getadminsecret:
+    desc: Get the ArgoCD initial admin secret
+    silent: true
+    cmds:
+      - kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode; echo
+
+  # argocd:login:
+  #   desc: blah
+  #   silent: true
+  #   vars:
+  #     PASSWORD:
+  #       sh: task argocd:getadminsecret
+  #   cmds:
+  #     # - echo {{.PASSWORD}}
+  #     - argocd login argocd-k8s.piccola.us:443 --username admin --password '{{.PASSWORD}}' --plaintext
+
+  # talos:wipe-nvme:
+  #   desc: Wipe nvme0n1 disks
+  #   silent: false
+  #   env:
+  #     TALOSCONFIG: talos/clusterconfig/talosconfig
+  #   cmds:
+  #     - talosctl wipe disk nvme0n1 -n control-1.k8s.piccola.us
+  #     - talosctl wipe disk nvme0n1 -n control-2.k8s.piccola.us
+  #     - talosctl wipe disk nvme0n1 -n control-3.k8s.piccola.us
+  #     - talosctl wipe disk nvme0n1 -n control-4.k8s.piccola.us
+  #     - talosctl wipe disk nvme0n1 -n control-5.k8s.piccola.us
