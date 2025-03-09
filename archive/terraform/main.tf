@@ -1,94 +1,148 @@
 locals {
-  talhelper_working_dir = "../talos"
-
-  vmware_config = {
-    folder = var.vsphere_folder
-    node_hardware_config = {
-      worker = {
-        memory = 16384
-        num_cpus = 4
-        disk_size = 50
-        longhorn_disk_size = 100
-      }
-      controlplane = {
-        memory = 16384
-        num_cpus = 4
-        disk_size = 50
-        longhorn_disk_size = 100
-      }
+  talos_version          = "v1.9.1"
+  talos_cluster_name     = "talos"
+  talos_cluster_endpoint = "https://talos.k8s.piccola.us:6443"
+  virtual_talos_nodes    = [ for node in local.talos_nodes : node if node.virtual ]
+  physical_talos_nodes   = [ for node in local.talos_nodes : node if node.virtual == false ]
+  console_logging        = "" # "e88202574e1c65f86d35d171ab7f08eddbe6c8e78cb45b9cb0470d6b0c394876"
+  talos_nodes            = [
+    {
+      hostname = "control-1.k8s.piccola.us"
+      ip       = "10.0.5.201"
+      vm_id    = 201
+      virtual  = true
+    },
+    {
+      hostname = "control-2.k8s.piccola.us"
+      ip       = "10.0.5.202"
+      vm_id    = 202
+      virtual  = true
+    },
+    {
+      hostname = "control-3.k8s.piccola.us"
+      ip       = "10.0.5.203"
+      virtual  = false
+    },
+    {
+      hostname = "control-4.k8s.piccola.us"
+      ip       = "10.0.5.204"
+      virtual  = false
+    },
+    {
+      hostname = "control-5.k8s.piccola.us"
+      ip       = "10.0.5.205"
+      virtual  = false
     }
-  }
+  ]
+}
 
-  talhelper_clusterconfig_path  = "${local.talhelper_working_dir}/clusterconfig"
-  talhelper_clusterconfig_files = fileset(local.talhelper_clusterconfig_path, "${local.talhelper_clusterName}-*")
-  talhelper_talenv_file         = file("${local.talhelper_working_dir}/talenv.yaml")
-  talhelper_clusterName         = yamldecode(local.talhelper_talenv_file)["clusterName"]
-  talhelper_talosVersion        = yamldecode(local.talhelper_talenv_file)["talosVersion"]
-  # this is an image factory url generated with https://factory.talos.dev/ (includes iscsi-tools and vmtoolsd-guest-agent). used Cloud Server/vmware as Hardware Type
-  talos_ovf_url                 = "https://factory.talos.dev/image/dfd1ac9abdf529ca644694b17af0ce1a2ae23a5cccdff39439aa7f0774901e90/${local.talhelper_talosVersion}/vmware-amd64.ova"
-  # talos_ovf_url                 = "https://github.com/siderolabs/talos/releases/download/${local.talhelper_talosVersion}/vmware-amd64.ova"
-
-  talos_nodes = {
-    for node in local.talhelper_clusterconfig_files:
-      split(".yaml", "${node}")[0] => { # <-- only splitting here so our keys are node names and not node file names
-        "hostname"     = yamldecode(file("${local.talhelper_clusterconfig_path}/${node}"))["machine"]["network"]["hostname"]
-        "type"         = yamldecode(file("${local.talhelper_clusterconfig_path}/${node}"))["machine"]["type"]
-        "talos_config" = base64encode(file("${local.talhelper_clusterconfig_path}/${node}"))
-    }
+data "talos_image_factory_extensions_versions" "virtual" {
+  talos_version = local.talos_version
+  filters = {
+    names = [
+      "iscsi-tools",
+      "qemu-guest-agent"
+    ]
   }
 }
 
-resource "vsphere_virtual_machine" "talos_nodes" {
-  for_each = local.talos_nodes
-
-  name                       = each.value.hostname
-  resource_pool_id           = data.vsphere_compute_cluster.cluster.resource_pool_id
-  host_system_id             = data.vsphere_host.host.id
-  datastore_id               = data.vsphere_datastore.datastore.id
-  datacenter_id              = data.vsphere_datacenter.datacenter.id
-  folder                     = local.vmware_config.folder
-  wait_for_guest_net_timeout = -1 # don't wait for guest since talos doesn't have vmtools
-  num_cpus                   = local.vmware_config.node_hardware_config[each.value.type].num_cpus
-  memory                     = local.vmware_config.node_hardware_config[each.value.type].memory
-  # hardware_version           = 17
-
-  ovf_deploy {
-    remote_ovf_url = local.talos_ovf_url
-  }
-
-  # Disk for os
-  disk {
-    label = "disk0"
-    size  = local.vmware_config.node_hardware_config[each.value.type].disk_size
-  }
-
-  # Disk for ceph
-  disk {
-    label       = "disk1"
-    size        = local.vmware_config.node_hardware_config[each.value.type].longhorn_disk_size
-    unit_number = 1
-  }
-
-  # VM networking
-  network_interface {
-    network_id   = data.vsphere_network.network.id
-    adapter_type = "vmxnet3"
-  }
-
-  # for vsphere-kubernetes integration
-  enable_disk_uuid = "true"
-
-  # sets the talos configuration
-  extra_config = {
-    "guestinfo.talos.config" = each.value.talos_config
-  }
-
-  lifecycle {
-    ignore_changes = [
-      disk[0].io_share_count,
-      disk[0].thin_provisioned,
-      disk[1].io_share_count,
-      disk[1].thin_provisioned
+data "talos_image_factory_extensions_versions" "physical" {
+  talos_version = local.talos_version
+  filters = {
+    names = [
+      "iscsi-tools",
+      "i915"
     ]
+  }
+}
+
+resource "talos_image_factory_schematic" "virtual" {
+  schematic = yamlencode(
+    {
+      customization = {
+        systemExtensions = {
+          officialExtensions = data.talos_image_factory_extensions_versions.virtual.extensions_info.*.name
+        }
+      }
+    }
+  )
+}
+
+resource "talos_image_factory_schematic" "physical" {
+  schematic = yamlencode(
+    {
+      customization = {
+        systemExtensions = {
+          officialExtensions = data.talos_image_factory_extensions_versions.physical.extensions_info.*.name
+        }
+      }
+    }
+  )
+}
+
+resource "proxmox_virtual_environment_download_file" "talos_image" {
+  content_type = "iso"
+  datastore_id = "isos"
+  node_name    = "pve"
+  url          = format("https://factory.talos.dev/image/%s/%s/nocloud-amd64.iso",
+    talos_image_factory_schematic.virtual.id,
+    data.talos_image_factory_extensions_versions.virtual.talos_version
+  )
+}
+
+resource "proxmox_virtual_environment_vm" "talos_nodes" {
+  for_each = { for node in local.virtual_talos_nodes : node.hostname => node }
+
+  name            = each.value.hostname
+  node_name       = "pve"
+  scsi_hardware   = "virtio-scsi-single"
+  stop_on_destroy = true
+  tags            = sort(["terraform", "linux", "kubernetes", "talos"])
+  vm_id           = each.value.vm_id
+
+  agent {
+    enabled = true
+  }
+  cpu {
+    cores = 4
+    type  = "x86-64-v2-AES"
+  }
+  memory {
+    dedicated = 16384
+    floating  = 16384
+  }
+  disk {
+    datastore_id = "local-nvme"
+    file_id      = proxmox_virtual_environment_download_file.talos_image.id
+    interface    = "scsi0"
+    size         = 40
+    iothread     = true
+    ssd          = true
+    discard      = "on"
+    file_format  = "raw"
+  }
+  disk {
+    datastore_id = "local-nvme"
+    interface    = "scsi1"
+    size         = 100
+    iothread     = true
+    ssd          = true
+    discard      = "on"
+    file_format  = "raw"
+  }
+  efi_disk {
+    datastore_id = "local-nvme"
+    file_format  = "raw"
+    type         = "4m"
+  }
+  network_device {
+    bridge      = "vmbr1"
+    firewall    = true
+    mac_address = format("6A:6F:65:79:70:0%s", substr(each.value.vm_id, 2, 1)) # j:o:e:y:p:x
+    model       = "virtio"
+    vlan_id     = "5"
+  }
+  operating_system {
+    type = "l26"
   }
 }
