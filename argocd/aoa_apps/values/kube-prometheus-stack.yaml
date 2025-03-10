@@ -19,7 +19,7 @@ prometheus:
       - memory-snapshot-on-shutdown
       - new-service-discovery-manager
     retention: 7d
-    retentionSize: 25GB
+    # retentionSize: 25GB
     scrapeInterval: 1m # Must match interval in Grafana Helm chart
     storageSpec:
       volumeClaimTemplate:
@@ -33,6 +33,22 @@ prometheus:
     # scrapeConfigSelectorNilUsesHelmValues: false
     # serviceMonitorSelectorNilUsesHelmValues: false
     additionalScrapeConfigs:
+      # - job_name: longhorn
+      #   metrics_path: "/metrics"
+      #   kubernetes_sd_configs:
+      #     - role: pod
+      #   namespaces:
+      #     own_namespace: false
+      #     names:
+      #       [ - longhorn ]
+      #   relabel_configs:
+      #     - source_labels: [__meta_kubernetes_namespace, __meta_kubernetes_pod_label_longhorn_io_component]
+      #       action: keep
+      #       regex: longhorn-system;manager
+      #     - source_labels: [__meta_kubernetes_pod_ip]
+      #       action: replace
+      #       target_label: __address__
+      #       replacement: "$1:9500" # Longhorn metrics endpoint
       - job_name: opnsense
         static_configs:
         - targets: [10.0.3.1:9100]
