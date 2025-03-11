@@ -55,7 +55,7 @@ spec:
   gatewayClassName: cilium
   addresses:
     - type: IPAddress
-      value: 10.0.5.210
+      value: "10.0.5.210"
     - type: Hostname
       value: "external.piccola.us"
   infrastructure:
@@ -64,7 +64,7 @@ spec:
       # with a different name and tries to take this IP.
       # the problem is the service created by cilium is not the one used by envoy.
       # therefore, the service is disabled https://tinyurl.com/3mt3upd5
-      lbipam.cilium.io/ips: 10.0.5.210
+      # lbipam.cilium.io/ips: 10.0.5.210
   listeners:
     - name: http
       protocol: HTTP
