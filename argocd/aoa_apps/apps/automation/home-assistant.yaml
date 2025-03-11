@@ -1,0 +1,114 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: home-assistant
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: home-assistant
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+  sources:
+    - repoURL: https://bjw-s.github.io/helm-charts
+      chart: app-template
+      # path: charts/sonarr
+      targetRevision: 3.7.2
+      helm:
+        releaseName: home-assistant
+        valuesObject:
+          defaultPodOptions:
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              fsGroup: 1000
+              fsGroupChangePolicy: OnRootMismatch
+          # route:
+          #   main:
+          #     parentRefs:
+          #       - name: internal
+          #         namespace: gateway
+          #         # sectionName: gateway-section
+          #     hostnames:
+          #       - ha-k8s.<path:cluster-secrets:cluster-secrets#domain>
+          #     rules:
+          #       - matches:
+          #           - path:
+          #               type: PathPrefix
+          #               value: /
+          #         backendRefs:
+          #           - kind: Service
+          #             port: 80
+          #             name: overseerr
+          #             namespace: overseerr
+          #             weight: 1
+          controllers:
+            home-assistant:
+              pod:
+                hostNetwork: true
+              containers:
+                app:
+                  image:
+                    repository: ghcr.io/home-assistant/home-assistant
+                    tag: 2025.3.1
+                  env:
+                    TZ: America/Denver
+                  #   POSTGRES_HOST:
+                  #     valueFrom:
+                  #       secretKeyRef:
+                  #         name: home-assistant-secret
+                  #         key: INIT_POSTGRES_HOST
+                  #   POSTGRES_DB:
+                  #     valueFrom:
+                  #       secretKeyRef:
+                  #         name: home-assistant-secret
+                  #         key: INIT_POSTGRES_DBNAME
+                  # envFrom:
+                  #   - secretRef:
+                  #       name: home-assistant-secret
+                  # resources:
+                  #   requests:
+                  #     cpu: 109m
+                  #     memory: 588M
+
+
+
+          service:
+            app:
+              controller: home-assistant
+              type: LoadBalancer
+              annotations:
+                io.cilium/lb-ipam-ips: 10.0.5.221
+              externalTrafficPolicy: Cluster
+              ports:
+                http:
+                  port: 8123
+                mdns-tcp:
+                  enabled: true
+                  port: 5353
+                  protocol: TCP
+                  targetPort: 5353
+                mdns-udp:
+                  enabled: true
+                  port: 5353
+                  protocol: UDP
+                  targetPort: 5353
+
+          persistence:
+            config:
+              existingClaim: home-assistant-config
+              globalMounts:
+                - path: /config
