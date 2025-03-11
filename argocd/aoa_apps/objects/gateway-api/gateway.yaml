@@ -6,6 +6,9 @@ metadata:
   namespace: gateway
 spec:
   gatewayClassName: cilium
+  addresses:
+    - type: IPAddress
+      value: 10.0.5.209
   listeners:
     - protocol: TLS
       port: 443
@@ -41,4 +44,3 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
-
