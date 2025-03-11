@@ -21,6 +21,7 @@ spec:
     managedNamespaceMetadata:
       labels:
         goldilocks.fairwinds.com/enabled: "true"
+        pod-security.kubernetes.io/enforce: privileged
   sources:
     - repoURL: https://bjw-s.github.io/helm-charts
       chart: app-template
@@ -36,25 +37,25 @@ spec:
               runAsGroup: 1000
               fsGroup: 1000
               fsGroupChangePolicy: OnRootMismatch
-          # route:
-          #   main:
-          #     parentRefs:
-          #       - name: internal
-          #         namespace: gateway
-          #         # sectionName: gateway-section
-          #     hostnames:
-          #       - ha-k8s.<path:cluster-secrets:cluster-secrets#domain>
-          #     rules:
-          #       - matches:
-          #           - path:
-          #               type: PathPrefix
-          #               value: /
-          #         backendRefs:
-          #           - kind: Service
-          #             port: 80
-          #             name: overseerr
-          #             namespace: overseerr
-          #             weight: 1
+          route:
+            main:
+              parentRefs:
+                - name: internal
+                  namespace: gateway
+                  # sectionName: gateway-section
+              hostnames:
+                - ha-k8s.<path:cluster-secrets:cluster-secrets#domain>
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  backendRefs:
+                    - kind: Service
+                      port: 8123
+                      name: home-assistant
+                      namespace: home-assistant
+                      weight: 1
           controllers:
             home-assistant:
               pod:
