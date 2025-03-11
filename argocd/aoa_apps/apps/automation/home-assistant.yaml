@@ -72,9 +72,9 @@ spec:
             app:
               enabled: true
               parentRefs:
-                - name: external
+                - name: internal
                   namespace: gateway
-                  sectionName: https
+                  # sectionName: https
               hostnames:
                 - ha-k8s.piccola.us
               rules:
