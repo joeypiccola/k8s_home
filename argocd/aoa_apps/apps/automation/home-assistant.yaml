@@ -37,25 +37,7 @@ spec:
               runAsGroup: 1000
               fsGroup: 1000
               fsGroupChangePolicy: OnRootMismatch
-          route:
-            main:
-              parentRefs:
-                - name: internal
-                  namespace: gateway
-                  # sectionName: gateway-section
-              hostnames:
-                - ha-k8s.<path:cluster-secrets:cluster-secrets#domain>
-              rules:
-                - matches:
-                    - path:
-                        type: PathPrefix
-                        value: /
-                  backendRefs:
-                    - kind: Service
-                      port: 8123
-                      name: home-assistant
-                      namespace: home-assistant
-                      weight: 1
+
           controllers:
             home-assistant:
               pod:
@@ -86,14 +68,33 @@ spec:
                   #     memory: 588M
 
 
-
+          route:
+            app:
+              enabled: true
+              parentRefs:
+                - name: external
+                  namespace: gateway
+                  sectionName: https
+              hostnames:
+                - ha-k8s.piccola.us
+              rules:
+                - backendRefs:
+                    - kind: Service
+                      port: 8123
+                      name: home-assistant
+                      namespace: home-assistant
+                      weight: 1
+                # - matches:
+                #     - path:
+                #         type: PathPrefix
+                #         value: /
           service:
             app:
               controller: home-assistant
-              type: LoadBalancer
-              annotations:
-                io.cilium/lb-ipam-ips: 10.0.5.221
-              externalTrafficPolicy: Cluster
+              # type: LoadBalancer
+              # annotations:
+              #   io.cilium/lb-ipam-ips: 10.0.5.221
+              # externalTrafficPolicy: Cluster
               ports:
                 http:
                   port: 8123
