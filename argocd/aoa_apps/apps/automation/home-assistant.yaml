@@ -82,12 +82,12 @@ spec:
                     - kind: Service
                       port: 8123
                       name: home-assistant
-                      # namespace: home-assistant
+                      namespace: home-assistant
                       weight: 1
-                # - matches:
-                #     - path:
-                #         type: PathPrefix
-                #         value: /
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
           service:
             app:
               controller: home-assistant
