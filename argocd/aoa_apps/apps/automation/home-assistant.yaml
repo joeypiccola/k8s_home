@@ -84,7 +84,7 @@ spec:
                       name: home-assistant
                       namespace: home-assistant
                       weight: 1
-                - matches:
+                  matches:
                     - path:
                         type: PathPrefix
                         value: /
