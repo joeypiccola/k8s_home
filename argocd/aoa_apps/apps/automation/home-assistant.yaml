@@ -69,7 +69,7 @@ spec:
 
 
           route:
-            app:
+            main:
               enabled: true
               parentRefs:
                 - name: internal
