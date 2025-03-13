@@ -9,7 +9,7 @@ spec:
     - uptime-kuma-k8s.<path:cluster-secrets:cluster-secrets#domain>
     - status.<path:cluster-secrets:cluster-secrets#domain>
   parentRefs:
-  - name: external
+  - name: internal
     namespace: gateway
   rules:
   - backendRefs:
