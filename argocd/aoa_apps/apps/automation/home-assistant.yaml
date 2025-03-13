@@ -76,15 +76,15 @@ spec:
               ports:
                 http:
                   port: 8123
-            app-2:
-              controller: home-assistant
-              type: LoadBalancer
-              annotations:
-                io.cilium/lb-ipam-ips: 10.0.5.225
-              # externalTrafficPolicy: Cluster
-              ports:
-                http:
-                  port: 8123
+            # app-2:
+            #   controller: home-assistant
+            #   type: LoadBalancer
+            #   annotations:
+            #     io.cilium/lb-ipam-ips: 10.0.5.225
+            #   # externalTrafficPolicy: Cluster
+            #   ports:
+            #     http:
+            #       port: 8123
 
           route:
             main:
