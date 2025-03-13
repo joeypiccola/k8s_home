@@ -97,7 +97,7 @@ spec:
             # -- Enable and configure route settings for the chart under this key.
             main:
               parentRefs:
-                - name: internal
+                - name: plex
                   namespace: gateway
                   # sectionName: gateway-section
               hostnames:
