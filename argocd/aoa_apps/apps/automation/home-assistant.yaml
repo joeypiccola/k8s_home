@@ -40,9 +40,9 @@ spec:
 
           controllers:
             home-assistant:
-              # pod:
-              #   hostNetwork: true
-              #   dnsPolicy: ClusterFirstWithHostNet
+              pod:
+                hostNetwork: true
+                dnsPolicy: ClusterFirstWithHostNet
               containers:
                 app:
                   image:
@@ -73,6 +73,15 @@ spec:
           service:
             app:
               controller: home-assistant
+              ports:
+                http:
+                  port: 8123
+            app-2:
+              controller: home-assistant
+              type: LoadBalancer
+              annotations:
+                io.cilium/lb-ipam-ips: 10.0.5.225
+              # externalTrafficPolicy: Cluster
               ports:
                 http:
                   port: 8123
