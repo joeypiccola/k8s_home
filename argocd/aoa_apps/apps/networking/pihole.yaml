@@ -14,7 +14,7 @@ spec:
     - repoURL: https://mojo2600.github.io/pihole-kubernetes
       chart: pihole
       # path: charts/pihole
-      targetRevision: 2.27.0
+      targetRevision: 2.29.1
       helm:
         releaseName: pihole
         valuesObject:
@@ -26,7 +26,7 @@ spec:
             type: LoadBalancer # was NodePort jjp
             annotations:
               # use last ip from 10.0.5.208/28
-              io.cilium/lb-ipam-ips: 10.0.5.222
+              io.cilium/lb-ipam-ips: 10.0.5.222 # pihole's serviceDns gets its own IP because we need an IP to point clients to
               # io.cilium/lb-ipam-sharing-key: pihole
           serviceDhcp:
             enabled: false # was true jjp

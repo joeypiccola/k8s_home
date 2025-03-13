@@ -87,7 +87,7 @@ spec:
               controller: plex
               type: LoadBalancer
               annotations:
-                io.cilium/lb-ipam-ips: 10.0.5.220
+                io.cilium/lb-ipam-ips: 10.0.5.220 # plex requires it's own IP bc we NAT to it via this address
               externalTrafficPolicy: Cluster
               ports:
                 http:
