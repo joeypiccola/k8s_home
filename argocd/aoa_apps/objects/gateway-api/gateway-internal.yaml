@@ -1,0 +1,50 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: internal
+  namespace: gateway
+spec:
+  gatewayClassName: cilium
+  addresses:
+    - type: IPAddress
+      value: 10.0.5.209
+      # even though we set this, it doesn't work. we follow up this config with a service manifest to set the IP we want :(
+      # more info including this workaround: https://github.com/cilium/cilium/issues/21926#
+  listeners:
+    - protocol: HTTPS
+      port: 443
+      name: https-gateway
+      hostname: '*.piccola.us'
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: cert-piccola.us
+    - protocol: HTTPS
+      port: 443
+      name: https-domain-gateway
+      hostname: 'piccola.us'
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: cert-piccola.us
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    gateway.networking.k8s.io/gateway-name: internal
+    io.cilium.gateway/owning-gateway: internal
+  name: cilium-gateway-internal
+  namespace: gateway
+  annotations:
+    io.cilium/lb-ipam-ips: 10.0.5.209
+spec:
+  type: LoadBalancer
