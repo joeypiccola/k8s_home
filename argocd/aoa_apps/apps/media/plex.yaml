@@ -86,8 +86,8 @@ spec:
             app:
               controller: plex
               type: LoadBalancer
-              annotations:
-                io.cilium/lb-ipam-ips: 10.0.5.220
+              # annotations:
+              #   io.cilium/lb-ipam-ips: 10.0.5.220
               externalTrafficPolicy: Cluster
               ports:
                 http:

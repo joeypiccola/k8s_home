@@ -1,0 +1,39 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: plex
+  namespace: gateway
+spec:
+  gatewayClassName: cilium
+  addresses:
+    - type: IPAddress
+      value: 10.0.5.220
+      # even though we set this, it doesn't work. we follow up this config with a service manifest to set the IP we want :(
+      # more info including this workaround: https://github.com/cilium/cilium/issues/21926#
+  listeners:
+    - name: https
+      protocol: HTTPS
+      port: 443
+      hostname: 'plex-k8s.piccola.us'
+      allowedRoutes:
+        namespaces:
+          from: All # make this plex at some point using a selector
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: cert-piccola.us
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    gateway.networking.k8s.io/gateway-name: plex
+    io.cilium.gateway/owning-gateway: plex
+  name: cilium-gateway-plex
+  namespace: gateway
+  annotations:
+    io.cilium/lb-ipam-ips: 10.0.5.220
+spec:
+  type: LoadBalancer
