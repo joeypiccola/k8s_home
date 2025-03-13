@@ -68,9 +68,16 @@ spec:
                   #     memory: 588M
 
 
+
+          service:
+            app:
+              controller: home-assistant
+              ports:
+                http:
+                  port: 8123
+
           route:
             main:
-              enabled: true
               parentRefs:
                 - name: internal
                   namespace: gateway
@@ -78,36 +85,18 @@ spec:
               hostnames:
                 - ha-k8s.piccola.us
               rules:
-                - backendRefs:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  backendRefs:
                     - kind: Service
                       port: 8123
                       name: home-assistant
                       namespace: home-assistant
                       weight: 1
-                  matches:
-                    - path:
-                        type: PathPrefix
-                        value: /
-          service:
-            app:
-              controller: home-assistant
-              # type: LoadBalancer
-              # annotations:
-              #   io.cilium/lb-ipam-ips: 10.0.5.221
-              # externalTrafficPolicy: Cluster
-              ports:
-                http:
-                  port: 8123
-                # mdns-tcp:
-                #   enabled: true
-                #   port: 5353
-                #   protocol: TCP
-                #   targetPort: 5353
-                # mdns-udp:
-                #   enabled: true
-                #   port: 5353
-                #   protocol: UDP
-                #   targetPort: 5353
+
+
 
           persistence:
             config:
