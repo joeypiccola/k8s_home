@@ -40,9 +40,9 @@ spec:
 
           controllers:
             home-assistant:
-              pod:
-                hostNetwork: true
-                dnsPolicy: ClusterFirstWithHostNet
+              # pod:
+              #   hostNetwork: true
+              #   dnsPolicy: ClusterFirstWithHostNet
               containers:
                 app:
                   image:
