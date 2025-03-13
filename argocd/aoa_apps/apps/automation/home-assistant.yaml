@@ -83,7 +83,7 @@ spec:
                   namespace: gateway
                   # sectionName: https
               hostnames:
-                - ha-k8s.piccola.us
+                - ha-k8s.<path:cluster-secrets:cluster-secrets#domain>
               rules:
                 - matches:
                     - path:
