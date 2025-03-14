@@ -1,0 +1,130 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: frigate
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: frigate
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+        # pod-security.kubernetes.io/enforce: privileged
+  sources:
+    - repoURL: https://bjw-s.github.io/helm-charts
+      chart: app-template
+      targetRevision: 3.7.2
+      helm:
+        releaseName: frigate
+        valuesObject:
+
+
+          # defaultPodOptions:
+          #   nodeSelector:
+          #     feature.node.kubernetes.io/pci-0880_1ac1_089a.present: "true"
+          controllers:
+            frigate:
+              annotations:
+                reloader.stakater.com/auto: "true"
+              containers:
+                app:
+                  image:
+                    repository: ghcr.io/blakeblackshear/frigate
+                    tag: 0.15.0@sha256:dc77295ccc5a7258510ab6b1d9d5b7a339027305e2d29224338534febc4d1e89
+                  env:
+                    TZ: America/Denver
+                  # envFrom:
+                  #   - secretRef:
+                  #       name: frigate-secret
+                  probes:
+                    liveness: &probes
+                      enabled: true
+                      custom: true
+                      spec:
+                        httpGet:
+                          path: /api/version
+                          port: &port 5000
+                        initialDelaySeconds: 0
+                        periodSeconds: 10
+                        timeoutSeconds: 1
+                        failureThreshold: 3
+                    readiness: *probes
+                    startup:
+                      enabled: false
+                  # resources:
+                  #   requests:
+                  #     cpu: 100m
+                  #     memory: 1313M
+                  #   limits:
+                  #     memory: 6000Mi
+                  # securityContext:
+                  #   privileged: true
+          service:
+            app:
+              controller: frigate
+              ports:
+                http:
+                  port: *port
+                rtsp:
+                  enabled: true
+                  port: 8554
+          # route:
+          #   main:
+          #     parentRefs:
+          #       - name: internal
+          #         namespace: gateway
+          #         # sectionName: https
+          #     hostnames:
+          #       - frigate-k8s.<path:cluster-secrets:cluster-secrets#domain>
+          #     rules:
+          #       - matches:
+          #           - path:
+          #               type: PathPrefix
+          #               value: /
+          #         backendRefs:
+          #           - kind: Service
+          #             port: 8554
+          #             name: home-assistant
+          #             namespace: home-assistant
+          #             weight: 1
+
+          persistence:
+            config:
+              enabled: true
+              existingClaim: frigate-data
+              globalMounts:
+                - path: /data
+
+            # config-file:
+            #   type: configMap
+            #   name: frigate-configmap
+            #   globalMounts:
+            #     - path: /config/config.yml
+            #       subPath: config.yml
+            #       readOnly: true
+            # media:
+            #   existingClaim: frigate-nfs-media
+            #   globalMounts:
+            #     - path: /media/frigate
+            cache:
+              type: emptyDir
+              medium: Memory
+              sizeLimit: 4Gi
+              globalMounts:
+                - path: /dev/shm
+            # coral:
+            #   type: hostPath
+            #   hostPath: /dev/apex_0
+            #   hostPathType: CharDevice
