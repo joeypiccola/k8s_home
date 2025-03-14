@@ -80,25 +80,25 @@ spec:
                 rtsp:
                   enabled: true
                   port: 8554
-          # route:
-          #   main:
-          #     parentRefs:
-          #       - name: internal
-          #         namespace: gateway
-          #         # sectionName: https
-          #     hostnames:
-          #       - frigate-k8s.<path:cluster-secrets:cluster-secrets#domain>
-          #     rules:
-          #       - matches:
-          #           - path:
-          #               type: PathPrefix
-          #               value: /
-          #         backendRefs:
-          #           - kind: Service
-          #             port: 8554
-          #             name: home-assistant
-          #             namespace: home-assistant
-          #             weight: 1
+          route:
+            main:
+              parentRefs:
+                - name: internal
+                  namespace: gateway
+                  # sectionName: https
+              hostnames:
+                - frigate-k8s.<path:cluster-secrets:cluster-secrets#domain>
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  backendRefs:
+                    - kind: Service
+                      port: 5000
+                      name: frigate
+                      namespace: frigate
+                      weight: 1
 
           persistence:
             config:
