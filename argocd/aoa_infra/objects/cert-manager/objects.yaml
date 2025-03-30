@@ -35,3 +35,18 @@ spec:
             apiTokenSecretRef:
               name: cert-manager-secrets
               key: cloudflare-api-token-secret
+
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cert-<path:cluster-secrets:cluster-secrets#domain>
+  namespace: gateway
+spec:
+  dnsNames:
+    - '*.<path:cluster-secrets:cluster-secrets#domain>'
+    - '<path:cluster-secrets:cluster-secrets#domain>'
+  issuerRef:
+    kind: ClusterIssuer
+    name: letsencrypt-staging
+  secretName: cert-<path:cluster-secrets:cluster-secrets#domain>

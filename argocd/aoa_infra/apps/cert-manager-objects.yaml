@@ -12,8 +12,8 @@ spec:
   project: default
   source:
     repoURL: https://github.com/joeypiccola/k8s_home.git
-    path: argocd/aoa_apps/objects/cert-manager
-    targetRevision: main
+    path: argocd/aoa_infra/objects/cert-manager
+    targetRevision: nginx
   destination:
     name: in-cluster
     namespace: cert-manager

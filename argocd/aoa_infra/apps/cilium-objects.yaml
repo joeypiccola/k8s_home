@@ -12,8 +12,8 @@ spec:
   project: default
   source:
     repoURL: https://github.com/joeypiccola/k8s_home.git
-    path: argocd/aoa_apps/objects/cilium
-    targetRevision: main
+    path: argocd/aoa_infra/objects/cilium
+    targetRevision: nginx
   destination:
     name: in-cluster
     namespace: cilium
