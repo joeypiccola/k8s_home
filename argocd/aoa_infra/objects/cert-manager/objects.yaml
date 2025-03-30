@@ -41,7 +41,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: cert-<path:cluster-secrets:cluster-secrets#domain>
-  namespace: gateway
+  namespace: ingress-nginx-internal
 spec:
   dnsNames:
     - '*.<path:cluster-secrets:cluster-secrets#domain>'
