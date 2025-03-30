@@ -17,7 +17,7 @@ spec:
       releaseName: cert-manager
       valuesObject:
         config:
-          enableGatewayAPI: true
+          # enableGatewayAPI: true
           apiVersion: controller.config.cert-manager.io/v1alpha1
           kind: ControllerConfiguration
         installCRDs: true
