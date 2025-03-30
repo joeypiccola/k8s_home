@@ -9,7 +9,7 @@ spec:
   source:
     path: argocd/aoa_infra/apps
     repoURL: https://github.com/joeypiccola/k8s_home.git
-    targetRevision: main
+    targetRevision: nginx
   project: default
   syncPolicy:
     automated:
