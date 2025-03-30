@@ -3,9 +3,9 @@ k8sServiceHost: localhost # talos' KubePrism
 k8sServicePort: 7445
 kubeProxyReplacement: true # use Cilium
 gatewayAPI:
-  enabled: true
-  gatewayClass:
-    create: "true" # neesd quots or else "Expected: string, given: boolean"
+  enabled: false
+  # gatewayClass:
+    # create: "true" # neesd quots or else "Expected: string, given: boolean"
 bgpControlPlane:
   enabled: true
 l7Proxy: true
@@ -36,3 +36,33 @@ securityContext:
       - FOWNER
       - SETGID
       - SETUID
+hubble:
+  enabled: true
+  serviceMonitor:
+    enabled: false
+
+  metrics:
+    enabled:
+      - dns:query;ignoreAAAA
+      - drop
+      - tcp
+      - flow
+      - port-distribution
+      - icmp
+      - http
+
+  relay:
+    enabled: true
+    rollOutPods: true
+
+  ui:
+    enabled: true
+    ingress:
+      enabled: false
+
+localRedirectPolicy: true
+
+operator:
+  rollOutPods: true
+
+rollOutCiliumPods: true

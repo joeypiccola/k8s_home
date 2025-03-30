@@ -13,7 +13,7 @@ spec:
   source:
     repoURL: https://github.com/joeypiccola/k8s_home.git
     path: argocd/aoa_infra/objects/namespaces
-    targetRevision: main
+    targetRevision: nginx
     # directory:
     #   include: '*.yaml'
   destination:

@@ -28,4 +28,4 @@ metadata:
 spec:
   allowFirstLastIPs: "No"
   blocks:
-    - cidr: "10.0.5.208/28"
+    - cidr: "10.0.5.240/28"

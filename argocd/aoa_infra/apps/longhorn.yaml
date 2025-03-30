@@ -24,15 +24,15 @@ spec:
     - chart: longhorn
       repoURL: https://charts.longhorn.io/
       targetRevision: v1.7.2 # Replace with the Longhorn version you'd like to install or upgrade to
-      helm:
-        values: |
-          preUpgradeChecker:
-            jobEnabled: false
-          defaultSettings:
-            defaultDataPath: /var/mnt/longhorn
-            backupTarget: cifs://10.0.3.23/longhorn_backups?cifsOptions=vers=2.0
-            backupTargetCredentialSecret: cifs-secret
-            storageReservedPercentageForDefaultDisk: 10
-          # metrics:
-          #   serviceMonitor:
-          #     enabled: true
+      # helm:
+      #   values: |
+      #     preUpgradeChecker:
+      #       jobEnabled: false
+      #     defaultSettings:
+      #       defaultDataPath: /var/mnt/longhorn
+      #       backupTarget: cifs://10.0.3.23/longhorn_backups?cifsOptions=vers=2.0
+      #       backupTargetCredentialSecret: cifs-secret
+      #       storageReservedPercentageForDefaultDisk: 10
+      #     # metrics:
+      #     #   serviceMonitor:
+      #     #     enabled: true
