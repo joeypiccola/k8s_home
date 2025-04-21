@@ -14,6 +14,11 @@
       "argocd/.+\\.ya?ml$"
     ]
   },
+  "argocd": {
+    "fileMatch": [
+      "argocd/.+\\.ya?ml$"
+    ]
+  },
   "terraform": {
     "fileMatch": [
       "terraform/.+\\.tf$"
@@ -29,18 +34,6 @@
       "matchStrings": [
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*=?))?\n .*: (?<currentValue>.*=?)"
       ],
-      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
-    },
-    {
-      "customType": "regex",
-      "description": "Process custom dependencies",
-      "fileMatch": [
-        "argocd/.+\\.ya?ml$"
-      ],
-      "matchStrings": [
-        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)( versioning=(?<versioning>\\S+))?\n.*?(?<currentValue>.*)\n"
-      ],
-      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}github-releases{{/if}}",
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
   ]
