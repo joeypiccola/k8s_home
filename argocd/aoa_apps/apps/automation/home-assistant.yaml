@@ -26,7 +26,7 @@ spec:
     - repoURL: https://bjw-s.github.io/helm-charts
       chart: app-template
       # path: charts/sonarr
-      targetRevision: 3.7.2
+      targetRevision: 3.7.3
       helm:
         releaseName: home-assistant
         valuesObject:
