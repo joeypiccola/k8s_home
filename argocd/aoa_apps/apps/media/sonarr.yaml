@@ -48,7 +48,7 @@ spec:
                 app:
                   image:
                     repository: ghcr.io/onedr0p/sonarr
-                    tag: 4.0.13.2932@sha256:b2217e5c81155ba002e0497932c2de197b8f5c1ac9c9fff7210e9a6381caab41
+                    tag: 4.0.14.2938@sha256:95c3d63b46c2ff242a0b646086da557a13ef1376f415bb755b9d87c0d94d0330
                   env:
                     SONARR__APP__INSTANCENAME: Sonarr
                     # SONARR__AUTH__APIKEY:
