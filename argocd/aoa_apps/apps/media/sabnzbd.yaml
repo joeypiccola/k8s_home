@@ -23,7 +23,7 @@ spec:
       labels:
         goldilocks.fairwinds.com/enabled: "true"
   sources:
-    - repoURL: https://bjw-s.github.io/helm-charts
+    - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
       # path: charts/sabnzbd
       targetRevision: 3.7.3
