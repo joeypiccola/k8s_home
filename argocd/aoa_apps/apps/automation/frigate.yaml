@@ -21,7 +21,7 @@ spec:
     managedNamespaceMetadata:
       labels:
         goldilocks.fairwinds.com/enabled: "true"
-        # pod-security.kubernetes.io/enforce: privileged
+        pod-security.kubernetes.io/enforce: privileged
   sources:
     - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
@@ -113,17 +113,15 @@ spec:
                 - path: /config/config.yaml
                   subPath: config.yaml
                   readOnly: true
-            # config-file:
-            #   type: configMap
-            #   name: frigate-configmap
-            #   globalMounts:
-            #     - path: /config/config.yml
-            #       subPath: config.yml
-            #       readOnly: true
-            # media:
-            #   existingClaim: frigate-nfs-media
-            #   globalMounts:
-            #     - path: /media/frigate
+            media:
+              enabled: true
+              type: nfs
+              server: ds1515.ad.<path:cluster-secrets:cluster-secrets#domain>
+              path: /frigate
+              globalMounts:
+                # take /mnt/storage/media/ and mount it to /media/frigate
+                - path: /media/frigate
+                  # subPath: downloads
             cache:
               type: emptyDir
               medium: Memory
