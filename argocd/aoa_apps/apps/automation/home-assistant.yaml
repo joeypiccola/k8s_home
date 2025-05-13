@@ -23,9 +23,8 @@ spec:
         goldilocks.fairwinds.com/enabled: "true"
         pod-security.kubernetes.io/enforce: privileged
   sources:
-    - repoURL: https://bjw-s.github.io/helm-charts
+    - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
-      # path: charts/sonarr
       targetRevision: 3.7.3
       helm:
         releaseName: home-assistant
