@@ -113,15 +113,15 @@ spec:
                 - path: /config/config.yaml
                   subPath: config.yaml
                   readOnly: true
-            media:
-              enabled: true
-              type: nfs
-              server: ds1515.ad.<path:cluster-secrets:cluster-secrets#domain>
-              path: /frigate
-              globalMounts:
-                # take /mnt/storage/media/ and mount it to /media/frigate
-                - path: /media/frigate
-                  # subPath: downloads
+            # media:
+            #   enabled: true
+            #   type: nfs
+            #   server: ds1515.ad.<path:cluster-secrets:cluster-secrets#domain>
+            #   path: /frigate
+            #   globalMounts:
+            #     # take /mnt/storage/media/ and mount it to /media/frigate
+            #     - path: /media/frigate
+            #       # subPath: downloads
             cache:
               type: emptyDir
               medium: Memory
