@@ -63,6 +63,8 @@ spec:
                     readiness: *probes
                     startup:
                       enabled: false
+                    securityContext:
+                      privileged: true
                   # resources:
                   #   requests:
                   #     cpu: 100m
