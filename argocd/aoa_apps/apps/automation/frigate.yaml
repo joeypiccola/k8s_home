@@ -36,9 +36,9 @@ spec:
           #     feature.node.kubernetes.io/pci-0880_1ac1_089a.present: "true"
           controllers:
             frigate:
-              pod:
-                securityContext:
-                  privileged: true
+              # pod:
+              #   securityContext:
+              #     privileged: true
               annotations:
                 reloader.stakater.com/auto: "true"
               containers:
@@ -67,14 +67,11 @@ spec:
                     startup:
                       enabled: false
 
-                  # resources:
-                  #   requests:
-                  #     cpu: 100m
-                  #     memory: 1313M
-                  #   limits:
-                  #     memory: 6000Mi
-                  # securityContext:
-                  #   privileged: true
+                  resources:
+                    requests:
+                      gpu.intel.com/i915: "1"
+                    limits:
+                      gpu.intel.com/i915: "1"
           service:
             app:
               controller: frigate
