@@ -66,8 +66,15 @@ spec:
                   #   requests:
                   #     cpu: 109m
                   #     memory: 588M
-
-
+            db:
+              pod:
+              containers:
+                app:
+                  image:
+                    repository: docker.io/postgres
+                    tag: 17.5-alpine3.21
+                  env:
+                    TZ: America/Denver
 
           service:
             app:
