@@ -1,5 +1,5 @@
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ClusterSecretStore
 metadata:
   name: onepassword
@@ -18,7 +18,7 @@ spec:
             key: token
 
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: cluster-secrets
@@ -48,7 +48,7 @@ spec:
         property: pihole-admin-password
 
 --- # this one is a bit special, it is created for cert-manager to access 'cloudflare-api-token-secret' it must exists in cert-manager's ns
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: cert-manager-secrets
@@ -66,7 +66,7 @@ spec:
         property: cloudflare-token # this is the name of the property on the 1password item
 
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: cifs-secret
@@ -88,7 +88,7 @@ spec:
         property: longhorn-cifs-password # this is the name of the property on the 1password item
 
 ---
-apiVersion: external-secrets.io/v1beta1
+apiVersion: external-secrets.io/v1
 kind: ExternalSecret
 metadata:
   name: grafana-secrets
