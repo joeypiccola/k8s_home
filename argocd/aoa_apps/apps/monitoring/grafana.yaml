@@ -21,7 +21,7 @@ spec:
   sources:
     - chart: grafana
       repoURL: https://grafana.github.io/helm-charts
-      targetRevision: 9.0.0
+      targetRevision: 9.2.0
       helm:
         valueFiles:
         - $values/argocd/aoa_apps/values/grafana.yaml
