@@ -1,7 +1,7 @@
 clusterName: talos
 domainName: k8s.piccola.us
-talosVersion: v1.9.1
-kubernetesVersion: v1.32.0
+talosVersion: v1.10.2
+kubernetesVersion: v1.32.5
 gateway: 10.0.5.1
 vip: 10.0.5.200
 controlPlaneIP_1: 10.0.5.201
