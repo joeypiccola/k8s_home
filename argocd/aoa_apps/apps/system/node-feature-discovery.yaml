@@ -34,6 +34,15 @@ spec:
                 - pci
                 - system
                 - usb
+            sources:
+              # > lspci -nn | grep -i TPU
+              #  02:00.0 System peripheral [0880]: Global Unichip Corp. Coral Edge TPU [1ac1:089a]
+              - name: "google-coral-device"
+                matchOn:
+                  - pciId:
+                      class: ["0880"]
+                      vendor: ["1ac1"]
+                      device: ["089a"]
           resources:
             requests:
               cpu: 5m
@@ -53,3 +62,6 @@ spec:
       labels:
         goldilocks.fairwinds.com/enabled: "true"
         pod-security.kubernetes.io/enforce: "privileged"
+
+
+02:00.0 System peripheral [0880]: Global Unichip Corp. Coral Edge TPU [1ac1:089a]
