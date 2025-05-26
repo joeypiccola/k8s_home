@@ -129,7 +129,7 @@ spec:
               sizeLimit: 4Gi
               globalMounts:
                 - path: /dev/shm
-            # coral:
-            #   type: hostPath
-            #   hostPath: /dev/apex_0
-            #   hostPathType: CharDevice
+            coral:
+              type: hostPath
+              hostPath: /dev/apex_0
+              hostPathType: CharDevice
