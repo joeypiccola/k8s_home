@@ -39,6 +39,6 @@ resource "talos_machine_bootstrap" "this" {
   depends_on = [
     talos_machine_configuration_apply.talos_nodes
   ]
-  node                 = "10.0.5.201" # this is the first controlplane node
+  node                 = "10.0.5.226" # this is the first controlplane node
   client_configuration = talos_machine_secrets.this.client_configuration
 }

@@ -1,38 +1,29 @@
 locals {
   talos_version          = "v1.9.1"
-  talos_cluster_name     = "talos"
-  talos_cluster_endpoint = "https://talos.k8s.piccola.us:6443"
+  talos_cluster_name     = "talos-dev"
+  talos_cluster_endpoint = "https://talos-dev.k8s.piccola.us:6443"
   virtual_talos_nodes    = [ for node in local.talos_nodes : node if node.virtual ]
   physical_talos_nodes   = [ for node in local.talos_nodes : node if node.virtual == false ]
   console_logging        = "" # "e88202574e1c65f86d35d171ab7f08eddbe6c8e78cb45b9cb0470d6b0c394876"
   talos_nodes            = [
-    {
-      hostname = "control-1.k8s.piccola.us"
-      ip       = "10.0.5.201"
-      vm_id    = 201
-      virtual  = true
-    },
-    {
-      hostname = "control-2.k8s.piccola.us"
-      ip       = "10.0.5.202"
-      vm_id    = 202
-      virtual  = true
-    },
-    {
-      hostname = "control-3.k8s.piccola.us"
-      ip       = "10.0.5.203"
-      virtual  = false
-    },
-    {
-      hostname = "control-4.k8s.piccola.us"
-      ip       = "10.0.5.204"
-      virtual  = false
-    },
-    {
-      hostname = "control-5.k8s.piccola.us"
-      ip       = "10.0.5.205"
-      virtual  = false
-    }
+    # {
+    #   hostname = "control-dev-1.k8s.piccola.us"
+    #   ip       = "10.0.5.226"
+    #   vm_id    = 201
+    #   virtual  = true
+    # },
+    # {
+    #   hostname = "control-dev-2.k8s.piccola.us"
+    #   ip       = "10.0.5.227"
+    #   vm_id    = 202
+    #   virtual  = true
+    # },
+    # {
+    #   hostname = "control-dev-3.k8s.piccola.us"
+    #   ip       = "10.0.5.228"
+    #   vm_id    = 203
+    #   virtual  = true
+    # }
   ]
 }
 
