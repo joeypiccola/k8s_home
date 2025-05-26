@@ -39,6 +39,10 @@ spec:
                 deviceClassWhitelist:
                   - "0300"
                   - "0880"
+                deviceLabelFields:
+                  - "class"
+                  - "vendor"
+                  - "device"
               # custom:
               #   # > lspci -nn | grep -i TPU
               #   #  02:00.0 System peripheral [0880]: Global Unichip Corp. Coral Edge TPU [1ac1:089a]
