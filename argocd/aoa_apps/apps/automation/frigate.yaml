@@ -64,12 +64,7 @@ spec:
                     startup:
                       enabled: false
                   securityContext:
-                    # privileged: true
-                    allowPrivilegeEscalation: false
-                    readOnlyRootFilesystem: true
-                    capabilities:
-                      drop:
-                        - ALL
+                    privileged: true
                   resources:
                     requests:
                       gpu.intel.com/i915: "1"
