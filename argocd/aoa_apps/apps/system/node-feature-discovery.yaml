@@ -73,4 +73,4 @@ spec:
         pod-security.kubernetes.io/enforce: "privileged"
 
 
-02:00.0 System peripheral [0880]: Global Unichip Corp. Coral Edge TPU [1ac1:089a]
+# 02:00.0 System peripheral [0880]: Global Unichip Corp. Coral Edge TPU [1ac1:089a]
