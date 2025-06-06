@@ -46,6 +46,14 @@ spec:
       remoteRef:
         key: cluster-secrets
         property: pihole-admin-password
+    - secretKey: frigate-camera-user
+      remoteRef:
+        key: cluster-secrets
+        property: frigate-camera-user
+    - secretKey: frigate-camera-password
+      remoteRef:
+        key: cluster-secrets
+        property: frigate-camera-password
 
 --- # this one is a bit special, it is created for cert-manager to access 'cloudflare-api-token-secret' it must exists in cert-manager's ns
 apiVersion: external-secrets.io/v1
