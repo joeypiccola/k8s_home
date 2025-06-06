@@ -47,11 +47,11 @@ data:
         mode: all
       alerts:
         retain:
-          days: 14
+          days: 10
           mode: motion
       detections:
         retain:
-          days: 14
+          days: 10
           mode: motion
 
     detect:
