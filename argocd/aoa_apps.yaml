@@ -15,3 +15,10 @@ spec:
     automated:
       prune: true
       selfHeal: true
+      enabled: false
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Application
+      jsonPointers:
+        - /spec/syncPolicy
+
