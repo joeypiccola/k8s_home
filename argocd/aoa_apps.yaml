@@ -12,10 +12,9 @@ spec:
     targetRevision: main
   project: default
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-      enabled: false
+    # automated:
+    #   prune: true
+    #   selfHeal: true
   ignoreDifferences:
     - group: argoproj.io
       kind: Application
