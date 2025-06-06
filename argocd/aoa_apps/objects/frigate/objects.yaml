@@ -1,0 +1,157 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frigate-configmap
+  namespace: frigate
+data:
+  config.yaml: |
+    logger:
+      default: info
+
+    mqtt:
+      enabled: False
+
+    database:
+      path: /data/frigate.db
+
+    detectors:
+      coral:
+        type: edgetpu
+        device: pci
+
+    objects:
+      track:
+        - person
+        - dog
+        - car
+        - cat
+        - bicycle
+        - motorcycle
+
+    go2rtc:
+      streams:
+        alley_main: rtsp://<path:cluster-secrets:cluster-secrets#frigate-camera-user>:<path:cluster-secrets:cluster-secrets#frigate-camera-password>@10.0.10.52:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1
+        alley_sub: rtsp://<path:cluster-secrets:cluster-secrets#frigate-camera-user>:<path:cluster-secrets:cluster-secrets#frigate-camera-password>@10.0.10.52:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2
+        backyard_main: rtsp://<path:cluster-secrets:cluster-secrets#frigate-camera-user>:<path:cluster-secrets:cluster-secrets#frigate-camera-password>@10.0.10.50:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1
+        backyard_sub: rtsp://<path:cluster-secrets:cluster-secrets#frigate-camera-user>:<path:cluster-secrets:cluster-secrets#frigate-camera-password>@10.0.10.50:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2
+        garage_main: rtsp://<path:cluster-secrets:cluster-secrets#frigate-camera-user>:<path:cluster-secrets:cluster-secrets#frigate-camera-password>@10.0.10.100:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1
+        garage_sub: rtsp://<path:cluster-secrets:cluster-secrets#frigate-camera-user>:<path:cluster-secrets:cluster-secrets#frigate-camera-password>@10.0.10.100:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2
+        front_porch_main: rtsp://<path:cluster-secrets:cluster-secrets#frigate-camera-user>:<path:cluster-secrets:cluster-secrets#frigate-camera-password>@10.0.10.101:554/Streaming/Channels/101?transportmode=unicast&profile=Profile_1
+        front_porch_sub: rtsp://<path:cluster-secrets:cluster-secrets#frigate-camera-user>:<path:cluster-secrets:cluster-secrets#frigate-camera-password>@10.0.10.101:554/Streaming/Channels/102?transportmode=unicast&profile=Profile_2
+
+    record:
+      enabled: True
+      sync_recordings: True
+      retain:
+        days: 5
+        mode: all
+      alerts:
+        retain:
+          days: 14
+          mode: motion
+      detections:
+        retain:
+          days: 14
+          mode: motion
+
+    detect:
+      width: 640
+      height: 480
+      fps: 10
+
+    cameras:
+      alley:
+        enabled: True
+        live:
+          stream_name: alley_main
+        motion:
+          mask:
+            # ignore timestamp
+            - 0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098
+        ffmpeg:
+          hwaccel_args: preset-vaapi
+          inputs:
+            - path: rtsp://localhost:8554/alley_sub
+              roles:
+                - detect
+            - path: rtsp://localhost:8554/alley_main
+              roles:
+                - record
+
+      front_porch:
+        enabled: True
+        live:
+          stream_name: front_porch_main
+        motion:
+          mask:
+            # ignore timestamp
+            - 0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098
+            # plants
+            - 0.681,0.702,0.642,0.63,0.579,0.652,0.553,0.6,0.534,0.606,0.523,0.587,0.511,0.591,0.474,0.526,0.464,0.499,0.794,0.354
+            - 0.428,0.705,0.419,0.679,0.412,0.696,0.395,0.659,0.387,0.683,0.343,0.556,0.137,0.643,0.012,0.701,0.039,0.961,0.124,0.781
+        ffmpeg:
+          hwaccel_args: preset-vaapi
+          inputs:
+            - path: rtsp://localhost:8554/front_porch_sub
+              roles:
+                - detect
+            - path: rtsp://localhost:8554/front_porch_main
+              roles:
+                - record
+
+      backyard:
+        enabled: True
+        live:
+          stream_name: backyard_main
+        motion:
+          mask:
+            # ignore tree moving and sun shade sails blowing in the wind
+            - 0.928,0.735,0.868,0.742,0.759,0.754,0.734,0.658,0.763,0.583,0.672,0.502,0.627,0.383,0.624,0.295,0.663,0.246,0.683,0.195,0.232,0.044,0.041,0.024,0.041,0,1,0.002,0.999,0.533
+            # ignore timestamp
+            - 0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098
+        objects:
+          filters:
+            cat:
+              mask:
+                # ignore rock that looks like a cat
+                - 0.145,0.501,0.165,0.507,0.174,0.55,0.193,0.601,0.177,0.634,0.152,0.603,0.137,0.542
+            dog:
+              mask:
+                # ignore rock that looks like a dog
+                - 0.145,0.501,0.165,0.507,0.174,0.55,0.193,0.601,0.177,0.634,0.152,0.603,0.137,0.542
+        ffmpeg:
+          hwaccel_args: preset-vaapi
+          inputs:
+            - path: rtsp://localhost:8554/backyard_sub
+              roles:
+                - detect
+            - path: rtsp://localhost:8554/backyard_main
+              roles:
+                - record
+
+      garage:
+        enabled: True
+        live:
+          stream_name: garage_main
+        motion:
+          mask: # ignore timestamp
+            - 0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098
+        objects:
+          filters:
+            car:
+              mask:
+                # ignore parked car that has moving shadows on it
+                - 0.212,0.005,0.093,0.178,0.302,0.869,0.483,0.849,0.64,0.745,0.811,0.174,0.736,0.088,0.713,0.005
+            person:
+              mask:
+                # ignore shadows on ground that keep moving and look like a person
+                - 0.336,1,0.375,0.71,0.277,0.536,0.067,0.614,0.133,0.841,0.213,1
+        ffmpeg:
+          hwaccel_args: preset-vaapi
+          inputs:
+            - path: rtsp://localhost:8554/garage_sub
+              roles:
+                - detect
+            - path: rtsp://localhost:8554/garage_main
+              roles:
+                - record
