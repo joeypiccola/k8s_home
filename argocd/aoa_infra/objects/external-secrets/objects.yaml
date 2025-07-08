@@ -116,3 +116,29 @@ spec:
       remoteRef:
         key: cluster-secrets # this is the title of the item in 1password
         property: grafana-admin-password # this is the name of the property on the 1password item
+
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: dyndns-secrets
+  namespace: dyndns
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    creationPolicy: Owner
+  data:
+    - secretKey: pushoverToken # this is the name of the native k8s secret to create
+      remoteRef:
+        key: cluster-secrets # this is the title of the item in 1password
+        property: dyndns-pushoverToken # this is the name of the property on the 1password item
+    - secretKey: pushoverUser # this is the name of the native k8s secret to create
+      remoteRef:
+        key: cluster-secrets # this is the title of the item in 1password
+        property: dyndns-pushoverUser # this is the name of the property on the 1password item
+    - secretKey: freednsUri # this is the name of the native k8s secret to create
+      remoteRef:
+        key: cluster-secrets # this is the title of the item in 1password
+        property: dyndns-freednsUri # this is the name of the property on the 1password item
