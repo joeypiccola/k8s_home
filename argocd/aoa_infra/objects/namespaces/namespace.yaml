@@ -82,10 +82,3 @@ metadata:
   name: frigate
   labels:
     goldilocks.fairwinds.com/enabled: "true"
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: dyndns
-  labels:
-    goldilocks.fairwinds.com/enabled: "true"
