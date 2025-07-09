@@ -1,0 +1,174 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dyndns
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"
+
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: dyndns-secrets
+  namespace: dyndns
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    creationPolicy: Owner
+  data:
+    - secretKey: pushoverToken
+      remoteRef:
+        key: cluster-secrets
+        property: dyndns-pushoverToken
+    - secretKey: pushoverUser
+      remoteRef:
+        key: cluster-secrets
+        property: dyndns-pushoverUser
+    - secretKey: freednsUri
+      remoteRef:
+        key: cluster-secrets
+        property: dyndns-freednsUri
+
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: dyndns-update
+  namespace: dyndns
+spec:
+  schedule: "0 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: powershell
+              image: mcr.microsoft.com/powershell:alpine
+              command: ["pwsh"]
+              args: ["-File", "/scripts/Update-DNS.ps1"]
+              env:
+                - name: FREEDNSURI
+                  valueFrom:
+                    secretKeyRef:
+                      name: dyndns-secrets
+                      key: freednsUri
+                - name: PUSHOVERTOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: dyndns-secrets
+                      key: pushoverToken
+                - name: PUSHOVERUSER
+                  valueFrom:
+                    secretKeyRef:
+                      name: dyndns-secrets
+                      key: pushoverUser
+                - name: PUSHOVERURI
+                  valueFrom:
+                    configMapKeyRef:
+                      name: dyndns-configdata
+                      key: pushoverUri
+                - name: ICANHAZIPURI
+                  valueFrom:
+                    configMapKeyRef:
+                      name: dyndns-configdata
+                      key: icanhazipUri
+              volumeMounts:
+                - name: dyndns-script
+                  mountPath: /scripts
+                - name: dyndns-state
+                  mountPath: /data
+          volumes:
+            - name: dyndns-script
+              configMap:
+                name: dyndns-configdata
+            - name: dyndns-state
+              persistentVolumeClaim:
+                claimName: dyndns-state
+          restartPolicy: Never
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: dyndns-state
+  namespace: dyndns
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 10Mi
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dyndns-configdata
+  namespace: dyndns
+data:
+  icanhazipUri: "http://icanhazip.com"
+  pushoverUri: "https://api.pushover.net/1/messages.json"
+  Update-DNS.ps1: |
+    $stateFile = "/data/lastip"
+
+    # create state file if it does not exist
+    if (Test-Path -Path $stateFile) {
+        Write-Host "INFO: state file detected"
+        $lastIP = Get-Content -Path $stateFile
+        $stateFileCreated = $false
+        Write-Host "INFO: $lastIP was last detected IP"
+    } else {
+        Write-Host "INFO: state file not detected, creating one"
+        $stateFileCreated = $true
+        New-Item -Path $stateFile -ItemType File -Force | Out-Null
+    }
+
+    # try and get external IP
+    try {
+        $currentIP = (Invoke-RestMethod -Uri $env:ICANHAZIPURI -ErrorAction Stop).TrimEnd()
+        if ([string]::IsNullOrEmpty($currentIP)) {
+            Write-Error "Failed to get external ip via $env:ICANHAZIPURI."
+        } else {
+            Write-Host "INFO: $currentIP detected as current IP"
+        }
+    } catch {
+        Write-Error $_.Exception.Message
+    }
+
+    # compare last ip to current ip
+    if ($lastIP -ne $currentIP) {
+        Write-Host "INFO: $lastIP does not match $currentIP"
+        Write-Host "INFO: attempting to update DNS and notify"
+        # try and update dns
+        try {
+            # this is using FreeDNS's automatic IP detection
+            $result = Invoke-RestMethod -Uri $env:FREEDNSURI
+        } catch {
+            Write-Error $_.Exception.Message
+        }
+        # try and notify
+        try {
+            $irmPushoverSplat = @{
+                Method = 'Post'
+                Uri    = $env:PUSHOVERURI
+                Body = @{
+                    token   = $env:PUSHOVERTOKEN
+                    user    = $env:PUSHOVERUSER
+                    message = "Home IP Changed.`nCurrent: $currentIP`nPrevious: $lastIP`nFirstRun: $stateFileCreated`n`nFreeDNS-Output: $result"
+                }
+            }
+            Invoke-RestMethod @irmPushoverSplat
+        } catch {
+            Write-Error $_.Exception.Message
+        }
+        # update ip in config data and write to config file
+        # $lastIP = $currentIP
+        Remove-Item -Path $stateFile
+        Add-Content -Path $stateFile -Value $currentIP
+    } else {
+        Write-Host "INFO: last checked IP of $lastIP matches current IP of $currentIP. nothing to do, exiting"
+    }
