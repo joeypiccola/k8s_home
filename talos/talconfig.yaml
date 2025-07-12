@@ -69,7 +69,7 @@ nodes:
             gateway: ${gateway}
   - hostname: control-4.${domainName}
     installDisk: /dev/sda
-    ipAddress: ${controlPlaneIP_3}
+    ipAddress: ${controlPlaneIP_4}
     controlPlane: true
     nameservers:
       - ${ns1}
@@ -86,7 +86,7 @@ nodes:
             gateway: ${gateway}
   - hostname: control-5.${domainName}
     installDisk: /dev/sda
-    ipAddress: ${controlPlaneIP_3}
+    ipAddress: ${controlPlaneIP_5}
     controlPlane: true
     nameservers:
       - ${ns1}
