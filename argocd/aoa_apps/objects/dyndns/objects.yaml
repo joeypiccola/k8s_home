@@ -113,6 +113,7 @@ data:
   icanhazipUri: "http://icanhazip.com"
   pushoverUri: "https://api.pushover.net/1/messages.json"
   Update-DNS.ps1: |
+    Write-Host "INFO: PSVersion = $($PSVersionTable.PSVersion.ToString())"
     $stateFile = "/data/lastip"
 
     # create state file if it does not exist
