@@ -4,6 +4,7 @@ emqxConfig:
   EMQX_ALLOW_ANONYMOUS: "false"
   EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
   EMQX_DASHBOARD__DEFAULT_USERNAME: admin
+  EMQX_DASHBOARD__DEFAULT_PASSWORD=public
 
 service:
   type: LoadBalancer
@@ -33,3 +34,8 @@ affinity:
               - key: app.kubernetes.io/name
                 operator: In
                 values: ["emqx"]
+
+envFromSecret: "emqx-secrets"
+
+podAnnotations:
+  - reloader.stakater.com/auto: "true"
