@@ -116,3 +116,21 @@ spec:
       remoteRef:
         key: cluster-secrets # this is the title of the item in 1password
         property: grafana-admin-password # this is the name of the property on the 1password item
+
+---
+apiVersion: external-secrets.io/v1
+kind: ExternalSecret
+metadata:
+  name: emqx-secrets
+  namespace: emqx
+spec:
+  secretStoreRef:
+    kind: ClusterSecretStore
+    name: onepassword
+  target:
+    creationPolicy: Owner
+  data:
+    - secretKey: EMQX_DASHBOARD__DEFAULT_PASSWORD
+      remoteRef:
+        key: cluster-secrets
+        property: emqx-dashboard-password
