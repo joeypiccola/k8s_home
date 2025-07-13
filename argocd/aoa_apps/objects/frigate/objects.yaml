@@ -9,7 +9,10 @@ data:
       default: info
 
     mqtt:
-      enabled: False
+      host: emqx.emqx.svc.cluster.local
+      topic_prefix: frigate
+      user: <path:cluster-secrets:cluster-secrets#emqx-frigate-user>
+      password: <path:cluster-secrets:cluster-secrets#emqx-frigate-password>
 
     database:
       path: /data/frigate.db
