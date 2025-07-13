@@ -1,0 +1,16 @@
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: emqx-route
+  namespace: emqx
+spec:
+  hostnames:
+    - emqx-k8s.<path:cluster-secrets:cluster-secrets#domain>
+  parentRefs:
+  - name: internal
+    namespace: gateway
+  rules:
+  - backendRefs:
+    - name: emqx
+      port: 18083
