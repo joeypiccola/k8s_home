@@ -46,7 +46,7 @@ spec:
                 app:
                   image:
                     repository: ghcr.io/home-assistant/home-assistant
-                    tag: 2025.3.2
+                    tag: 2025.7.1
                   env:
                     TZ: America/Denver
                   #   POSTGRES_HOST:
