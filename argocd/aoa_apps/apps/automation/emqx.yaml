@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: emqx
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: emqx
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+    - chart: emqx
+      repoURL: https://repos.emqx.io/charts
+      targetRevision: 5.8.7
+      helm:
+        valueFiles:
+        - $values/argocd/aoa_apps/values/emqx.yaml
+    - repoURL: https://github.com/joeypiccola/k8s_home.git
+      targetRevision: main
+      ref: values

@@ -1,0 +1,35 @@
+
+
+emqxConfig:
+  EMQX_ALLOW_ANONYMOUS: "false"
+  EMQX_AUTH__MNESIA__PASSWORD_HASH: plain
+  EMQX_DASHBOARD__DEFAULT_USERNAME: admin
+
+service:
+  type: LoadBalancer
+  annotations:
+    io.cilium/lb-ipam-ips: 10.0.5.219
+  externalTrafficPolicy: Cluster
+
+ingress:
+  dashboard:
+    enabled: false
+
+metrics:
+  enabled: false # for now
+persistence:
+  enabled: false
+  # storageClassName: local-hostpath
+  size: 250Mi
+
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          topologyKey: kubernetes.io/hostname
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values: ["emqx"]
