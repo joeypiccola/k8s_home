@@ -36,5 +36,5 @@ affinity:
 
 envFromSecret: "emqx-secrets"
 
-# podAnnotations:
-#   - reloader.stakater.com/auto: "true"
+podAnnotations:
+  reloader.stakater.com/auto: "true"
