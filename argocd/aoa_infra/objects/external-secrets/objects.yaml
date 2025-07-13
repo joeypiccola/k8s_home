@@ -130,7 +130,26 @@ spec:
   target:
     creationPolicy: Owner
   data:
+    # emqx bits
     - secretKey: EMQX_DASHBOARD__DEFAULT_PASSWORD
       remoteRef:
         key: cluster-secrets
         property: emqx-dashboard-password
+    # frigate creds
+    - secretKey: EMQX_AUTH__USER__1__USERNAME
+      remoteRef:
+        key: cluster-secrets
+        property: emqx-frigate-user
+    - secretKey: EMQX_AUTH__USER__1__PASSWORD
+      remoteRef:
+        key: cluster-secrets
+        property: emqx-frigate-password
+    # ha creds
+    - secretKey: EMQX_AUTH__USER__2__USERNAME
+      remoteRef:
+        key: cluster-secrets
+        property: emqx-ha-user
+    - secretKey: EMQX_AUTH__USER__2__PASSWORD
+      remoteRef:
+        key: cluster-secrets
+        property: emqx-ha-password
