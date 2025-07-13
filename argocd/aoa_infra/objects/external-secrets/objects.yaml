@@ -54,6 +54,16 @@ spec:
       remoteRef:
         key: cluster-secrets
         property: frigate-camera-password
+    # these are sync'd here as well so ArgoCD Vault Plugin can inject them into the frigate config
+    # these are also synd'd to emqx's ns as well under an emqx secret
+    - secretKey: emqx-frigate-user
+      remoteRef:
+        key: cluster-secrets
+        property: emqx-frigate-user
+    - secretKey: emqx-frigate-password
+      remoteRef:
+        key: cluster-secrets
+        property: emqx-frigate-password
 
 --- # this one is a bit special, it is created for cert-manager to access 'cloudflare-api-token-secret' it must exists in cert-manager's ns
 apiVersion: external-secrets.io/v1
