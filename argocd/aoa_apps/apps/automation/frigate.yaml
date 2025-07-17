@@ -30,10 +30,10 @@ spec:
         releaseName: frigate
         valuesObject:
 
-
           defaultPodOptions:
             nodeSelector:
               feature.node.kubernetes.io/pci-0880_1ac1_089a.present: "true"
+
           controllers:
             frigate:
               annotations:
@@ -45,9 +45,6 @@ spec:
                     tag: 0.15.1@sha256:c4e02d2c511847eebbda8e0e370b41c78e7b51247353de79340e06c3e95f11be
                   env:
                     TZ: America/Denver
-                  # envFrom:
-                  #   - secretRef:
-                  #       name: frigate-secret
                   probes:
                     liveness: &probes
                       enabled: true
@@ -70,6 +67,7 @@ spec:
                       gpu.intel.com/i915: "1"
                     limits:
                       gpu.intel.com/i915: "1"
+
           service:
             app:
               controller: frigate
@@ -79,6 +77,7 @@ spec:
                 rtsp:
                   enabled: true
                   port: 8554
+
           route:
             main:
               parentRefs:
