@@ -1,82 +1,82 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: home-assistant
-#   namespace: argocd
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "100"
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-# spec:
-#   project: default
-#   destination:
-#     name: in-cluster
-#     namespace: home-assistant
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
-#     managedNamespaceMetadata:
-#       labels:
-#         goldilocks.fairwinds.com/enabled: "true"
-#         pod-security.kubernetes.io/enforce: privileged
-#   sources:
-#     - repoURL: https://bjw-s-labs.github.io/helm-charts
-#       chart: app-template
-#       targetRevision: 4.0.1
-#       helm:
-#         releaseName: home-assistant
-#         valuesObject:
-#           defaultPodOptions:
-#             securityContext:
-#               runAsNonRoot: true
-#               runAsUser: 1000
-#               runAsGroup: 1000
-#               fsGroup: 1000
-#               fsGroupChangePolicy: OnRootMismatch
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: home-assistant
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: home-assistant
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+        pod-security.kubernetes.io/enforce: privileged
+  sources:
+    - repoURL: https://bjw-s-labs.github.io/helm-charts
+      chart: app-template
+      targetRevision: 4.0.1
+      helm:
+        releaseName: home-assistant
+        valuesObject:
+          defaultPodOptions:
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              fsGroup: 1000
+              fsGroupChangePolicy: OnRootMismatch
 
-#           controllers:
-#             home-assistant:
-#               pod:
-#               containers:
-#                 app:
-#                   image:
-#                     repository: ghcr.io/home-assistant/home-assistant
-#                     tag: 2025.6.3 # https://github.com/home-assistant/core/pkgs/container/home-assistant
-#                   env:
-#                     TZ: America/Denver
+          controllers:
+            home-assistant:
+              pod:
+              containers:
+                app:
+                  image:
+                    repository: ghcr.io/home-assistant/home-assistant
+                    tag: 2025.6.3 # https://github.com/home-assistant/core/pkgs/container/home-assistant
+                  env:
+                    TZ: America/Denver
 
-#           service:
-#             app:
-#               controller: home-assistant
-#               ports:
-#                 http:
-#                   port: 8123
+          service:
+            app:
+              controller: home-assistant
+              ports:
+                http:
+                  port: 8123
 
-#           route:
-#             main:
-#               parentRefs:
-#                 - name: internal
-#                   namespace: gateway
-#                   # sectionName: https
-#               hostnames:
-#                 - ha-k8s.<path:cluster-secrets:cluster-secrets#domain>
-#               rules:
-#                 - matches:
-#                     - path:
-#                         type: PathPrefix
-#                         value: /
-#                   backendRefs:
-#                     - kind: Service
-#                       port: 8123
-#                       name: home-assistant
-#                       namespace: home-assistant
-#                       weight: 1
+          route:
+            main:
+              parentRefs:
+                - name: internal
+                  namespace: gateway
+                  # sectionName: https
+              hostnames:
+                - ha-k8s.<path:cluster-secrets:cluster-secrets#domain>
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  backendRefs:
+                    - kind: Service
+                      port: 8123
+                      name: home-assistant
+                      namespace: home-assistant
+                      weight: 1
 
-#           persistence:
-#             config:
-#               existingClaim: home-assistant-config
-#               globalMounts:
-#                 - path: /config
+          persistence:
+            config:
+              existingClaim: home-assistant-config
+              globalMounts:
+                - path: /config
