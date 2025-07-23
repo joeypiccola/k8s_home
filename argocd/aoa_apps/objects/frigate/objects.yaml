@@ -57,6 +57,9 @@ data:
           days: 10
           mode: motion
 
+    snapshots:
+      enabled: True
+
     detect:
       width: 640
       height: 480
