@@ -54,6 +54,10 @@ spec:
       remoteRef:
         key: cluster-secrets
         property: frigate-camera-password
+    - secretKey: frigate-plus-api-key
+      remoteRef:
+        key: cluster-secrets
+        property: frigate-plus-api-key
     # these are sync'd here as well so ArgoCD Vault Plugin can inject them into the frigate config
     # these are also synd'd to emqx's ns as well under an emqx secret
     - secretKey: emqx-frigate-user

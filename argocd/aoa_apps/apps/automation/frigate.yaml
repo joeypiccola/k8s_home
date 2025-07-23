@@ -45,6 +45,7 @@ spec:
                     tag: 0.15.1@sha256:c4e02d2c511847eebbda8e0e370b41c78e7b51247353de79340e06c3e95f11be
                   env:
                     TZ: America/Denver
+                    PLUS_API_KEY: <path:cluster-secrets:cluster-secrets#frigate-plus-api-key>
                   probes:
                     liveness: &probes
                       enabled: true
