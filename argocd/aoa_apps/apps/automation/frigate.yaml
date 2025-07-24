@@ -130,9 +130,9 @@ spec:
               type: hostPath
               hostPath: /dev/apex_0
               hostPathType: CharDevice
-            model_cache:
-              type: emptyDir
-              # medium: Memory
-              sizeLimit: 8Gi
-              globalMounts:
-                - path: /config
+            # model_cache:
+            #   type: emptyDir
+            #   # medium: Memory
+            #   sizeLimit: 8Gi
+            #   globalMounts:
+            #     - path: /config
