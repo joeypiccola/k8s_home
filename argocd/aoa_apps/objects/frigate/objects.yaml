@@ -60,8 +60,8 @@ data:
     snapshots:
       enabled: True
 
-    # model:
-    #   path: plus://e074d6405b3257c98d255cd2efc9d21f
+    model:
+      path: plus://b08c711e3791385a4ac90998d7d41b9d
 
     detect:
       width: 640
