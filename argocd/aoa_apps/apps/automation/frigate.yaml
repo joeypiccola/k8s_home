@@ -130,6 +130,11 @@ spec:
               type: hostPath
               hostPath: /dev/apex_0
               hostPathType: CharDevice
+            config-data:
+              enabled: true
+              existingClaim: frigate-config-data
+              globalMounts:
+                - path: /config
             # model_cache:
             #   type: emptyDir
             #   # medium: Memory
