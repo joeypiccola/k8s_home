@@ -141,6 +141,10 @@ data:
               mask:
                 # ignore rock that looks like a dog
                 - 0.145,0.501,0.165,0.507,0.174,0.55,0.193,0.601,0.177,0.634,0.152,0.603,0.137,0.542
+            car:
+              mask:
+                # there are no cars in the backyard
+                - 0.007,0.06,0.23,0.023,0.581,0.051,0.798,0.174,0.927,0.363,0.904,0.616,0.912,0.903,0.919,0.99,0.005,0.992
         ffmpeg:
           hwaccel_args: preset-vaapi
           inputs:
