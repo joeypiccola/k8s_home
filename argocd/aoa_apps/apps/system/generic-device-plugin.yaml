@@ -25,7 +25,7 @@ spec:
   sources:
     - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
-      targetRevision: 4.0.1
+      targetRevision: 4.2.0
       helm:
         releaseName: generic-device-plugin
         valuesObject:
