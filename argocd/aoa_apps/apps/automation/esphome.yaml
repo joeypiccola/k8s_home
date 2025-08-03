@@ -1,0 +1,87 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: esphome
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: esphome
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+        # pod-security.kubernetes.io/enforce: privileged
+  sources:
+    - repoURL: https://bjw-s-labs.github.io/helm-charts
+      chart: app-template
+      targetRevision: 4.2.0
+      helm:
+        releaseName: esphome
+        valuesObject:
+          defaultPodOptions:
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
+              runAsGroup: 1000
+              fsGroup: 1000
+              fsGroupChangePolicy: OnRootMismatch
+
+          controllers:
+            esphome:
+              pod:
+              containers:
+                app:
+                  image:
+                    repository: ghcr.io/home-operations/esphome
+                    tag: 2025.7.4@sha256:dd7bc943ce59996e6d8125fa86008812c5001cc0fc93eb2c9ee3bfda0a2bbe7b
+                  env:
+                    TZ: America/Denver
+
+          service:
+            app:
+              controller: esphome
+              ports:
+                http:
+                  port: 6052
+
+          route:
+            main:
+              parentRefs:
+                - name: internal
+                  namespace: gateway
+                  # sectionName: https
+              hostnames:
+                - esphome-k8s.<path:cluster-secrets:cluster-secrets#domain>
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  backendRefs:
+                    - kind: Service
+                      port: 6052
+                      name: esphome
+                      namespace: esphome
+                      weight: 1
+
+          persistence:
+            config:
+              existingClaim: esphome-config
+              globalMounts:
+                - path: /config
+            cache:
+              type: emptyDir
+              enabled: true
+              globalMounts:
+                - path: /config/.esphome
