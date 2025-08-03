@@ -44,7 +44,6 @@ spec:
                 app:
                   image:
                     repository: ghcr.io/home-assistant/home-assistant
-                    # renovate: datasource=github-releases depName=https://github.com/home-assistant/core
                     tag: 2025.6.3 # https://github.com/home-assistant/core/pkgs/container/home-assistant
                   env:
                     TZ: America/Denver
