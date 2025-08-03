@@ -47,6 +47,7 @@ spec:
                     tag: 2025.7.4@sha256:dd7bc943ce59996e6d8125fa86008812c5001cc0fc93eb2c9ee3bfda0a2bbe7b
                   env:
                     TZ: America/Denver
+                    ESPHOME_DASHBOARD_USE_PING: true
 
           service:
             app:
@@ -80,8 +81,8 @@ spec:
               existingClaim: esphome-config
               globalMounts:
                 - path: /config
-            cache:
-              type: emptyDir
-              enabled: true
-              globalMounts:
-                - path: /config/.esphome
+            # cache:
+            #   type: emptyDir
+            #   enabled: true
+            #   globalMounts:
+            #     - path: /config/.esphome
