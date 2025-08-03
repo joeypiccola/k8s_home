@@ -81,8 +81,8 @@ spec:
               existingClaim: esphome-config
               globalMounts:
                 - path: /config
-            # cache:
-            #   type: emptyDir
-            #   enabled: true
-            #   globalMounts:
-            #     - path: /config/.esphome
+            esphome-cache:
+              type: emptyDir
+              enabled: true
+              globalMounts:
+                - path: /config/.esphome
