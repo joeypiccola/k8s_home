@@ -36,12 +36,5 @@
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
     }
-  ],
-  "packageRules": [
-    {
-      "matchPackageNames": ["home-assistant/core"],
-      "versioning": "docker",
-      "matchDatasources": "github-releases"
-    }
   ]
 }
