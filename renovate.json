@@ -41,7 +41,7 @@
     {
       "matchPackageNames": ["home-assistant/core"],
       "versioning": "docker",
-      "datasource": "github-releases"
+      "matchDatasources": "github-releases"
     }
   ]
 }
