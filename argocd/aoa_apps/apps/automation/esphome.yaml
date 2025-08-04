@@ -81,10 +81,9 @@ spec:
               existingClaim: esphome-config
               type: persistentVolumeClaim
               enabled: true
-              # globalMounts:
-              #   - path: /config
             cache:
-              type: emptyDir
+              existingClaim: esphome-cache
+              type: persistentVolumeClaim
               enabled: true
               globalMounts:
                 - path: /config/.esphome
