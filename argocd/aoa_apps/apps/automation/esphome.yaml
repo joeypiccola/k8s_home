@@ -80,18 +80,18 @@ spec:
             config:
               existingClaim: esphome-config
               type: persistentVolumeClaim
-              enabled: true
-              # globalMounts:
-              #   - path: /config
-            cache:
+              globalMounts:
+                - path: /config
+            configCache:
               type: emptyDir
-              enabled: true
               globalMounts:
                 - path: /config/.esphome
-            tmpfs:
+            cache:
               type: emptyDir
-              advancedMounts:
-                esphome:
-                  app:
-                    - path: /cache
-                      subPath: cache
+              globalMounts:
+                - path: /cache
+              # advancedMounts:
+              #   esphome:
+              #     app:
+              #       - path: /cache
+              #         subPath: cache
