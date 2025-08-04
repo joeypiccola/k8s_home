@@ -21,7 +21,7 @@ spec:
     managedNamespaceMetadata:
       labels:
         goldilocks.fairwinds.com/enabled: "true"
-        pod-security.kubernetes.io/enforce: privileged
+        # pod-security.kubernetes.io/enforce: privileged
   sources:
     - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
@@ -79,9 +79,11 @@ spec:
           persistence:
             config:
               existingClaim: esphome-config
-              globalMounts:
-                - path: /config
-            esphome-cache:
+              type: persistentVolumeClaim
+              enabled: true
+              # globalMounts:
+              #   - path: /config
+            cache:
               type: emptyDir
               enabled: true
               globalMounts:
