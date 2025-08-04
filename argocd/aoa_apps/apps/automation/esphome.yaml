@@ -82,7 +82,7 @@ spec:
               type: persistentVolumeClaim
               globalMounts:
                 - path: /config
-            configCache:
+            configcache:
               type: emptyDir
               globalMounts:
                 - path: /config/.esphome
