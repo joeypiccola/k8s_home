@@ -29,13 +29,6 @@ spec:
       helm:
         releaseName: esphome
         valuesObject:
-          # defaultPodOptions:
-          #   securityContext:
-          #     runAsNonRoot: true
-          #     runAsUser: 1000
-          #     runAsGroup: 1000
-          #     fsGroup: 1000
-          #     fsGroupChangePolicy: OnRootMismatch
 
           controllers:
             esphome:
@@ -86,4 +79,7 @@ spec:
               existingClaim: esphome-config
             cache:
               type: emptyDir
-
+            esphome-cache:
+              type: emptyDir
+              globalMounts:
+                - path: /config/.esphome
