@@ -41,23 +41,33 @@ The `.sops.yaml` file defines rules for what files via path filtering are in sco
 
 ## Rebuild from scratch
 
-regenerate configs if needed.
+### scenario 1
+
+nodes are responsive to `talosctl` and you're knowingly doing a from scratch rebuild.
+
+1. reset the nodes
+
+`> task talos:reset-nodes`
+
+1. pxe boot the nodes (not covered here)
+
+1. regenerate configs if needed (likely need to update `talhelper` and `talosctl`)
 
 `> task talos:genconfig`
 
-apply the configs.
+1. apply the configs.
 
 `> talos:apply-config`
 
-initiate bootstrap.
+1. initiate bootstrap.
 
 `> task talos:bootstrap`
 
-get kubeconfig if needed, only required if new talos secrets were generated.
+1. get kubeconfig if needed, only required if new talos secrets were generated.
 
 `> task talos:get-kubeconfig`
 
-begin to install core infra. cilium and argocd will be managed under argocd later.
+1. begin to install core infra. cilium and argocd will be managed under argocd later.
 
 ```plaintext
 > task install:gateway_api_crds
@@ -66,15 +76,15 @@ begin to install core infra. cilium and argocd will be managed under argocd late
 > task stage:onepassword_secrets
 ```
 
-install argo app of apps `infra`.
+1. install argo app of apps `infra`.
 
 `> k apply -n argocd -f argocd/aoa_infra.yaml`
 
-now that longhorn is installed, proceed to the longhorn UI to restore volumes.
+1. now that longhorn is installed, proceed to the longhorn UI to restore volumes (port forward). delete any orphaned data on longhorn mounted disk (Settings\Orphaned Data)
 
 - restore volumes one at a time, checking "Use Previous Name"
-- restore volume PV/PVC, checking create both pv and pvc
+- restore volume PV/PVC, go to Create PV/PVC and ensure `Create PVC` and `Use Previous PVC` are checked
 
-install argo app of apps `apps`.
+1. install argo app of apps `apps`.
 
 `> k apply -n argocd -f argocd/aoa_apps.yaml`
