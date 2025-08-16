@@ -72,16 +72,19 @@ spec:
                 io.cilium/lb-ipam-ips: 10.0.5.218
               externalTrafficPolicy: Cluster
               ports:
-                https:
-                  port: 443
-                  protocol: HTTPS
+                # https: # not sure this is legit
+                #   port: 443
+                #   protocol: HTTPS
                 controller:
                   port: 8080
                   protocol: TCP
                 portal-http:
                   port: 8880
                   protocol: HTTP
-                portal-https:
+                portal-https: # Used for application GUI/API as seen in a web browser.
+                  port: 8443
+                  protocol: HTTPS
+                portal-https-r: # Hotspot portal redirection (HTTPS).
                   port: 8843
                   protocol: HTTPS
                 speedtest:
@@ -119,7 +122,7 @@ spec:
                         value: /
                   backendRefs:
                     - kind: Service
-                      port: 8843
+                      port: 8443
                       name: unifi
                       namespace: unifi
                       weight: 1
