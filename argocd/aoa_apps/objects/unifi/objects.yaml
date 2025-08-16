@@ -1,0 +1,54 @@
+# ---
+# apiVersion: external-secrets.io/v1
+# kind: ExternalSecret
+# metadata:
+#   name: dyndns-secrets
+#   namespace: dyndns
+# spec:
+#   secretStoreRef:
+#     kind: ClusterSecretStore
+#     name: onepassword
+#   target:
+#     creationPolicy: Owner
+#   data:
+#     - secretKey: pushoverToken
+#       remoteRef:
+#         key: cluster-secrets
+#         property: dyndns-pushoverToken
+#     - secretKey: pushoverUser
+#       remoteRef:
+#         key: cluster-secrets
+#         property: dyndns-pushoverUser
+#     - secretKey: freednsUri
+#       remoteRef:
+#         key: cluster-secrets
+#         property: dyndns-freednsUri
+
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-init
+  namespace: unifi
+data:
+  init-mongo.sh: |
+    #!/bin/bash
+
+    if which mongosh > /dev/null 2>&1; then
+      mongo_init_bin='mongosh'
+    else
+      mongo_init_bin='mongo'
+    fi
+    "${mongo_init_bin}" <<EOF
+    use ${MONGO_AUTHSOURCE}
+    db.auth("${MONGO_INITDB_ROOT_USERNAME}", "${MONGO_INITDB_ROOT_PASSWORD}")
+    db.createUser({
+      user: "${MONGO_USER}",
+      pwd: "${MONGO_PASS}",
+      roles: [
+        { db: "${MONGO_DBNAME}", role: "dbOwner" },
+        { db: "${MONGO_DBNAME}_stat", role: "dbOwner" },
+        { db: "${MONGO_DBNAME}_audit", role: "dbOwner" }
+      ]
+    })
+    EOF

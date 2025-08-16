@@ -68,7 +68,14 @@ spec:
       remoteRef:
         key: cluster-secrets
         property: emqx-frigate-password
-
+    - secretKey: unifi-mongo-root-password
+      remoteRef:
+        key: cluster-secrets
+        property: unifi-mongo-root-password
+    - secretKey: unifi-mongo-password
+      remoteRef:
+        key: cluster-secrets
+        property: unifi-mongo-password
 --- # this one is a bit special, it is created for cert-manager to access 'cloudflare-api-token-secret' it must exists in cert-manager's ns
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
