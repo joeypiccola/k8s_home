@@ -33,7 +33,12 @@ spec:
           controllers:
             unifi:
               containers:
+
                 db:
+                  securityContext:
+                    sysctls:
+                      - name: vm.max_map_count
+                        value: "65530"
                   image:
                     repository: docker.io/mongo
                     tag: 8.0.11-noble
@@ -121,3 +126,10 @@ spec:
     # volumes:
     #   - /path/to/data:/data/db
     #   - /path/to/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+
+
+
+  securityContext:
+    sysctls:
+      - name: vm.max_map_count
+        value: "65530"
