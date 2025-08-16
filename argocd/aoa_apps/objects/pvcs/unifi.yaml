@@ -11,20 +11,20 @@ spec:
     requests:
       storage: 5Gi
 
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: unifi-db-xfs
-  namespace: unifi
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: longhorn
-  resources:
-    requests:
-      storage: 5Gi
-  # volumeMode: Filesystem
-  # This is where you tell Longhorn to use xfs
-  volumeAttributes:
-    fsType: xfs
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: unifi-db-xfs
+#   namespace: unifi
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   storageClassName: longhorn
+#   resources:
+#     requests:
+#       storage: 5Gi
+#   # volumeMode: Filesystem
+#   # This is where you tell Longhorn to use xfs
+#   volumeAttributes:
+#     fsType: xfs

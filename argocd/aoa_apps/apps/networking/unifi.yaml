@@ -35,10 +35,10 @@ spec:
               containers:
 
                 db:
-                  # securityContext:
-                  #   sysctls:
-                  #     - name: vm.max_map_count
-                  #       value: "65530"
+                  securityContext:
+                    sysctls:
+                      - name: vm.max_map_count
+                        value: "65530"
                   image:
                     repository: docker.io/mongo
                     tag: 8.0.11-noble
