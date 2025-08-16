@@ -46,21 +46,22 @@ spec:
                     MONGO_PASS: <path:cluster-secrets:cluster-secrets#unifi-mongo-password>
                     MONGO_DBNAME: unifi
                 app:
-                  image: lscr.io/linuxserver/unifi-network-application
-                  tag: 9.3.45-ls100
-                env:
-                  PUID: 1000
-                  PGID: 1000
-                  TZ=Etc/UTC
-                  MONGO_USER=unifi
-                  MONGO_PASS=<path:cluster-secrets:cluster-secrets#unifi-mongo-password>
-                  MONGO_HOST=localhost
-                  MONGO_PORT=27017
-                  MONGO_DBNAME=unifi
-                  MONGO_AUTHSOURCE=admin
-                  MEM_LIMIT=1024 #optional
-                  MEM_STARTUP=1024 #optional
-                  # MONGO_TLS= #optional
+                  image:
+                    repository: lscr.io/linuxserver/unifi-network-application
+                    tag: 9.3.45-ls100
+                  env:
+                    PUID: 1000
+                    PGID: 1000
+                    TZ=Etc/UTC
+                    MONGO_USER=unifi
+                    MONGO_PASS=<path:cluster-secrets:cluster-secrets#unifi-mongo-password>
+                    MONGO_HOST=localhost
+                    MONGO_PORT=27017
+                    MONGO_DBNAME=unifi
+                    MONGO_AUTHSOURCE=admin
+                    MEM_LIMIT=1024 #optional
+                    MEM_STARTUP=1024 #optional
+                    # MONGO_TLS= #optional
 
 
           service:
