@@ -1,0 +1,123 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: unifi
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: unifi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+        # pod-security.kubernetes.io/enforce: privileged
+  sources:
+    - repoURL: https://bjw-s-labs.github.io/helm-charts
+      chart: app-template
+      targetRevision: 4.2.0
+      helm:
+        releaseName: unifi
+        valuesObject:
+
+          controllers:
+            unifi:
+              containers:
+                db:
+                  image:
+                    repository: docker.io/mongo
+                    tag: 8.0.11-noble
+                  env:
+                    MONGO_AUTHSOURCE: admin
+                    MONGO_INITDB_ROOT_USERNAME: root
+                    MONGO_INITDB_ROOT_PASSWORD: <path:cluster-secrets:cluster-secrets#unifi-mongo-root-password>
+                    MONGO_USER: unifi
+                    MONGO_PASS: <path:cluster-secrets:cluster-secrets#unifi-mongo-password>
+                    MONGO_DBNAME: unifi
+
+          # service:
+          #   db:
+          #     controller: db
+          #     ports:
+          #       http:
+          #         port: 27017
+
+          # route:
+          #   main:
+          #     parentRefs:
+          #       - name: internal
+          #         namespace: gateway
+          #         # sectionName: https
+          #     hostnames:
+          #       - esphome-k8s.<path:cluster-secrets:cluster-secrets#domain>
+          #     rules:
+          #       - matches:
+          #           - path:
+          #               type: PathPrefix
+          #               value: /
+          #         backendRefs:
+          #           - kind: Service
+          #             port: 6052
+          #             name: esphome
+          #             namespace: esphome
+          #             weight: 1
+
+          persistence:
+            db-data:
+              type: persistentVolumeClaim
+              existingClaim: unifi-db
+              advancedMounts:
+                unifi: # <- the controller
+                  db:   # <- the container
+                    - path: /data/db
+            db-init:
+              enabled: true
+              type: configMap
+              name: db-init
+              advancedMounts:
+                unifi: # <- the controller
+                  db:   # <- the container
+                    - path: /docker-entrypoint-initdb.d # /init-mongo.sh
+            # config:
+            #   existingClaim: esphome-config
+            # cache:
+            #   type: emptyDir
+            # esphome-cache:
+            #   type: emptyDir
+            #   globalMounts:
+            #     - path: /config/.esphome
+
+    #           volumeMounts:
+    #             - name: dyndns-script
+    #               mountPath: /scripts
+    #             - name: dyndns-state
+    #               mountPath: /data
+    #       volumes:
+    #         - name: dyndns-script
+    #           configMap:
+    #             name: dyndns-configdata
+    #         - name: dyndns-state
+    #           persistentVolumeClaim:
+    #             claimName: dyndns-state
+    #       restartPolicy: Never
+
+    # environment:
+    #   - MONGO_INITDB_ROOT_USERNAME=root
+    #   - MONGO_INITDB_ROOT_PASSWORD=
+    #   - MONGO_USER=unifi
+    #   - MONGO_PASS=
+    #   - MONGO_DBNAME=unifi
+    #   - MONGO_AUTHSOURCE=admin
+    # volumes:
+    #   - /path/to/data:/data/db
+    #   - /path/to/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
