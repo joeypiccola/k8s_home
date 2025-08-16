@@ -52,6 +52,7 @@ spec:
                   env:
                     PUID: 1000
                     PGID: 1000
+                    # UNIFI_HTTPS_PORT: 443
                     TZ: Etc/UTC
                     MONGO_USER: unifi
                     MONGO_PASS: <path:cluster-secrets:cluster-secrets#unifi-mongo-password>
@@ -63,13 +64,45 @@ spec:
                     MEM_STARTUP: 1024 #optional
                     # MONGO_TLS= #optional
 
-
           service:
-            unifi-app:
+            app:
               controller: unifi
+              type: LoadBalancer
+              annotations:
+                io.cilium/lb-ipam-ips: 10.0.5.218
+              externalTrafficPolicy: Cluster
               ports:
-                http:
-                  port: 8443
+                https:
+                  port: 443
+                  protocol: HTTPS
+                controller:
+                  port: 8080
+                  protocol: TCP
+                portal-http:
+                  port: 8880
+                  protocol: HTTP
+                portal-https:
+                  port: 8843
+                  protocol: HTTPS
+                speedtest:
+                  port: 6789
+                  protocol: TCP
+                stun:
+                  port: 3478
+                  protocol: UDP
+                syslog:
+                  port: 5514
+                  protocol: UDP
+                discovery:
+                  port: 10001
+                  protocol: UDP
+
+          # service:
+          #   unifi-app:
+          #     controller: unifi
+          #     ports:
+          #       http:
+          #         port: 8443
 
           route:
             main:
@@ -86,7 +119,7 @@ spec:
                         value: /
                   backendRefs:
                     - kind: Service
-                      port: 8443
+                      port: 8843
                       name: unifi
                       namespace: unifi
                       weight: 1
