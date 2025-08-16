@@ -87,7 +87,7 @@ spec:
                   backendRefs:
                     - kind: Service
                       port: 8443
-                      name: unifi-app
+                      name: unifi
                       namespace: unifi
                       weight: 1
 
