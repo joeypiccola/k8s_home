@@ -126,6 +126,8 @@ spec:
                       name: unifi
                       namespace: unifi
                       weight: 1
+                  tls:
+                    hostname: unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>
 
           persistence:
             app-data:
