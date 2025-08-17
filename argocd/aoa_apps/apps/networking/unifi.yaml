@@ -106,6 +106,7 @@ spec:
 
           route:
             main:
+              kind: TLSRoute
               parentRefs:
                 - name: internal
                   namespace: gateway
