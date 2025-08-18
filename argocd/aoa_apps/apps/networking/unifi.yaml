@@ -67,63 +67,34 @@ spec:
           service:
             app:
               controller: unifi
-              type: LoadBalancer
-              annotations:
-                io.cilium/lb-ipam-ips: 10.0.5.218
-              externalTrafficPolicy: Cluster
               ports:
-                controller:
+                controller: # Required for device communication
                   port: 8080
                   protocol: TCP
-                portal-http:
+                portal-http: # Unifi guest portal HTTP redirect port
                   port: 8880
                   protocol: HTTP
-                portal-https: # Used for application GUI/API as seen in a web browser.
+                portal-https: # Unifi web admin port
                   port: 8443
                   protocol: HTTPS
                 portal-https-r: # Hotspot portal redirection (HTTPS).
                   port: 8843
                   protocol: HTTPS
-                speedtest:
+                speedtest: # For mobile throughput test
                   port: 6789
                   protocol: TCP
-                stun:
+                stun: # Unifi STUN port
                   port: 3478
                   protocol: UDP
-                syslog:
+                syslog: # Remote syslog port
                   port: 5514
                   protocol: UDP
-                discovery:
+                discovery: # Required for AP discovery
                   port: 10001
                   protocol: UDP
-
-          # service:
-          #   unifi-app:
-          #     controller: unifi
-          #     ports:
-          #       http:
-          #         port: 8443
-
-          route:
-            main:
-              kind: TLSRoute
-              parentRefs:
-                - name: internal
-                  namespace: gateway
-                  # sectionName: https
-              hostnames:
-                - unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>
-              rules:
-                - matches:
-                    - path:
-                        type: PathPrefix
-                        value: /
-                  backendRefs:
-                    - kind: Service
-                      port: 8443
-                      name: unifi
-                      namespace: unifi
-                      weight: 1
+                stun: # Required for AP discovery
+                  port: 1900
+                  protocol: UDP
 
           persistence:
             app-data:
