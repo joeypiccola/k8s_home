@@ -126,7 +126,7 @@ spec:
               advancedMounts:
                 unifi: # <- the controller
                   app:   # <- the container
-                    - path: /custom-cont-init.d:ro
+                    - path: /custom-cont-init.d
             app-mgmt-cert:
               enabled: true
               type: secret
