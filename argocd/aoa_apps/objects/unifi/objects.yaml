@@ -109,25 +109,25 @@ spec:
         from: Same
 
 ########### UDP CONTROLLER ROUTES ############
----
-apiVersion: gateway.networking.k8s.io/v1alpha2
-kind: UDPRoute
-metadata:
-  name: unifi-udproute
-  namespace: unifi
-spec:
-  parentRefs:
-  - name: unifi-gateway
-  rules:
-  - backendRefs:
-    - name: unifi
-      port: 3478
-  - backendRefs:
-    - name: unifi
-      port: 10001
-  - backendRefs:
-    - name: unifi
-      port: 1900
+# ---
+# apiVersion: gateway.networking.k8s.io/v1alpha2
+# kind: UDPRoute
+# metadata:
+#   name: unifi-udproute
+#   namespace: unifi
+# spec:
+#   parentRefs:
+#   - name: unifi-gateway
+#   rules:
+#   - backendRefs:
+#     - name: unifi
+#       port: 3478
+#   - backendRefs:
+#     - name: unifi
+#       port: 10001
+#   - backendRefs:
+#     - name: unifi
+#       port: 1900
 ---
 ########### CONTROLLER ROUTES ############
 apiVersion: gateway.networking.k8s.io/v1alpha2
