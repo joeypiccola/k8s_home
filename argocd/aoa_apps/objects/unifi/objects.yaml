@@ -36,9 +36,12 @@ metadata:
 data:
   init.sh: |
     #!/bin/bash
-
-    mkdir /tmp/test
-    EOF
+    sleep 5
+    # this could be better obv
+    # openssl x509 -in /tmp/cert/tls.crt -out /tmp/server.crt
+    # openssl pkcs12 -export -in /tmp/server.crt -inkey /tmp/cert/tls.key -out /tmp/keystore.p12 -name unifi -passout pass:aircontrolenterprise
+    # rm -rf /config/data/keystore
+    # keytool -importkeystore -srckeystore /tmp/keystore.p12 -srcstoretype PKCS12 -srcstorepass aircontrolenterprise -srcalias unifi -destkeystore /config/data/keystore -deststorepass aircontrolenterprise -destkeypass aircontrolenterprise
 
 ---
 apiVersion: cert-manager.io/v1
@@ -52,7 +55,7 @@ spec:
     - 'unifi-mgmt-k8s.<path:cluster-secrets:cluster-secrets#domain>'
   issuerRef:
     kind: ClusterIssuer
-    name: letsencrypt-staging
+    name: letsencrypt-production
   secretName: cert-unifi-k8s
 
 
