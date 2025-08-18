@@ -36,6 +36,7 @@ metadata:
 spec:
   dnsNames:
     - 'unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>'
+    - 'unifi-mgmt-k8s.<path:cluster-secrets:cluster-secrets#domain>'
   issuerRef:
     kind: ClusterIssuer
     name: letsencrypt-staging
@@ -54,59 +55,59 @@ spec:
   addresses:
     - value: 10.0.5.218
   listeners:
-  - name: http-management
-    port: 8080
-    protocol: HTTP
-    hostname: unifi-k8s.piccola.us
-    allowedRoutes:
-      namespaces:
-        from: Same
+  # - name: http-management
+  #   port: 8080
+  #   protocol: HTTP
+  #   hostname: unifi-k8s.piccola.us
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: Same
   - name: https-management
     port: 8443
     protocol: TLS
-    hostname: unifi-k8s.piccola.us
+    hostname: unifi-mgmt-k8s.piccola.us
     tls:
       mode: Passthrough
     allowedRoutes:
       namespaces:
         from: Same
-  - name: http-portal
-    port: 80
-    protocol: HTTP
-    hostname: unifi-k8s.piccola.us
-    allowedRoutes:
-      namespaces:
-        from: Same
-  - name: https-portal
-    port: 443
-    protocol: HTTPS
-    hostname: unifi-k8s.piccola.us
-    tls:
-      mode: Terminate
-      certificateRefs:
-        - kind: Secret
-          name: cert-unifi-k8s
-    allowedRoutes:
-      namespaces:
-        from: Same
-  - name: udp-stun
-    port: 3478
-    protocol: UDP
-    allowedRoutes:
-      namespaces:
-        from: Same
-  - name: udp-inform
-    port: 10001
-    protocol: UDP
-    allowedRoutes:
-      namespaces:
-        from: Same
-  - name: udp-discovery
-    port: 1900
-    protocol: UDP
-    allowedRoutes:
-      namespaces:
-        from: Same
+  # - name: http-portal
+  #   port: 80
+  #   protocol: HTTP
+  #   hostname: unifi-k8s.piccola.us
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: Same
+  # - name: https-portal
+  #   port: 443
+  #   protocol: HTTPS
+  #   hostname: unifi-k8s.piccola.us
+  #   tls:
+  #     mode: Terminate
+  #     certificateRefs:
+  #       - kind: Secret
+  #         name: cert-unifi-k8s
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: Same
+  # - name: udp-stun
+  #   port: 3478
+  #   protocol: UDP
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: Same
+  # - name: udp-inform
+  #   port: 10001
+  #   protocol: UDP
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: Same
+  # - name: udp-discovery
+  #   port: 1900
+  #   protocol: UDP
+  #   allowedRoutes:
+  #     namespaces:
+  #       from: Same
 
 ########### UDP CONTROLLER ROUTES ############
 # ---
@@ -141,62 +142,62 @@ spec:
     namespace: unifi
     sectionName: https-management
   hostnames:
-  - unifi-k8s.piccola.us
+  - unifi-mgmt-k8s.piccola.us
   rules:
   - backendRefs:
     - name: unifi
       port: 8443
----
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: HTTPRoute
-metadata:
-  name: unifi-httproute-8080
-  namespace: unifi
-spec:
-  parentRefs:
-  - name: unifi-gateway
-    namespace: unifi
-    sectionName: http-management
-  hostnames:
-  - unifi-k8s.piccola.us
-  rules:
-  - backendRefs:
-    - name: unifi
-      port: 8080
----
-########### PORTAL ROUTES ############
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: HTTPRoute
-metadata:
-  name: portal-httproute-443
-  namespace: unifi
-spec:
-  parentRefs:
-  - name: unifi-gateway
-    namespace: unifi
-    sectionName: https-portal
-  hostnames:
-  - unifi-k8s.piccola.us
-  rules:
-  - backendRefs:
-    - name: unifi
-      port: 80
----
-apiVersion: gateway.networking.k8s.io/v1beta1
-kind: HTTPRoute
-metadata:
-  name: portal-redirect-http-to-https
-  namespace: unifi
-spec:
-  parentRefs:
-    - name: unifi-gateway
-      namespace: unifi
-      sectionName: http-portal
-  hostnames:
-  - unifi-k8s.piccola.us
-  rules:
-    - filters:
-        - type: RequestRedirect
-          requestRedirect:
-            scheme: https
-            statusCode: 301
+# ---
+# apiVersion: gateway.networking.k8s.io/v1beta1
+# kind: HTTPRoute
+# metadata:
+#   name: unifi-httproute-8080
+#   namespace: unifi
+# spec:
+#   parentRefs:
+#   - name: unifi-gateway
+#     namespace: unifi
+#     sectionName: http-management
+#   hostnames:
+#   - unifi-k8s.piccola.us
+#   rules:
+#   - backendRefs:
+#     - name: unifi
+#       port: 8080
+# ---
+# ########### PORTAL ROUTES ############
+# apiVersion: gateway.networking.k8s.io/v1beta1
+# kind: HTTPRoute
+# metadata:
+#   name: portal-httproute-443
+#   namespace: unifi
+# spec:
+#   parentRefs:
+#   - name: unifi-gateway
+#     namespace: unifi
+#     sectionName: https-portal
+#   hostnames:
+#   - unifi-k8s-portal.piccola.us
+#   rules:
+#   - backendRefs:
+#     - name: unifi
+#       port: 80
+# ---
+# apiVersion: gateway.networking.k8s.io/v1beta1
+# kind: HTTPRoute
+# metadata:
+#   name: portal-redirect-http-to-https
+#   namespace: unifi
+# spec:
+#   parentRefs:
+#     - name: unifi-gateway
+#       namespace: unifi
+#       sectionName: http-portal
+#   hostnames:
+#   - unifi-k8s-portal.piccola.us
+#   rules:
+#     - filters:
+#         - type: RequestRedirect
+#           requestRedirect:
+#             scheme: https
+#             statusCode: 301

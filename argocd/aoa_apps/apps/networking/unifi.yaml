@@ -68,33 +68,33 @@ spec:
             app:
               controller: unifi
               ports:
-                controller: # Required for device communication
-                  port: 8080
-                  protocol: TCP
-                portal-http: # Unifi guest portal HTTP redirect port
-                  port: 8880
-                  protocol: HTTP
+                # controller: # Required for device communication
+                #   port: 8080
+                #   protocol: TCP
+                # portal-http: # Unifi guest portal HTTP redirect port
+                #   port: 8880
+                #   protocol: HTTP
                 portal-https: # Unifi web admin port
                   port: 8443
                   protocol: HTTPS
-                portal-https-r: # Hotspot portal redirection (HTTPS).
-                  port: 8843
-                  protocol: HTTPS
-                speedtest: # For mobile throughput test
-                  port: 6789
-                  protocol: TCP
-                stun: # Unifi STUN port
-                  port: 3478
-                  protocol: UDP
-                syslog: # Remote syslog port
-                  port: 5514
-                  protocol: UDP
-                discovery: # Required for AP discovery
-                  port: 10001
-                  protocol: UDP
-                stun: # Required for AP discovery
-                  port: 1900
-                  protocol: UDP
+                # portal-https-r: # Hotspot portal redirection (HTTPS).
+                #   port: 8843
+                #   protocol: HTTPS
+                # speedtest: # For mobile throughput test
+                #   port: 6789
+                #   protocol: TCP
+                # stun: # Unifi STUN port
+                #   port: 3478
+                #   protocol: UDP
+                # syslog: # Remote syslog port
+                #   port: 5514
+                #   protocol: UDP
+                # discovery: # Required for AP discovery
+                #   port: 10001
+                #   protocol: UDP
+                # stun: # Required for AP discovery
+                #   port: 1900
+                #   protocol: UDP
 
           persistence:
             app-data:
