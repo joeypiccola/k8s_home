@@ -119,6 +119,14 @@ spec:
                 unifi: # <- the controller
                   db:   # <- the container
                     - path: /docker-entrypoint-initdb.d # /init-mongo.sh
+            app-init:
+              enabled: true
+              type: configMap
+              name: app-init
+              advancedMounts:
+                unifi: # <- the controller
+                  app:   # <- the container
+                    - path: /custom-cont-init.d:ro
             app-mgmt-cert:
               enabled: true
               type: secret

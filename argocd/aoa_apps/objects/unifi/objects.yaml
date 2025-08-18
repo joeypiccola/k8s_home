@@ -28,6 +28,19 @@ data:
     EOF
 
 ---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-init
+  namespace: unifi
+data:
+  init.sh: |
+    #!/bin/bash
+
+    mkdir /tmp/test
+    EOF
+
+---
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
