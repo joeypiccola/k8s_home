@@ -27,3 +27,18 @@ list latest versions of a chart in a repo (e.g. argo/argo-cd)
 show default values for a specific chart version
 
 `helm show values argo/argo-cd --version 7.4.1 >> ./argo-cd_7.4.1.yaml`
+
+### mongodb
+
+logon as root
+
+`mongosh "mongodb://root:<pw>@localhost:27017"`
+
+select a database
+
+`use admin`
+`use unifi`
+
+list users
+
+`db.getUsers()`

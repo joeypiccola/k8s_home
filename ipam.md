@@ -16,13 +16,14 @@
 
 `CiliumLoadBalancerIPPool` = `10.0.5.208/28` (208-223)
 
-| service                 | ip         | dns               |
-|-------------------------|------------|-------------------|
-| cilium-gateway-internal | 10.0.5.209 | gateway-api-https |
-| cilium-gateway-external | 10.0.5.210 | gateway-external  |
-| emqx                    | 10.0.5.219 | n/a               |
-| plex                    | 10.0.5.220 | plex-k8s          |
-| pihole-dns              | 10.0.5.222 | n/a               |
+| service                      | ip         | dns               |
+|------------------------------|------------|-------------------|
+| cilium-gateway-internal      | 10.0.5.209 | gateway-api-https |
+| cilium-gateway-external      | 10.0.5.210 | n/a               |
+| cilium-gateway-unifi-gateway | 10.0.5.218 | gateway-api-unifi |
+| emqx                         | 10.0.5.219 | n/a               |
+| plex                         | 10.0.5.220 | plex-k8s          |
+| pihole-dns                   | 10.0.5.222 | n/a               |
 
 ## esphome
 
