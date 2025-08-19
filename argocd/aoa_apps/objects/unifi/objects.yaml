@@ -71,19 +71,19 @@ spec:
   addresses:
     - value: 10.0.5.218
   listeners:
-  # - name: http-management
-  #   port: 8080
-  #   protocol: HTTP
-  #   hostname: unifi-k8s.piccola.us
-  #   allowedRoutes:
-  #     namespaces:
-  #       from: Same
-  - name: https-management
+  - name: mgmt-https
     port: 8443
     protocol: TLS
     hostname: unifi-mgmt-k8s.piccola.us
     tls:
       mode: Passthrough
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: dev-comm
+    port: 8080
+    protocol: HTTP
+    hostname: unifi-k8s.piccola.us
     allowedRoutes:
       namespaces:
         from: Same
@@ -106,45 +106,45 @@ spec:
   #   allowedRoutes:
   #     namespaces:
   #       from: Same
-  # - name: udp-stun
-  #   port: 3478
-  #   protocol: UDP
-  #   allowedRoutes:
-  #     namespaces:
-  #       from: Same
-  # - name: udp-inform
-  #   port: 10001
-  #   protocol: UDP
-  #   allowedRoutes:
-  #     namespaces:
-  #       from: Same
-  # - name: udp-discovery
-  #   port: 1900
-  #   protocol: UDP
-  #   allowedRoutes:
-  #     namespaces:
-  #       from: Same
+  - name: stun
+    port: 3478
+    protocol: UDP
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: inform
+    port: 10001
+    protocol: UDP
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: discovery
+    port: 1900
+    protocol: UDP
+    allowedRoutes:
+      namespaces:
+        from: Same
 
 ########### UDP CONTROLLER ROUTES ############
-# ---
-# apiVersion: gateway.networking.k8s.io/v1alpha2
-# kind: UDPRoute
-# metadata:
-#   name: unifi-udproute
-#   namespace: unifi
-# spec:
-#   parentRefs:
-#   - name: unifi-gateway
-#   rules:
-#   - backendRefs:
-#     - name: unifi
-#       port: 3478
-#   - backendRefs:
-#     - name: unifi
-#       port: 10001
-#   - backendRefs:
-#     - name: unifi
-#       port: 1900
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: UDPRoute
+metadata:
+  name: unifi-udproute
+  namespace: unifi
+spec:
+  parentRefs:
+  - name: unifi-gateway
+  rules:
+  - backendRefs:
+    - name: unifi
+      port: 3478
+  - backendRefs:
+    - name: unifi
+      port: 10001
+  - backendRefs:
+    - name: unifi
+      port: 1900
 ---
 ########### CONTROLLER ROUTES ############
 apiVersion: gateway.networking.k8s.io/v1alpha2
@@ -156,30 +156,30 @@ spec:
   parentRefs:
   - name: unifi-gateway
     namespace: unifi
-    sectionName: https-management
+    sectionName: mgmt-https
   hostnames:
   - unifi-mgmt-k8s.piccola.us
   rules:
   - backendRefs:
     - name: unifi
       port: 8443
-# ---
-# apiVersion: gateway.networking.k8s.io/v1beta1
-# kind: HTTPRoute
-# metadata:
-#   name: unifi-httproute-8080
-#   namespace: unifi
-# spec:
-#   parentRefs:
-#   - name: unifi-gateway
-#     namespace: unifi
-#     sectionName: http-management
-#   hostnames:
-#   - unifi-k8s.piccola.us
-#   rules:
-#   - backendRefs:
-#     - name: unifi
-#       port: 8080
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: unifi-httproute-8080
+  namespace: unifi
+spec:
+  parentRefs:
+  - name: unifi-gateway
+    namespace: unifi
+    sectionName: dev-comm
+  hostnames:
+  - unifi-k8s.piccola.us
+  rules:
+  - backendRefs:
+    - name: unifi
+      port: 8080
 # ---
 # ########### PORTAL ROUTES ############
 # apiVersion: gateway.networking.k8s.io/v1beta1
