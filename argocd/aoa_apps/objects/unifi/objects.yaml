@@ -83,7 +83,25 @@ spec:
   - name: dev-comm
     port: 8080
     protocol: HTTP
-    hostname: unifi-k8s.piccola.us
+    hostname: unifi-mgmt-k8s.piccola.us
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: stun
+    port: 3478
+    protocol: UDP
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: inform
+    port: 10001
+    protocol: UDP
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: discovery
+    port: 1900
+    protocol: UDP
     allowedRoutes:
       namespaces:
         from: Same
@@ -106,24 +124,6 @@ spec:
   #   allowedRoutes:
   #     namespaces:
   #       from: Same
-  - name: stun
-    port: 3478
-    protocol: UDP
-    allowedRoutes:
-      namespaces:
-        from: Same
-  - name: inform
-    port: 10001
-    protocol: UDP
-    allowedRoutes:
-      namespaces:
-        from: Same
-  - name: discovery
-    port: 1900
-    protocol: UDP
-    allowedRoutes:
-      namespaces:
-        from: Same
 
 ########### UDP CONTROLLER ROUTES ############
 ---
@@ -175,7 +175,7 @@ spec:
     namespace: unifi
     sectionName: dev-comm
   hostnames:
-  - unifi-k8s.piccola.us
+  - unifi-mgmt-k8s.piccola.us
   rules:
   - backendRefs:
     - name: unifi
