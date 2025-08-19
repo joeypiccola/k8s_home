@@ -1,136 +1,136 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: unifi
-#   namespace: argocd
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "100"
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-# spec:
-#   project: default
-#   destination:
-#     name: in-cluster
-#     namespace: unifi
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
-#     managedNamespaceMetadata:
-#       labels:
-#         goldilocks.fairwinds.com/enabled: "true"
-#         # pod-security.kubernetes.io/enforce: privileged
-#   sources:
-#     - repoURL: https://bjw-s-labs.github.io/helm-charts
-#       chart: app-template
-#       targetRevision: 4.2.0
-#       helm:
-#         releaseName: unifi
-#         valuesObject:
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: unifi
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: unifi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+        # pod-security.kubernetes.io/enforce: privileged
+  sources:
+    - repoURL: https://bjw-s-labs.github.io/helm-charts
+      chart: app-template
+      targetRevision: 4.2.0
+      helm:
+        releaseName: unifi
+        valuesObject:
 
-#           controllers:
-#             unifi:
-#               annotations:
-#                 reloader.stakater.com/auto: "true"
-#               containers:
+          controllers:
+            unifi:
+              annotations:
+                reloader.stakater.com/auto: "true"
+              containers:
 
-#                 db:
-#                   image:
-#                     repository: docker.io/mongo
-#                     tag: 8.0.11-noble
-#                   env:
-#                     MONGO_AUTHSOURCE: admin
-#                     MONGO_INITDB_ROOT_USERNAME: root
-#                     MONGO_INITDB_ROOT_PASSWORD: <path:cluster-secrets:cluster-secrets#unifi-mongo-root-password>
-#                     MONGO_USER: unifi
-#                     MONGO_PASS: <path:cluster-secrets:cluster-secrets#unifi-mongo-password>
-#                     MONGO_DBNAME: unifi
-#                 app:
-#                   image:
-#                     repository: lscr.io/linuxserver/unifi-network-application
-#                     tag: 9.3.45-ls100
-#                   env:
-#                     PUID: 1000
-#                     PGID: 1000
-#                     # UNIFI_HTTPS_PORT: 443
-#                     TZ: Etc/UTC
-#                     MONGO_USER: unifi
-#                     MONGO_PASS: <path:cluster-secrets:cluster-secrets#unifi-mongo-password>
-#                     MONGO_HOST: localhost
-#                     MONGO_PORT: 27017
-#                     MONGO_DBNAME: unifi
-#                     MONGO_AUTHSOURCE: admin
-#                     MEM_LIMIT: 1024 #optional
-#                     MEM_STARTUP: 1024 #optional
-#                     # MONGO_TLS= #optional
+                db:
+                  image:
+                    repository: docker.io/mongo
+                    tag: 8.0.11-noble
+                  env:
+                    MONGO_AUTHSOURCE: admin
+                    MONGO_INITDB_ROOT_USERNAME: root
+                    MONGO_INITDB_ROOT_PASSWORD: <path:cluster-secrets:cluster-secrets#unifi-mongo-root-password>
+                    MONGO_USER: unifi
+                    MONGO_PASS: <path:cluster-secrets:cluster-secrets#unifi-mongo-password>
+                    MONGO_DBNAME: unifi
+                app:
+                  image:
+                    repository: lscr.io/linuxserver/unifi-network-application
+                    tag: 9.3.45-ls100
+                  env:
+                    PUID: 1000
+                    PGID: 1000
+                    # UNIFI_HTTPS_PORT: 443
+                    TZ: Etc/UTC
+                    MONGO_USER: unifi
+                    MONGO_PASS: <path:cluster-secrets:cluster-secrets#unifi-mongo-password>
+                    MONGO_HOST: localhost
+                    MONGO_PORT: 27017
+                    MONGO_DBNAME: unifi
+                    MONGO_AUTHSOURCE: admin
+                    MEM_LIMIT: 1024 #optional
+                    MEM_STARTUP: 1024 #optional
+                    # MONGO_TLS= #optional
 
-#           service:
-#             app:
-#               controller: unifi
-#               ports:
-#                 mgmt-https: # Unifi web admin port
-#                   port: 8443
-#                   protocol: HTTPS
-#                 guest-http: # Unifi guest portal HTTP redirect port
-#                   port: 8880
-#                   protocol: HTTP
-#                 guest-https: # Hotspot portal redirection (HTTPS).
-#                   port: 8843
-#                   protocol: HTTPS
-#                 dev-comm: # Required for device communication
-#                   port: 8080
-#                   protocol: TCP
-#                 speedtest: # For mobile throughput test
-#                   port: 6789
-#                   protocol: TCP
-#                 stun: # Unifi STUN port
-#                   port: 3478
-#                   protocol: UDP
-#                 inform: # Required for AP discovery
-#                   port: 10001
-#                   protocol: UDP
-#                 discovery: # Required for Make controller discoverable on L2 network option
-#                   port: 1900
-#                   protocol: UDP
+          service:
+            app:
+              controller: unifi
+              ports:
+                mgmt-https: # Unifi web admin port
+                  port: 8443
+                  protocol: HTTPS
+                # guest-http: # Unifi guest portal HTTP redirect port
+                #   port: 8880
+                #   protocol: HTTP
+                # guest-https: # Hotspot portal redirection (HTTPS).
+                #   port: 8843
+                #   protocol: HTTPS
+                dev-comm: # Required for device communication
+                  port: 8080
+                  protocol: TCP
+                # speedtest: # For mobile throughput test
+                #   port: 6789
+                #   protocol: TCP
+                stun: # Unifi STUN port
+                  port: 3478
+                  protocol: UDP
+                inform: # Required for AP discovery
+                  port: 10001
+                  protocol: UDP
+                discovery: # Required for Make controller discoverable on L2 network option
+                  port: 1900
+                  protocol: UDP
 
-#           persistence:
-#             app-data:
-#               type: persistentVolumeClaim
-#               existingClaim: unifi-app
-#               advancedMounts:
-#                 unifi: # <- the controller
-#                   app:   # <- the container
-#                     - path: /config
-#             db-data:
-#               type: persistentVolumeClaim
-#               existingClaim: unifi-db
-#               advancedMounts:
-#                 unifi: # <- the controller
-#                   db:   # <- the container
-#                     - path: /data/db
-#             db-init:
-#               enabled: true
-#               type: configMap
-#               name: db-init
-#               advancedMounts:
-#                 unifi: # <- the controller
-#                   db:   # <- the container
-#                     - path: /docker-entrypoint-initdb.d # /init-mongo.sh
-#             app-init:
-#               enabled: true
-#               type: configMap
-#               name: app-init
-#               advancedMounts:
-#                 unifi: # <- the controller
-#                   app:   # <- the container
-#                     - path: /custom-cont-init.d
-#             app-mgmt-cert:
-#               enabled: true
-#               type: secret
-#               name: cert-unifi-k8s
-#               advancedMounts:
-#                 unifi: # <- the controller
-#                   app:   # <- the container
-#                     - path: /tmp/cert # /init-mongo.sh
+          persistence:
+            app-data:
+              type: persistentVolumeClaim
+              existingClaim: unifi-app
+              advancedMounts:
+                unifi: # <- the controller
+                  app:   # <- the container
+                    - path: /config
+            db-data:
+              type: persistentVolumeClaim
+              existingClaim: unifi-db
+              advancedMounts:
+                unifi: # <- the controller
+                  db:   # <- the container
+                    - path: /data/db
+            db-init:
+              enabled: true
+              type: configMap
+              name: db-init
+              advancedMounts:
+                unifi: # <- the controller
+                  db:   # <- the container
+                    - path: /docker-entrypoint-initdb.d # /init-mongo.sh
+            app-init:
+              enabled: true
+              type: configMap
+              name: app-init
+              advancedMounts:
+                unifi: # <- the controller
+                  app:   # <- the container
+                    - path: /custom-cont-init.d
+            app-mgmt-cert:
+              enabled: true
+              type: secret
+              name: cert-unifi-k8s
+              advancedMounts:
+                unifi: # <- the controller
+                  app:   # <- the container
+                    - path: /tmp/cert # /init-mongo.sh
