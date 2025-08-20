@@ -51,6 +51,7 @@ metadata:
   namespace: unifi
 spec:
   dnsNames:
+    - 'unifi-k8s.<path:cluster-secrets:cluster-secrets#domain>'
     - 'unifi-mgmt-k8s.<path:cluster-secrets:cluster-secrets#domain>'
   issuerRef:
     kind: ClusterIssuer
