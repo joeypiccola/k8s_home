@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kms
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: kms
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+  sources:
+    - repoURL: https://bjw-s-labs.github.io/helm-charts
+      chart: app-template
+      targetRevision: 4.2.0
+      helm:
+        releaseName: kms
+        valuesObject:
+
+          controllers:
+            kms:
+              containers:
+                app:
+                  image:
+                    repository: ghcr.io/py-kms-organization/py-kms
+                    tag: minimal@sha256:07e5295d563df9e8f5165109d79cf06e425559c8b7f465c3c22578f62f8dce59
+
+          service:
+            app:
+              controller: kms
+              type: LoadBalancer
+              loadBalancerIP: 10.0.5.217
+              ports:
+                http:
+                  port: 1688
