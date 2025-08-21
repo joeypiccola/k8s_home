@@ -95,6 +95,13 @@ spec:
               ports:
                 http:
                   port: 8123
+            codeserver:
+              # type: ClusterIP
+              controller: home-assistant
+              ports:
+                http:
+                  enabled: true
+                  port: 12321
 
           route:
             main:
@@ -114,6 +121,24 @@ spec:
                     - kind: Service
                       port: 8123
                       name: home-assistant
+                      namespace: home-assistant
+                      weight: 1
+            code-server:
+              parentRefs:
+                - name: internal
+                  namespace: gateway
+                  # sectionName: https
+              hostnames:
+                - ha-vscode-k8s.<path:cluster-secrets:cluster-secrets#domain>
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  backendRefs:
+                    - kind: Service
+                      port: 12321
+                      name: codeserver
                       namespace: home-assistant
                       weight: 1
 
