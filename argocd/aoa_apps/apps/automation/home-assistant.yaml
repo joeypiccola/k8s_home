@@ -45,9 +45,49 @@ spec:
                   image:
                     repository: ghcr.io/home-assistant/home-assistant
                     # renovate: datasource=github-releases depName=https://github.com/home-assistant/core versioning=docker
-                    tag: 2025.7.2 # https://github.com/home-assistant/core/pkgs/container/home-assistant
+                    tag: 2025.7.4@e5bf3905955081dc4aae3b3980870c43ce6d8ffb880b5447addb3b3ba00f7bc0 # https://github.com/home-assistant/core/pkgs/container/home-assistant
                   env:
                     TZ: America/Denver
+
+            codeserver:
+              image:
+                repository: ghcr.io/coder/code-server
+                tag: 4.103.1@sha256:fc1d8a57dc5ca5fab67999416165d994ab78a7338b046c4b29f168033a6b7b38
+              env:
+                # password: ${SECRET_CODESERVER_PASSWORD}
+                TZ: "${TIMEZONE}"
+                HASS_SERVER: http://localhost:8123
+              args:
+                - --auth
+                - "none"
+                - --user-data-dir
+                - "/config/.vscode"
+                - --extensions-dir
+                - "/config/.vscode"
+                - --port
+                - "12321"
+                - "/config"
+              resources:
+                requests:
+                  cpu: 11m
+                  memory: 94M
+              lifecycle:
+                postStart:
+                  exec:
+                    command:
+                      - /bin/sh
+                      - -c
+                      - |
+                        (
+                          set -ex
+                          apt update
+                          apt install --yes dnsutils
+                          apt install --yes iproute2
+                          apt install --yes inetutils-ping
+                          apt install --yes inetutils-telnet
+                          apt install --yes inetutils-traceroute
+                          apt install --yes net-tools
+                        ) > /tmp/postStart.log 2>&1 || true
 
           service:
             app:
