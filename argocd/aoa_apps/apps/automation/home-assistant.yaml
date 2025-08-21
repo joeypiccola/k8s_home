@@ -138,7 +138,7 @@ spec:
                   backendRefs:
                     - kind: Service
                       port: 12321
-                      name: codeserver
+                      name: home-assistant-codeserver
                       namespace: home-assistant
                       weight: 1
 
