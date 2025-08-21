@@ -120,7 +120,7 @@ spec:
                   backendRefs:
                     - kind: Service
                       port: 8123
-                      name: home-assistant
+                      name: home-assistant-app
                       namespace: home-assistant
                       weight: 1
             code-server:
