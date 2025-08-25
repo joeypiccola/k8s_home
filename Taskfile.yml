@@ -112,6 +112,13 @@ tasks:
     cmds:
       - kubectl get secret -n argocd argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 --decode; echo
 
+  ha-codeserver:getpassword:
+    desc: Get the HA code-server password
+    silent: true
+    cmds:
+      - kubectl exec -n home-assistant -c codeserver $(kubectl get pod -n home-assistant -o jsonpath='{.items[0].metadata.name}') -- cat /home/coder/.config/code-server/config.yaml| grep '^password:' | awk '{print $2}'
+
+
   # argocd:login:
   #   desc: blah
   #   silent: true
