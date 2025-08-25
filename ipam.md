@@ -20,6 +20,7 @@
 |------------------------------|------------|-------------------|
 | cilium-gateway-internal      | 10.0.5.209 | gateway-api-https |
 | cilium-gateway-external      | 10.0.5.210 | n/a               |
+| kms                          | 10.0.5.217 | n/a               |
 | cilium-gateway-unifi-gateway | 10.0.5.218 | gateway-api-unifi |
 | emqx                         | 10.0.5.219 | n/a               |
 | plex                         | 10.0.5.220 | plex-k8s          |
@@ -44,3 +45,10 @@
 | garage   | 10.0.3.61  | true        |
 | kitchen  | 10.0.3.103 | true        |
 | master   | 10.0.3.109 | true        |
+
+## access points
+
+| device    | ip         | reservation |
+|-----------|------------|-------------|
+| ap-house  | 10.0.2.50  | true        |
+| ap-garage | 10.0.2.100 | true        |
