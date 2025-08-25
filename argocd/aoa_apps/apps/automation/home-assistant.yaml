@@ -59,13 +59,14 @@ spec:
                     HASS_SERVER: http://localhost:8123
                   args:
                     - --auth
-                    - "none"
+                    - "password"
                     - --user-data-dir
                     - "/config/.vscode"
                     - --extensions-dir
                     - "/config/.vscode"
                     - --port
                     - "12321"
+                    - "--disable-telemetry"
                     - "/config"
                   resources:
                     requests:
