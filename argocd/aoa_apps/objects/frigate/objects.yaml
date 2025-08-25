@@ -6,7 +6,8 @@ metadata:
 data:
   config.yaml: |
     logger:
-      default: info
+      logs:
+        frigate.record.maintainer: debug
 
     mqtt:
       host: emqx.emqx.svc.cluster.local
