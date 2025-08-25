@@ -115,7 +115,7 @@ spec:
             media:
               enabled: true
               type: nfs
-              server: ds1515.ad.<path:cluster-secrets:cluster-secrets#domain>
+              server: ds1515-nfs.k8s.<path:cluster-secrets:cluster-secrets#domain>
               path: /volume1/frigate
               globalMounts:
                 # take /frigate and mount it to /media/frigate
