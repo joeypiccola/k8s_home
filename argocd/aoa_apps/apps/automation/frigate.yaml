@@ -100,6 +100,16 @@ spec:
                       weight: 1
 
           persistence:
+            data:
+              enabled: true
+              existingClaim: frigate-data
+              globalMounts:
+                - path: /data
+            config:
+              enabled: true
+              existingClaim: frigate-config-data
+              globalMounts:
+                - path: /config
             config-file:
               type: configMap
               name: frigate-configmap
@@ -107,11 +117,6 @@ spec:
                 - path: /config/config.yaml
                   subPath: config.yaml
                   readOnly: true
-            config:
-              enabled: true
-              existingClaim: frigate-data
-              globalMounts:
-                - path: /data
             media:
               enabled: true
               type: nfs
@@ -130,11 +135,7 @@ spec:
               type: hostPath
               hostPath: /dev/apex_0
               hostPathType: CharDevice
-            config-data:
-              enabled: true
-              existingClaim: frigate-config-data
-              globalMounts:
-                - path: /config
+
             # model_cache:
             #   type: emptyDir
             #   # medium: Memory
