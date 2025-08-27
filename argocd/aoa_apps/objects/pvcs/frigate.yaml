@@ -17,7 +17,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: frigate-config-data
+  name: frigate-config
   namespace: frigate
 spec:
   accessModes:
