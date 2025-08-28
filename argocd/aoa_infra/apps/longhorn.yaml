@@ -30,7 +30,7 @@ spec:
             jobEnabled: false
           defaultSettings:
             defaultDataPath: /var/mnt/longhorn
-            backupTarget: cifs://10.0.3.23/longhorn_backups?cifsOptions=vers=2.0
+            backupTarget: cifs://10.0.5.206.<path:cluster-secrets:cluster-secrets#domain>/longhorn_backups?cifsOptions=vers=2.0
             backupTargetCredentialSecret: cifs-secret
             storageReservedPercentageForDefaultDisk: 10
           # metrics:
