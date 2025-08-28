@@ -1,111 +1,111 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: tautulli
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "100"
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: default
-  destination:
-    name: in-cluster
-    namespace: tautulli
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-    managedNamespaceMetadata:
-      labels:
-        goldilocks.fairwinds.com/enabled: "true"
-  sources:
-    - repoURL: https://bjw-s-labs.github.io/helm-charts
-      chart: app-template
-      # path: charts/sonarr
-      targetRevision: 3.7.3
-      helm:
-        releaseName: tautulli
-        valuesObject:
-          controllers:
-            tautulli:
-              annotations:
-                reloader.stakater.com/auto: "true"
-              containers:
-                app:
-                  image:
-                    repository: ghcr.io/home-operations/tautulli
-                    tag: 2.15.3@sha256:3e0eaca8c082ebe121a0ae9125bea1b4e2d177fca34ac8df4ec14a28e62f63a4
-                  env:
-                    TZ: America/New_York
-                    TAUTULLI__PORT: &port 80
-                  probes:
-                    liveness: &probes
-                      enabled: true
-                      custom: true
-                      spec:
-                        httpGet:
-                          path: /status
-                          port: *port
-                        initialDelaySeconds: 0
-                        periodSeconds: 10
-                        timeoutSeconds: 1
-                        failureThreshold: 3
-                    readiness: *probes
-                  securityContext:
-                    allowPrivilegeEscalation: false
-                    readOnlyRootFilesystem: true
-                    capabilities: { drop: ["ALL"] }
-                  resources:
-                    requests:
-                      cpu: 10m
-                    limits:
-                      memory: 1Gi
-          defaultPodOptions:
-            securityContext:
-              runAsNonRoot: true
-              runAsUser: 1000
-              runAsGroup: 1000
-              fsGroup: 1000
-              fsGroupChangePolicy: OnRootMismatch
-          service:
-            app:
-              controller: tautulli
-              ports:
-                http:
-                  port: *port
-          route:
-            # -- Enable and configure route settings for the chart under this key.
-            main:
-              parentRefs:
-                - name: internal
-                  namespace: gateway
-                  # sectionName: gateway-section
-              hostnames:
-                - tautulli-k8s.<path:cluster-secrets:cluster-secrets#domain>
-              rules:
-                - matches:
-                    - path:
-                        type: PathPrefix
-                        value: /
-                  backendRefs:
-                    - kind: Service
-                      port: 80
-                      name: tautulli
-                      namespace: tautulli
-                      weight: 1
-          persistence:
-            config:
-              existingClaim: tautulli-config
-            config-cache:
-              existingClaim: tautulli-cache
-              globalMounts:
-                - path: /config/cache
-            config-logs:
-              type: emptyDir
-              globalMounts:
-                - path: /config/logs
-            tmp:
-              type: emptyDir
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: tautulli
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "100"
+#   finalizers:
+#     - resources-finalizer.argocd.argoproj.io
+# spec:
+#   project: default
+#   destination:
+#     name: in-cluster
+#     namespace: tautulli
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
+#     managedNamespaceMetadata:
+#       labels:
+#         goldilocks.fairwinds.com/enabled: "true"
+#   sources:
+#     - repoURL: https://bjw-s-labs.github.io/helm-charts
+#       chart: app-template
+#       # path: charts/sonarr
+#       targetRevision: 3.7.3
+#       helm:
+#         releaseName: tautulli
+#         valuesObject:
+#           controllers:
+#             tautulli:
+#               annotations:
+#                 reloader.stakater.com/auto: "true"
+#               containers:
+#                 app:
+#                   image:
+#                     repository: ghcr.io/home-operations/tautulli
+#                     tag: 2.15.3@sha256:3e0eaca8c082ebe121a0ae9125bea1b4e2d177fca34ac8df4ec14a28e62f63a4
+#                   env:
+#                     TZ: America/New_York
+#                     TAUTULLI__PORT: &port 80
+#                   probes:
+#                     liveness: &probes
+#                       enabled: true
+#                       custom: true
+#                       spec:
+#                         httpGet:
+#                           path: /status
+#                           port: *port
+#                         initialDelaySeconds: 0
+#                         periodSeconds: 10
+#                         timeoutSeconds: 1
+#                         failureThreshold: 3
+#                     readiness: *probes
+#                   securityContext:
+#                     allowPrivilegeEscalation: false
+#                     readOnlyRootFilesystem: true
+#                     capabilities: { drop: ["ALL"] }
+#                   resources:
+#                     requests:
+#                       cpu: 10m
+#                     limits:
+#                       memory: 1Gi
+#           defaultPodOptions:
+#             securityContext:
+#               runAsNonRoot: true
+#               runAsUser: 1000
+#               runAsGroup: 1000
+#               fsGroup: 1000
+#               fsGroupChangePolicy: OnRootMismatch
+#           service:
+#             app:
+#               controller: tautulli
+#               ports:
+#                 http:
+#                   port: *port
+#           route:
+#             # -- Enable and configure route settings for the chart under this key.
+#             main:
+#               parentRefs:
+#                 - name: internal
+#                   namespace: gateway
+#                   # sectionName: gateway-section
+#               hostnames:
+#                 - tautulli-k8s.<path:cluster-secrets:cluster-secrets#domain>
+#               rules:
+#                 - matches:
+#                     - path:
+#                         type: PathPrefix
+#                         value: /
+#                   backendRefs:
+#                     - kind: Service
+#                       port: 80
+#                       name: tautulli
+#                       namespace: tautulli
+#                       weight: 1
+#           persistence:
+#             config:
+#               existingClaim: tautulli-config
+#             config-cache:
+#               existingClaim: tautulli-cache
+#               globalMounts:
+#                 - path: /config/cache
+#             config-logs:
+#               type: emptyDir
+#               globalMounts:
+#                 - path: /config/logs
+#             tmp:
+#               type: emptyDir
