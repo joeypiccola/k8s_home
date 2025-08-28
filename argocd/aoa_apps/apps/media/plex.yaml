@@ -24,7 +24,7 @@ spec:
   sources:
     - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
-      targetRevision: 3.7.3
+      targetRevision: 4.2.0
       helm:
         releaseName: plex
         valuesObject:

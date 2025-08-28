@@ -25,7 +25,7 @@ spec:
     - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
       # path: charts/sonarr
-      targetRevision: 3.7.3
+      targetRevision: 4.2.0
       helm:
         releaseName: sonarr
         valuesObject:
