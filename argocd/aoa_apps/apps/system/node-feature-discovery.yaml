@@ -7,8 +7,6 @@ metadata:
     argocd.argoproj.io/sync-wave: "50"
   finalizers:
     - resources-finalizer.argocd.argoproj.io
-    # - post-delete-finalizer.argocd.argoproj.io
-    # - post-delete-finalizer.argocd.argoproj.io/cleanup
 spec:
   project: default
   source:
@@ -71,6 +69,10 @@ spec:
       labels:
         goldilocks.fairwinds.com/enabled: "true"
         pod-security.kubernetes.io/enforce: "privileged"
-
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Application
+      jsonPointers:
+        - /metadata/finalizers
 
 # 02:00.0 System peripheral [0880]: Global Unichip Corp. Coral Edge TPU [1ac1:089a]
