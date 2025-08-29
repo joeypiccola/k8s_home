@@ -10,26 +10,26 @@
     "archive/"
   ],
   "kubernetes": {
-    "fileMatch": [
-      "argocd/.+\\.ya?ml$"
+    "managerFilePatterns": [
+      "/argocd/.+\\.ya?ml$/"
     ]
   },
   "argocd": {
-    "fileMatch": [
-      "argocd/.+\\.ya?ml$"
+    "managerFilePatterns": [
+      "/argocd/.+\\.ya?ml$/"
     ]
   },
   "terraform": {
-    "fileMatch": [
-      "terraform/.+\\.tf$"
+    "managerFilePatterns": [
+      "/terraform/.+\\.tf$/"
     ]
   },
   "customManagers": [
     {
       "customType": "regex",
       "description": "Process various dependencies",
-      "fileMatch": [
-        "argocd/.+\\.ya?ml$"
+      "managerFilePatterns": [
+        "/argocd/.+\\.ya?ml$/"
       ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*=?))?\n .*: (?<currentValue>.*=?)"
