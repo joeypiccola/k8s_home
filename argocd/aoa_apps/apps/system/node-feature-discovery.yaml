@@ -72,7 +72,5 @@ spec:
   ignoreDifferences:
     - group: argoproj.io
       kind: Application
-      jsonPointers:
-        - /metadata/finalizers
-
-# 02:00.0 System peripheral [0880]: Global Unichip Corp. Coral Edge TPU [1ac1:089a]
+      jqPathExpressions:
+        - .metadata.finalizers
