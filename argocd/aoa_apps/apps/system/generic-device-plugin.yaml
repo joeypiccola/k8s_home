@@ -25,7 +25,7 @@ spec:
   sources:
     - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
-      targetRevision: 4.0.1
+      targetRevision: 4.2.0
       helm:
         releaseName: generic-device-plugin
         valuesObject:
@@ -39,7 +39,8 @@ spec:
                 app:
                   image:
                     repository: ghcr.io/squat/generic-device-plugin
-                    tag: 36bfc606bba2064de6ede0ff2764cbb52edff70d@sha256:ba6f0b4cf6c858d6ad29ba4d32e4da11638abbc7d96436bf04f582a97b2b8821
+                    # tag: 36bfc606bba2064de6ede0ff2764cbb52edff70d@sha256:ba6f0b4cf6c858d6ad29ba4d32e4da11638abbc7d96436bf04f582a97b2b8821 # Mar 13, 2024
+                    tag: 0f7fddf166f17d58107d9811b53bec74e4d52e7c@sha256:1f779444c72c7bf06b082c44698d6268a8e642ebd9488a35c84a603087940e64 # Jul 10, 2025
                   args:
                     - --log-level=info
                     - --device
