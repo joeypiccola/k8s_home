@@ -62,7 +62,7 @@ data:
       enabled: True
 
     model:
-      path: plus://23d4dfda6d82c990256c4dd36d8b7c5b
+      path: plus://c763499595b0655f0cda8a2938632523
 
     detect:
       width: 640
