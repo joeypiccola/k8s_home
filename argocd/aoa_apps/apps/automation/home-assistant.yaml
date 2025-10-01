@@ -45,7 +45,7 @@ spec:
                   image:
                     repository: ghcr.io/home-assistant/home-assistant
                     # renovate: datasource=github-releases depName=https://github.com/home-assistant/core versioning=docker
-                    tag: 2025.9.4@sha256:55c7db16301626265c6c8132985137ca0798303773dafa244e562353baa93a6f
+                    tag: 2025.9.4@sha256:89ec0583c7f47c8a150204f6b5ed48b5432026012bebe1226cf72775a795a5e1
                   env:
                     TZ: America/Denver
 
