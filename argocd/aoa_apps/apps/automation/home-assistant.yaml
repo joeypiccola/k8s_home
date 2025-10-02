@@ -25,7 +25,7 @@ spec:
   sources:
     - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
-      targetRevision: 4.2.0
+      targetRevision: 4.3.0
       helm:
         releaseName: home-assistant
         valuesObject:
@@ -52,7 +52,7 @@ spec:
                 codeserver:
                   image:
                     repository: ghcr.io/coder/code-server
-                    tag: 4.103.1@sha256:fc1d8a57dc5ca5fab67999416165d994ab78a7338b046c4b29f168033a6b7b38
+                    tag: 4.104.2@sha256:6edc8e2d2849749c1a1a5eff8e76563b96db407e68899c143473a6004d0a6b5a
                   env:
                     # password: ${SECRET_CODESERVER_PASSWORD}
                     TZ: "${TIMEZONE}"
