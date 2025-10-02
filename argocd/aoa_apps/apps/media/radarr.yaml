@@ -1,132 +1,132 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: radarr
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "100"
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: default
-  destination:
-    name: in-cluster
-    namespace: radarr
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-    managedNamespaceMetadata:
-      labels:
-        goldilocks.fairwinds.com/enabled: "true"
-  sources:
-    - repoURL: https://bjw-s-labs.github.io/helm-charts
-      chart: app-template
-      targetRevision: 4.2.0
-      helm:
-        releaseName: radarr
-        valuesObject:
-          controllers:
-            radarr:
-              annotations:
-                reloader.stakater.com/auto: "true"
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: radarr
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "100"
+#   finalizers:
+#     - resources-finalizer.argocd.argoproj.io
+# spec:
+#   project: default
+#   destination:
+#     name: in-cluster
+#     namespace: radarr
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
+#     managedNamespaceMetadata:
+#       labels:
+#         goldilocks.fairwinds.com/enabled: "true"
+#   sources:
+#     - repoURL: https://bjw-s-labs.github.io/helm-charts
+#       chart: app-template
+#       targetRevision: 4.2.0
+#       helm:
+#         releaseName: radarr
+#         valuesObject:
+#           controllers:
+#             radarr:
+#               annotations:
+#                 reloader.stakater.com/auto: "true"
 
-              pod:
-                securityContext:
-                  runAsUser: 2000
-                  runAsGroup: 2000
-                  runAsNonRoot: true
-                  fsGroup: 2000
-                  fsGroupChangePolicy: "OnRootMismatch"
+#               pod:
+#                 securityContext:
+#                   runAsUser: 2000
+#                   runAsGroup: 2000
+#                   runAsNonRoot: true
+#                   fsGroup: 2000
+#                   fsGroupChangePolicy: "OnRootMismatch"
 
-              containers:
-                app:
-                  image:
-                    repository: ghcr.io/home-operations/radarr
-                    tag: 6.0.1@sha256:b67ac38b70e9f0d2aee0be31be27fd25d9d35ed1f7204d012fd05effabc395f5
-                  env:
-                    RADARR__APP__INSTANCENAME: Radarr
-                    # RADARR__AUTH__APIKEY:
-                    #   valueFrom:
-                    #     secretKeyRef:
-                    #       name: radarr-secret
-                    #       key: api_key
-                    RADARR__AUTH__METHOD: Forms
-                    RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
-                    RADARR__LOG__DBENABLED: "False"
-                    RADARR__LOG__LEVEL: info
-                    RADARR__SERVER__PORT: &port 7878
-                    TZ: 'America/Denver'
-                  probes:
-                    liveness: &probes
-                      enabled: true
-                      custom: true
-                      spec:
-                        httpGet:
-                          path: /ping
-                          port: *port
-                        initialDelaySeconds: 0
-                        periodSeconds: 10
-                        timeoutSeconds: 1
-                        failureThreshold: 3
-                    readiness: *probes
-                  # resources:
-                  #   requests:
-                  #     cpu: 20m
-                  #     memory: 384Mi
-                  #   limits:
-                  #     memory: 2Gi
-                  securityContext:
-                    allowPrivilegeEscalation: false
-                    readOnlyRootFilesystem: true
-                    capabilities:
-                      drop:
-                        - ALL
+#               containers:
+#                 app:
+#                   image:
+#                     repository: ghcr.io/home-operations/radarr
+#                     tag: 6.0.1@sha256:b67ac38b70e9f0d2aee0be31be27fd25d9d35ed1f7204d012fd05effabc395f5
+#                   env:
+#                     RADARR__APP__INSTANCENAME: Radarr
+#                     # RADARR__AUTH__APIKEY:
+#                     #   valueFrom:
+#                     #     secretKeyRef:
+#                     #       name: radarr-secret
+#                     #       key: api_key
+#                     RADARR__AUTH__METHOD: Forms
+#                     RADARR__AUTH__REQUIRED: DisabledForLocalAddresses
+#                     RADARR__LOG__DBENABLED: "False"
+#                     RADARR__LOG__LEVEL: info
+#                     RADARR__SERVER__PORT: &port 7878
+#                     TZ: 'America/Denver'
+#                   probes:
+#                     liveness: &probes
+#                       enabled: true
+#                       custom: true
+#                       spec:
+#                         httpGet:
+#                           path: /ping
+#                           port: *port
+#                         initialDelaySeconds: 0
+#                         periodSeconds: 10
+#                         timeoutSeconds: 1
+#                         failureThreshold: 3
+#                     readiness: *probes
+#                   # resources:
+#                   #   requests:
+#                   #     cpu: 20m
+#                   #     memory: 384Mi
+#                   #   limits:
+#                   #     memory: 2Gi
+#                   securityContext:
+#                     allowPrivilegeEscalation: false
+#                     readOnlyRootFilesystem: true
+#                     capabilities:
+#                       drop:
+#                         - ALL
 
-          service:
-            app:
-              controller: radarr
-              ports:
-                http:
-                  port: *port
+#           service:
+#             app:
+#               controller: radarr
+#               ports:
+#                 http:
+#                   port: *port
 
-          route:
-            # -- Enable and configure route settings for the chart under this key.
-            main:
-              parentRefs:
-                - name: internal
-                  namespace: gateway
-                  # sectionName: gateway-section
-              hostnames:
-                - radarr-k8s.<path:cluster-secrets:cluster-secrets#domain>
-              rules:
-                - matches:
-                    - path:
-                        type: PathPrefix
-                        value: /
-                  backendRefs:
-                    - kind: Service
-                      port: *port
-                      name: radarr
-                      namespace: radarr
-                      weight: 1
+#           route:
+#             # -- Enable and configure route settings for the chart under this key.
+#             main:
+#               parentRefs:
+#                 - name: internal
+#                   namespace: gateway
+#                   # sectionName: gateway-section
+#               hostnames:
+#                 - radarr-k8s.<path:cluster-secrets:cluster-secrets#domain>
+#               rules:
+#                 - matches:
+#                     - path:
+#                         type: PathPrefix
+#                         value: /
+#                   backendRefs:
+#                     - kind: Service
+#                       port: *port
+#                       name: radarr
+#                       namespace: radarr
+#                       weight: 1
 
-          persistence:
-            config:
-              type: persistentVolumeClaim
-              existingClaim: radarr-config
-              advancedMounts:
-                radarr: # <- the controller
-                  app:   # <- the container
-                    - path: /config
-            add-ons:
-              type: emptyDir
-            tmp:
-              type: emptyDir
-            media:
-              enabled: true
-              type: nfs
-              server: freenas.<path:cluster-secrets:cluster-secrets#domain>
-              path: /mnt/storage/media
+#           persistence:
+#             config:
+#               type: persistentVolumeClaim
+#               existingClaim: radarr-config
+#               advancedMounts:
+#                 radarr: # <- the controller
+#                   app:   # <- the container
+#                     - path: /config
+#             add-ons:
+#               type: emptyDir
+#             tmp:
+#               type: emptyDir
+#             media:
+#               enabled: true
+#               type: nfs
+#               server: freenas.<path:cluster-secrets:cluster-secrets#domain>
+#               path: /mnt/storage/media
