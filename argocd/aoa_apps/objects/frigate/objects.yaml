@@ -65,6 +65,7 @@ data:
       path: plus://c763499595b0655f0cda8a2938632523
 
     detect:
+      enabled: True
       width: 640
       height: 480
       fps: 10
