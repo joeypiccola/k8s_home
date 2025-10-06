@@ -73,8 +73,9 @@ data:
       alley:
         enabled: True
         live:
-          main_stream: alley_main
-          sub_stream: alley_sub
+          streams:
+            main_stream: alley_main
+            sub_stream: alley_sub
         motion:
           mask:
             # ignore timestamp
@@ -92,8 +93,9 @@ data:
       front_porch:
         enabled: True
         live:
-          main_stream: front_porch_main
-          sub_stream: front_porch_sub
+          streams:
+            main_stream: front_porch_main
+            sub_stream: front_porch_sub
         motion:
           mask:
             # ignore timestamp
@@ -127,8 +129,9 @@ data:
       backyard:
         enabled: True
         live:
-          main_stream: backyard_main
-          sub_stream: backyard_sub
+          streams:
+            main_stream: backyard_main
+            sub_stream: backyard_sub
         motion:
           mask:
             # ignore tree moving and sun shade sails blowing in the wind
@@ -162,8 +165,9 @@ data:
       garage:
         enabled: True
         live:
-          main_stream: garage_main
-          sub_stream: garage_sub
+          streams:
+            main_stream: garage_main
+            sub_stream: garage_sub
         motion:
           mask: # ignore timestamp
             - 0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098
