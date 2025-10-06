@@ -35,6 +35,7 @@
 | mech-room-esp           | 192.168.9.153 | true   |
 | garage-esp              | 192.168.9.154 | true   |
 | basement-esp            | 192.168.9.155 | true   |
+| halloween-pumkins-esp   | 192.168.9.156 | true   |
 
 ## sonos
 
