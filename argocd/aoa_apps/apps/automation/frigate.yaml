@@ -69,12 +69,12 @@ spec:
                       gpu.intel.com/i915: "1"
                     limits:
                       gpu.intel.com/i915: "1"
-                  command:
-                    - /bin/sh
-                  args:
-                    - -c
-                    - |
-                      mkdir /config/model_cache
+                  # command:
+                  #   - /bin/sh
+                  # args:
+                  #   - -c
+                  #   - |
+                  #     mkdir /config/model_cache
 
 
           service:
