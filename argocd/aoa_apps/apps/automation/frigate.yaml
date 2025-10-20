@@ -42,7 +42,7 @@ spec:
                 app:
                   image:
                     repository: ghcr.io/blakeblackshear/frigate
-                    tag: 0.16.0@sha256:c2d49a6fedcca8928db1eccfa8018c8138b25dfe7d506a7ea499aebc3c799b0b
+                    tag: 0.16.2@sha256:4041ad318224500cf9513c513b1bb927d9dd252f63bbd3d11c92006c1172c86c
                     # 0.16.12 https://github.com/blakeblackshear/frigate/pkgs/container/frigate/505907123?tag=0.16.1
                   env:
                     TZ: America/Denver
