@@ -62,7 +62,7 @@ data:
       enabled: True
 
     model:
-      path: plus://c763499595b0655f0cda8a2938632523
+      path: plus://fd35c079fd596872897737e3f3420edb
 
     detect:
       enabled: True
