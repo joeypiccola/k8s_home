@@ -1,30 +1,30 @@
-# apiVersion: argoproj.io/v1alpha1
-# kind: Application
-# metadata:
-#   name: grafana
-#   namespace: argocd
-#   annotations:
-#     argocd.argoproj.io/sync-wave: "100"
-#   finalizers:
-#     - resources-finalizer.argocd.argoproj.io
-# spec:
-#   project: default
-#   destination:
-#     name: in-cluster
-#     namespace: grafana
-#   syncPolicy:
-#     automated:
-#       prune: true
-#       selfHeal: true
-#     syncOptions:
-#       - CreateNamespace=true
-#   sources:
-#     - chart: grafana
-#       repoURL: https://grafana.github.io/helm-charts
-#       targetRevision: 10.1.4
-#       helm:
-#         valueFiles:
-#         - $values/argocd/aoa_apps/values/grafana.yaml
-#     - repoURL: https://github.com/joeypiccola/k8s_home.git
-#       targetRevision: main
-#       ref: values
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: grafana
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+  sources:
+    - chart: grafana
+      repoURL: https://grafana.github.io/helm-charts
+      targetRevision: 10.1.4
+      helm:
+        valueFiles:
+        - $values/argocd/aoa_apps/values/grafana.yaml
+    - repoURL: https://github.com/joeypiccola/k8s_home.git
+      targetRevision: main
+      ref: values
