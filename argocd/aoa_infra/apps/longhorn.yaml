@@ -23,7 +23,7 @@ spec:
   sources:
     - chart: longhorn
       repoURL: https://charts.longhorn.io/
-      targetRevision: v1.9.2 # Replace with the Longhorn version you'd like to install or upgrade to
+      targetRevision: 1.10.1 # Replace with the Longhorn version you'd like to install or upgrade to
       helm:
         values: |
           preUpgradeChecker:
