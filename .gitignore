@@ -29,3 +29,5 @@ nginx.conf
 
 scratch/*
 # bootstrap/*
+
+debug.yaml
