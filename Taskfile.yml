@@ -140,3 +140,48 @@ tasks:
   #     - talosctl wipe disk nvme0n1 -n control-3.k8s.piccola.us
   #     - talosctl wipe disk nvme0n1 -n control-4.k8s.piccola.us
   #     - talosctl wipe disk nvme0n1 -n control-5.k8s.piccola.us
+
+
+
+
+  k8s:cordon:
+    desc: "Cordon a Kubernetes node"
+    silent: true
+    vars:
+      NODE: "{{ .NODE }}"
+    preconditions:
+      - sh: test -n "{{ .NODE }}"
+        msg: "NODE is required: task talos:cordon NODE=<node>"
+    cmds:
+      - echo "Cordoning {{ .NODE }}..."
+      - kubectl cordon {{ .NODE }}
+
+  talos:reboot:
+    desc: "Reboot a Talos node"
+    silent: true
+    env:
+      TALOSCONFIG: "talos/clusterconfig/talosconfig"
+    vars:
+      NODE: "{{ .NODE }}"
+    preconditions:
+      - sh: test -n "{{ .NODE }}"
+        msg: "NODE is required: task talos:reboot NODE=<node>"
+    cmds:
+      - echo "Rebooting {{ .NODE }}..."
+      - talosctl reboot -n {{ .NODE }}
+
+  talos:cordon-and-reboot:
+    desc: "Cordon then reboot a node (parent task)"
+    vars:
+      NODE: "{{ .NODE }}"
+    preconditions:
+      - sh: test -n "{{ .NODE }}"
+        msg: "NODE is required: task talos:cordon-and-reboot NODE=<node>"
+    cmds:
+      - task: k8s:cordon
+        vars:
+          NODE: "{{ .NODE }}"
+      # only run reboot if previous step succeeded
+      - task: talos:reboot
+        vars:
+          NODE: "{{ .NODE }}"
