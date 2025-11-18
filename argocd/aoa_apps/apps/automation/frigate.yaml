@@ -33,6 +33,8 @@ spec:
           defaultPodOptions:
             nodeSelector:
               feature.node.kubernetes.io/pci-0880_1ac1_089a.present: "true"
+            labels:
+              stable: "false"
 
           controllers:
             frigate:
