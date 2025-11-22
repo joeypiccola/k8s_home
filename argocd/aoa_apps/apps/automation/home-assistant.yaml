@@ -55,14 +55,14 @@ spec:
                   image:
                     repository: ghcr.io/home-assistant/home-assistant
                     # renovate: datasource=github-releases depName=https://github.com/home-assistant/core versioning=docker
-                    tag: 2025.9.4@sha256:89ec0583c7f47c8a150204f6b5ed48b5432026012bebe1226cf72775a795a5e1
+                    tag: 2025.10.0@sha256:ae0e2a2f03822c49a0c506bc40e367b4abc8b3207d67a6e0312b42d60867c5e5
                   env:
                     TZ: America/Denver
 
                 codeserver:
                   image:
                     repository: ghcr.io/coder/code-server
-                    tag: 4.104.2@sha256:6edc8e2d2849749c1a1a5eff8e76563b96db407e68899c143473a6004d0a6b5a
+                    tag: 4.105.1@sha256:2d48970bd2084aa34a522d772b6a437981ea80407465b3bf7958553985c570e1
                   env:
                     # password: ${SECRET_CODESERVER_PASSWORD}
                     TZ: "${TIMEZONE}"
