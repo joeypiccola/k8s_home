@@ -24,7 +24,7 @@ spec:
   sources:
     - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
-      targetRevision: 4.4.0
+      targetRevision: 4.5.0
       helm:
         releaseName: radarr
         valuesObject:
