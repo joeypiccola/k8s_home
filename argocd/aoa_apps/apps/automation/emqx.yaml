@@ -21,7 +21,7 @@ spec:
   sources:
     - chart: emqx
       repoURL: https://repos.emqx.io/charts
-      targetRevision: 5.8.8
+      targetRevision: 5.8.9
       helm:
         valueFiles:
         - $values/argocd/aoa_apps/values/emqx.yaml
