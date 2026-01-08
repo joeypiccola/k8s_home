@@ -24,24 +24,19 @@
       "/terraform/.+\\.tf$/"
     ]
   },
-  "packageRules": [
+"packageRules": [
     {
-      "description": "Auto-approve and merge PRs for grafana.yaml",
+      "description": "Auto-approve and merge PRs for monitoring tools",
       "matchFileNames": [
-        "argocd/aoa_apps/apps/monitoring/grafana.yaml"
-      ],
-      "matchUpdateTypes": ["minor", "patch"],
-      "automerge": true,
-      "automergeType": "pr"
-    },
-    {
-      "description": "Auto-approve and merge PRs for kube-prometheus-stack.yaml",
-      "matchFileNames": [
+        "argocd/aoa_apps/apps/monitoring/grafana.yaml",
         "argocd/aoa_apps/apps/monitoring/kube-prometheus-stack.yaml"
       ],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
-      "automergeType": "pr"
+      "automergeType": "pr",
+      "platformAutomerge": true,
+      // "ignoreTests": true,
+      "assignees": []
     }
   ],
   "customManagers": [
