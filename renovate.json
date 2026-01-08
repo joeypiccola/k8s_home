@@ -24,7 +24,7 @@
       "/terraform/.+\\.tf$/"
     ]
   },
-"packageRules": [
+  "packageRules": [
     {
       "description": "Auto-approve and merge PRs for monitoring tools",
       "matchFileNames": [
@@ -35,6 +35,7 @@
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true,
+      "requiredStatusChecks": null,
       // "ignoreTests": true,
       "assignees": []
     }
