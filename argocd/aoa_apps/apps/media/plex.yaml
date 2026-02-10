@@ -42,6 +42,7 @@ spec:
               containers:
                 app:
                   image:
+                    # renovate: datasource=docker depName=ghcr.io/home-operations/plex
                     repository: ghcr.io/home-operations/plex
                     tag: 1.42.2@sha256:9ad8a3506e1d8ebda873a668603c1a2c10e6887969564561be669efd65ae8871
                   env:

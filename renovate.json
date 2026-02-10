@@ -45,7 +45,8 @@
     {
       "description": "Auto-approve and merge PRs for cloudflared (date-based versioning)",
       "matchFileNames": [
-        "argocd/aoa_apps/apps/networking/cloudflared-objects.yaml"
+        // "argocd/aoa_apps/apps/networking/cloudflared-objects.yaml"
+        "argocd/aoa_apps/objects/cloudflared/objects.yaml"
       ],
       "versioning": "regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$",
       "automerge": true,
@@ -55,7 +56,7 @@
       "assignees": []
     },
     {
-      "description": "Auto-approve and merge PRs for argocd init container images",
+      "description": "Auto-approve and merge PRs for argocd init container images (the download tools container)",
       "matchFileNames": [
         "argocd/aoa_apps/values/argocd.yaml"
       ],
@@ -71,6 +72,7 @@
       "matchFileNames": [
         "argocd/aoa_apps/apps/media/plex.yaml"
       ],
+      "matchDatasources": ["docker"],
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "automerge": true,
       "automergeType": "pr",
@@ -82,7 +84,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "description": "Process various dependencies",
+      "description": "Process various dependencies, this is mostly for AVP",
       "managerFilePatterns": [
         "/argocd/.+\\.ya?ml$/"
       ],
