@@ -26,10 +26,13 @@
   },
   "packageRules": [
     {
-      "description": "Auto-approve and merge PRs for monitoring tools",
+      "description": "Auto-approve and merge PRs for semver-based apps",
       "matchFileNames": [
         "argocd/aoa_apps/apps/monitoring/grafana.yaml",
-        "argocd/aoa_apps/apps/monitoring/kube-prometheus-stack.yaml"
+        "argocd/aoa_apps/apps/monitoring/kube-prometheus-stack.yaml",
+        "argocd/aoa_apps/apps/argocd.yaml",
+        "argocd/aoa_infra/apps/onepassword.yaml",
+        "argocd/aoa_infra/apps/external-secrets.yaml"
       ],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
@@ -37,6 +40,42 @@
       "platformAutomerge": true,
       "requiredStatusChecks": null,
       // "ignoreTests": true,
+      "assignees": []
+    },
+    {
+      "description": "Auto-approve and merge PRs for cloudflared (date-based versioning)",
+      "matchFileNames": [
+        "argocd/aoa_apps/apps/networking/cloudflared-objects.yaml"
+      ],
+      "versioning": "regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$",
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true,
+      "requiredStatusChecks": null,
+      "assignees": []
+    },
+    {
+      "description": "Auto-approve and merge PRs for argocd init container images",
+      "matchFileNames": [
+        "argocd/aoa_apps/values/argocd.yaml"
+      ],
+      "matchUpdateTypes": ["minor", "patch"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true,
+      "requiredStatusChecks": null,
+      "assignees": []
+    },
+    {
+      "description": "Auto-approve and merge PRs for media apps with pinned digests",
+      "matchFileNames": [
+        "argocd/aoa_apps/apps/media/plex.yaml"
+      ],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true,
+      "requiredStatusChecks": null,
       "assignees": []
     }
   ],
