@@ -28,12 +28,13 @@
     {
       "description": "Auto-approve and merge PRs for semver-based apps",
       "matchFileNames": [
+        "argocd/aoa_apps/apps/argocd.yaml",
         "argocd/aoa_apps/apps/monitoring/grafana.yaml",
         "argocd/aoa_apps/apps/monitoring/kube-prometheus-stack.yaml",
-        "argocd/aoa_apps/apps/argocd.yaml",
-        "argocd/aoa_infra/apps/onepassword.yaml",
+        "argocd/aoa_apps/values/argocd.yaml",
+        "argocd/aoa_infra/apps/cert-manager.yaml",
         "argocd/aoa_infra/apps/external-secrets.yaml",
-        "argocd/aoa_infra/apps/cert-manager.yaml"
+        "argocd/aoa_infra/apps/onepassword.yaml"
       ],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
@@ -57,30 +58,18 @@
       "assignees": []
     },
     {
-      "description": "Auto-approve and merge PRs for argocd init container images (the download tools container)",
+      "description": "Auto-approve and merge PRs for media apps with pinned digests",
       "matchFileNames": [
-        "argocd/aoa_apps/values/argocd.yaml"
+        "argocd/aoa_apps/apps/media/plex.yaml"
       ],
-      "matchUpdateTypes": ["minor", "patch"],
+      "matchDatasources": ["docker"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true,
       "requiredStatusChecks": null,
       "assignees": []
     }
-    // {
-    //   "description": "Auto-approve and merge PRs for media apps with pinned digests",
-    //   "matchFileNames": [
-    //     "argocd/aoa_apps/apps/media/plex.yaml"
-    //   ],
-    //   "matchDatasources": ["docker"],
-    //   "matchUpdateTypes": ["minor", "patch", "digest"],
-    //   "automerge": true,
-    //   "automergeType": "pr",
-    //   "platformAutomerge": true,
-    //   "requiredStatusChecks": null,
-    //   "assignees": []
-    // }
   ],
   "customManagers": [
     {
