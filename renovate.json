@@ -93,16 +93,19 @@
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*=?))?\n .*: (?<currentValue>.*=?)"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "description": "digest",
+      "managerFilePatterns": [
+        "/argocd/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?\\s+tag:\\s+(?<currentValue>.*?)@(?<currentDigest>sha256:[a-f0-9]+)"
+      ],
+      "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}docker{{/if}}",
+      "depNameTemplate": "{{{depName}}}"
     }
-    // {
-    //   "customType": "regex",
-    //   "description": "Update Docker images with repository/tag pattern and digest pinning",
-    //   "fileMatch": ["/argocd/.+\\.ya?ml$/"],
-    //   "matchStrings": [
-    //     "# renovate: datasource=(?<datasource>docker) depName=(?<depName>[^\\s]+)\\n\\s*repository:\\s*(?<packageName>[^\\s]+)\\n\\s*tag:\\s*(?<currentValue>.+?)(?=\\n|$)"
-    //   ],
-    //   "datasourceTemplate": "docker"
-    // }
   ]
 }
 
