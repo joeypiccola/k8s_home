@@ -67,20 +67,20 @@
       "platformAutomerge": true,
       "requiredStatusChecks": null,
       "assignees": []
-    },
-    {
-      "description": "Auto-approve and merge PRs for media apps with pinned digests",
-      "matchFileNames": [
-        "argocd/aoa_apps/apps/media/plex.yaml"
-      ],
-      "matchDatasources": ["docker"],
-      "matchUpdateTypes": ["minor", "patch", "digest"],
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true,
-      "requiredStatusChecks": null,
-      "assignees": []
     }
+    // {
+    //   "description": "Auto-approve and merge PRs for media apps with pinned digests",
+    //   "matchFileNames": [
+    //     "argocd/aoa_apps/apps/media/plex.yaml"
+    //   ],
+    //   "matchDatasources": ["docker"],
+    //   "matchUpdateTypes": ["minor", "patch", "digest"],
+    //   "automerge": true,
+    //   "automergeType": "pr",
+    //   "platformAutomerge": true,
+    //   "requiredStatusChecks": null,
+    //   "assignees": []
+    // }
   ],
   "customManagers": [
     {
@@ -105,3 +105,10 @@
     // }
   ]
 }
+
+// # renovate: datasource=github-releases depName=argoproj-labs/argocd-vault-plugin
+// value: 1.18.1
+
+// # renovate: datasource=docker depName=ghcr.io/home-operations/plex
+// repository: ghcr.io/home-operations/plex
+// tag: 1.42.2@sha256:9ad8a3506e1d8ebda873a668603c1a2c10e6887969564561be669efd65ae8871
