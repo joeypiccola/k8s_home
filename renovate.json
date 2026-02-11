@@ -32,7 +32,8 @@
         "argocd/aoa_apps/apps/monitoring/kube-prometheus-stack.yaml",
         "argocd/aoa_apps/apps/argocd.yaml",
         "argocd/aoa_infra/apps/onepassword.yaml",
-        "argocd/aoa_infra/apps/external-secrets.yaml"
+        "argocd/aoa_infra/apps/external-secrets.yaml",
+        "argocd/aoa_infra/apps/cert-manager.yaml"
       ],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
@@ -92,6 +93,15 @@
         "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( versioning=(?<versioning>.*=?))?\n .*: (?<currentValue>.*=?)"
       ],
       "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "customType": "regex",
+      "description": "Update Docker images with repository/tag pattern and digest pinning",
+      "fileMatch": ["/argocd/.+\\.ya?ml$/"],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>docker) depName=(?<depName>.*?)\\s*repository:\\s*(?<packageName>.*?)\\s*tag:\\s*(?<currentValue>.*?)\\s"
+      ],
+      "datasourceTemplate": "docker"
     }
   ]
 }
