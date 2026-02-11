@@ -99,7 +99,7 @@
       "description": "Update Docker images with repository/tag pattern and digest pinning",
       "fileMatch": ["/argocd/.+\\.ya?ml$/"],
       "matchStrings": [
-        "# renovate: datasource=(?<datasource>docker) depName=(?<depName>.*?)\\s*repository:\\s*(?<packageName>.*?)\\s*tag:\\s*(?<currentValue>.*?)\\s"
+        "# renovate: datasource=(?<datasource>docker) depName=(?<depName>[^\\s]+)\\n\\s*repository:\\s*(?<packageName>[^\\s]+)\\n\\s*tag:\\s*(?<currentValue>.+?)(?=\\n|$)"
       ],
       "datasourceTemplate": "docker"
     }
