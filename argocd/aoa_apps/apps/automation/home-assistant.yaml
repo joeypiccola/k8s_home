@@ -58,6 +58,18 @@ spec:
                     tag: 2026.2.1@sha256:17441c45ba14560b4ef727ee06aac4d605cf0dc0625fc4f2e043cb2551d72749
                   env:
                     TZ: America/Denver
+                  lifecycle:
+                    postStart:
+                      exec:
+                        command:
+                          - /bin/sh
+                          - -c
+                          - |
+                            (
+                              set -ex
+                              # Only install the missing library required by Frigate 5.14.1
+                              pip install --no-cache-dir hass-web-proxy-lib==0.0.7
+                            ) > /tmp/postStart.log 2>&1 || true
 
                 codeserver:
                   image:
