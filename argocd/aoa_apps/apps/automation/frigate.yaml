@@ -44,7 +44,7 @@ spec:
                 app:
                   image:
                     repository: ghcr.io/blakeblackshear/frigate
-                    tag: 0.16.2@sha256:4041ad318224500cf9513c513b1bb927d9dd252f63bbd3d11c92006c1172c86c
+                    tag: 0.16.4@sha256:1f8dbaaa4c7c2855c2aef711842d13b0c20bfdc3f28ad88faf66aa1bc219b108
                     # go to https://github.com/blakeblackshear/frigate/releases, select image you want, get manifest sha256 there
                   env:
                     TZ: America/Denver
