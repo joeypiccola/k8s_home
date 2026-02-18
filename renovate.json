@@ -31,6 +31,8 @@
         "argocd/aoa_apps/apps/argocd.yaml",
         "argocd/aoa_apps/apps/monitoring/grafana.yaml",
         "argocd/aoa_apps/apps/monitoring/kube-prometheus-stack.yaml",
+        "argocd/aoa_apps/apps/monitoring/uptime-kuma.yaml",
+        "argocd/aoa_apps/apps/system/reloader.yaml",
         "argocd/aoa_apps/values/argocd.yaml",
         "argocd/aoa_infra/apps/cert-manager.yaml",
         "argocd/aoa_infra/apps/external-secrets.yaml",
@@ -41,13 +43,11 @@
       "automergeType": "pr",
       "platformAutomerge": true,
       "requiredStatusChecks": null,
-      // "ignoreTests": true,
       "assignees": []
     },
     {
       "description": "Auto-approve and merge PRs for cloudflared (date-based versioning)",
       "matchFileNames": [
-        // "argocd/aoa_apps/apps/networking/cloudflared-objects.yaml"
         "argocd/aoa_apps/objects/cloudflared/objects.yaml"
       ],
       "versioning": "regex:^(?<major>\\d{4})\\.(?<minor>\\d{1,2})\\.(?<patch>\\d{1,2})$",
@@ -97,10 +97,3 @@
     }
   ]
 }
-
-// # renovate: datasource=github-releases depName=argoproj-labs/argocd-vault-plugin
-// value: 1.18.1
-
-// # renovate: datasource=docker depName=ghcr.io/home-operations/plex
-// repository: ghcr.io/home-operations/plex
-// tag: 1.42.2@sha256:9ad8a3506e1d8ebda873a668603c1a2c10e6887969564561be669efd65ae8871
