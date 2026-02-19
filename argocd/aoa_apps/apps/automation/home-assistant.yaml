@@ -59,6 +59,8 @@ spec:
                   securityContext:
                     allowPrivilegeEscalation: true
                     privileged: true
+                    runAsUser: 0
+                    runAsGroup: 0
                   env:
                     TZ: America/Denver
                   lifecycle:
