@@ -20,4 +20,9 @@ spec:
       kind: Application
       jsonPointers:
         - /spec/syncPolicy
+    - group: argoproj.io
+      kind: Application
+      name: node-feature-discovery
+      jsonPointers:
+        - /metadata/finalizers
 

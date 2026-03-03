@@ -69,8 +69,3 @@ spec:
       labels:
         goldilocks.fairwinds.com/enabled: "true"
         pod-security.kubernetes.io/enforce: "privileged"
-  ignoreDifferences:
-    - group: argoproj.io
-      kind: Application
-      jqPathExpressions:
-        - .metadata.finalizers
