@@ -1,32 +1,32 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: uptime-kuma
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "100"
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: default
-  destination:
-    name: in-cluster
-    namespace: uptime-kuma
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-  source:
-    chart: uptime-kuma
-    repoURL: https://helm.irsigler.cloud
-    targetRevision: 4.0.0
-    helm:
-      releaseName: uptime-kuma
-      valuesObject:
-        volume:
-          enabled: true
-          accessMode: ReadWriteOnce
-          size: 4Gi
-          existingClaim: uptime-kuma
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: uptime-kuma
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "100"
+#   finalizers:
+#     - resources-finalizer.argocd.argoproj.io
+# spec:
+#   project: default
+#   destination:
+#     name: in-cluster
+#     namespace: uptime-kuma
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
+#   source:
+#     chart: uptime-kuma
+#     repoURL: https://helm.irsigler.cloud
+#     targetRevision: 4.0.0
+#     helm:
+#       releaseName: uptime-kuma
+#       valuesObject:
+#         volume:
+#           enabled: true
+#           accessMode: ReadWriteOnce
+#           size: 4Gi
+#           existingClaim: uptime-kuma
