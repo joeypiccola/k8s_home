@@ -194,3 +194,70 @@ tasks:
           echo "Restarting $ns..."
           kubectl rollout restart deployment/$ns -n $ns
         done
+
+  argocd:suspend:
+    desc: "Suspend ArgoCD automated sync for an app (allows manual scaling). Usage: task argocd:suspend APP=<app>"
+    silent: true
+    vars:
+      APP: "{{ .APP }}"
+    preconditions:
+      - sh: test -n "{{ .APP }}"
+        msg: "APP is required: task argocd:suspend APP=<app>"
+    cmds:
+      - echo "Suspending automated sync for {{ .APP }}..."
+      - kubectl patch application {{ .APP }} -n argocd --type merge -p '{"spec":{"syncPolicy":{"automated":null}}}'
+      - echo "Done. ArgoCD will no longer self-heal {{ .APP }}."
+
+  argocd:resume:
+    desc: "Resume ArgoCD automated sync for an app and trigger a sync. Usage: task argocd:resume APP=<app>"
+    silent: true
+    vars:
+      APP: "{{ .APP }}"
+    preconditions:
+      - sh: test -n "{{ .APP }}"
+        msg: "APP is required: task argocd:resume APP=<app>"
+    cmds:
+      - echo "Resuming automated sync for {{ .APP }}..."
+      - kubectl patch application {{ .APP }} -n argocd --type merge -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
+      - echo "Done. ArgoCD will now self-heal {{ .APP }} back to desired state."
+
+  pvc:browse:
+    desc: "Spin up a temp pod to browse/edit a PVC. Usage: task pvc:browse PVC=<pvc> NS=<namespace>"
+    silent: true
+    vars:
+      PVC: "{{ .PVC }}"
+      NS: "{{ .NS }}"
+    preconditions:
+      - sh: test -n "{{ .PVC }}"
+        msg: "PVC is required: task pvc:browse PVC=<pvc> NS=<namespace>"
+      - sh: test -n "{{ .NS }}"
+        msg: "NS is required: task pvc:browse PVC=<pvc> NS=<namespace>"
+    cmds:
+      - |
+        NS="{{ .NS }}"
+        PVC="{{ .PVC }}"
+        kubectl delete pod pvc-browser -n $NS --ignore-not-found --wait=true 2>/dev/null || true
+        echo "Spinning up browser pod for PVC '$PVC' in '$NS'..."
+        kubectl apply -n $NS -f - <<EOF
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: pvc-browser
+        spec:
+          containers:
+            - name: browser
+              image: alpine
+              command: ["sleep", "infinity"]
+              volumeMounts:
+                - mountPath: /data
+                  name: pvc
+          volumes:
+            - name: pvc
+              persistentVolumeClaim:
+                claimName: $PVC
+          restartPolicy: Never
+        EOF
+        kubectl wait pod/pvc-browser -n $NS --for=condition=Ready --timeout=60s
+        echo "Data is at /data. Exit the shell when done - pod will be removed."
+        trap "kubectl delete pod pvc-browser -n $NS --ignore-not-found --wait=false 2>/dev/null; echo 'Pod removed.'" EXIT
+        kubectl exec -it pvc-browser -n $NS -- sh
