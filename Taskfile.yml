@@ -56,11 +56,11 @@ tasks:
     cmds:
       - |
         kubectl get namespace onepassword >/dev/null 2>&1 || kubectl create namespace onepassword
-        onepass_creds_b64=$(op document get 'talos Credentials File' | base64)
+        onepass_creds=$(op document get 'talos Credentials File')
         onepass_token=$(op item get 'talos Access Token Kubernetes operator' --format json --fields credential | jq -r .value)
         onepass_helm_release=connect-$(yq '.spec.source.targetRevision' argocd/aoa_infra/apps/onepassword.yaml)
         onepass_token=$onepass_token onepass_helm_release=$onepass_helm_release yq '.stringData.token = env(onepass_token), .metadata.labels."helm.sh/chart" = env(onepass_helm_release)' ./bootstrap/onepassword-token.yaml | kubectl apply -f -
-        onepass_creds_b64=$onepass_creds_b64 onepass_helm_release=$onepass_helm_release yq '.stringData."1password-credentials.json" = env(onepass_creds_b64), .metadata.labels."helm.sh/chart" = env(onepass_helm_release)' ./bootstrap/op-credentials.yaml | kubectl apply -f -
+        onepass_creds=$onepass_creds onepass_helm_release=$onepass_helm_release yq '.stringData."1password-credentials.json" = strenv(onepass_creds), .metadata.labels."helm.sh/chart" = env(onepass_helm_release)' ./bootstrap/op-credentials.yaml | kubectl apply -f -
 
   talos:genconfig:
     desc: Generate talos configs with talhelper
@@ -185,3 +185,12 @@ tasks:
       - task: talos:reboot
         vars:
           NODE: "{{ .NODE }}"
+
+  restart:media:
+    desc: Restart all media deployments
+    cmds:
+      - |
+        for ns in sabnzbd radarr sonarr plex tautulli overseerr; do
+          echo "Restarting $ns..."
+          kubectl rollout restart deployment/$ns -n $ns
+        done
