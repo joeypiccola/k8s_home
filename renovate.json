@@ -58,9 +58,25 @@
       "assignees": []
     },
     {
+      "description": "Auto-approve and merge PRs for code-server in home-assistant",
+      "matchFileNames": [
+        "argocd/aoa_apps/apps/automation/home-assistant.yaml"
+      ],
+      "matchPackageNames": ["ghcr.io/coder/code-server"],
+      "matchUpdateTypes": ["minor", "patch", "digest"],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true,
+      "requiredStatusChecks": null,
+      "assignees": []
+    },
+    {
       "description": "Auto-approve and merge PRs for media apps with pinned digests",
       "matchFileNames": [
-        "argocd/aoa_apps/apps/media/plex.yaml"
+        "argocd/aoa_apps/apps/media/plex.yaml",
+        "argocd/aoa_apps/apps/media/radarr.yaml",
+        "argocd/aoa_apps/apps/media/sonarr.yaml",
+        "argocd/aoa_apps/apps/media/sabnzbd.yaml"
       ],
       "matchDatasources": ["docker"],
       "matchUpdateTypes": ["minor", "patch", "digest"],
@@ -68,7 +84,8 @@
       "automergeType": "pr",
       "platformAutomerge": true,
       "requiredStatusChecks": null,
-      "assignees": []
+      "assignees": [],
+      "schedule": ["after 1am"]
     }
   ],
   "customManagers": [
