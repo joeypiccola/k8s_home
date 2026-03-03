@@ -46,9 +46,8 @@ data:
     record:
       enabled: True
       sync_recordings: True
-      retain:
+      continuous:
         days: 5
-        mode: all
       alerts:
         retain:
           days: 10
