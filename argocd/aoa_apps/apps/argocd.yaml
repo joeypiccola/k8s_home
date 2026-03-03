@@ -24,7 +24,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
-      allowEmpty: false # https://argo-cd.readthedocs.io/en/stable/user-guide/auto_sync/#automatic-pruning-with-allow-empty-v18
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
