@@ -29,3 +29,17 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: cilium-ca
+      jsonPointers:
+      - /data/ca.crt
+      - /data/ca.key
+    - group: ""
+      kind: Secret
+      name: hubble-server-certs
+      jsonPointers:
+      - /data/ca.crt
+      - /data/tls.crt
+      - /data/tls.key
