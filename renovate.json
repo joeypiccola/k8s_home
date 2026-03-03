@@ -6,6 +6,7 @@
   "assignees": [
     "joeypiccola"
   ],
+  "timezone": "America/Denver",
   "ignorePaths": [
     "archive/"
   ],
