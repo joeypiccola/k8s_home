@@ -36,7 +36,8 @@
         "argocd/aoa_apps/values/argocd.yaml",
         "argocd/aoa_infra/apps/cert-manager.yaml",
         "argocd/aoa_infra/apps/external-secrets.yaml",
-        "argocd/aoa_infra/apps/onepassword.yaml"
+        "argocd/aoa_infra/apps/onepassword.yaml",
+        "argocd/aoa_apps/apps/monitoring/goldilocks.yaml"
       ],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
