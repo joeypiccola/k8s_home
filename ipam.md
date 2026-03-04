@@ -36,6 +36,8 @@
 | garage-esp              | 192.168.9.154 | true   |
 | basement-esp            | 192.168.9.155 | true   |
 | halloween-pumkins-esp   | 192.168.9.156 | true   |
+| 3dprinter-esp           | 192.168.9.157 | true   |
+| aqi-a-esp               | 192.168.9.158 | true   |
 
 ## sonos
 
@@ -53,3 +55,10 @@
 |-----------|------------|-------------|
 | ap-house  | 10.0.2.50  | true        |
 | ap-garage | 10.0.2.100 | true        |
+
+## nix
+
+| device | ip         | static |
+|--------|------------|--------|
+| nixa   | 10.0.3.170 | true   |
+| nixa   | 10.0.5.170 | true   |
