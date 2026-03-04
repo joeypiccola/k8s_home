@@ -42,3 +42,28 @@ select a database
 list users
 
 `db.getUsers()`
+
+### frigate
+
+## node crash
+
+unplug node
+plug in node
+power on
+things will reconcile and either come back up or move to another node
+
+
+### nixos
+
+https://www.youtube.com/watch?v=63sSGuclBn0
+
+boot from minimal installer and `sudo -i`
+
+then get in fdisk for the nvme disk `fdisk /dev/nvme0n1`, you can do `fdisk -l` to see the disks
+
+then  `g` to create new gpt label, enter
+then `n` to set partition number, enter
+then enter to accept first sector
+then +500M for partition size, enter
+then at new help screen type `t` enter
+then `1` to set partitaoni 1 to UEFI
