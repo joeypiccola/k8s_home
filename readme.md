@@ -35,7 +35,12 @@ Use `talhelper` to generate talos configs. The following will generate individua
 
 #### SOPS and talhelper
 
-`talsecret.sops.yaml` is encrypted with [SOPS](https://github.com/getsops/sops) leveraging [age](https://github.com/FiloSottile/age). `age-keygen -o myKey.txt` was used to generate the public key and age secret. SOPS is configured to use the age public key via the `.sops.yaml` in the root of this repo to encrypt files. Via the VSCode extension `signageos.signageos-vscode-sops` we can automatically encrypt/decrypt secrets in place. In order for this to work you must have `SOPS_AGE_KEY` set as an environment variable (this is a requirement of SOPS). `SOPS_AGE_KEY` is set by the git ignored `.envrc` file in the root of this repo.
+`talsecret.sops.yaml` is encrypted with [SOPS](https://github.com/getsops/sops) leveraging [age](https://github.com/FiloSottile/age). `age-keygen -o myKey.txt` was used to generate the public key and age secret. SOPS is configured to use the age public key via the `.sops.yaml` in the root of this repo to encrypt files. Via the VSCode extension `signageos.signageos-vscode-sops` we can automatically encrypt/decrypt secrets in place. In order for this to work you must have `SOPS_AGE_KEY` set as an environment variable (this is a requirement of SOPS). `SOPS_AGE_KEY` is set by the git ignored `.envrc` file in the root of this repo (example below).
+
+```text
+#./.envrc
+export SOPS_AGE_KEY=AGE-SECRET-KEY-...
+```
 
 The `.sops.yaml` file defines rules for what files via path filtering are in scope for encryption in addition to what keys in those files should be encrypted. To onboard a file for encryption (not the entire file, just the keys that match the rules) you can run `sops -e -i ./testing/test.sops.yaml`.
 
