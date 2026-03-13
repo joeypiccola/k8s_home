@@ -47,15 +47,17 @@ data:
       enabled: True
       sync_recordings: True
       continuous:
-        days: 5
+        days: 7
+      motion:
+        days: 7
       alerts:
         retain:
-          days: 10
-          mode: motion
+          days: 7
+          mode: all
       detections:
         retain:
-          days: 10
-          mode: motion
+          days: 7
+          mode: all
 
     snapshots:
       enabled: True
