@@ -1,59 +1,52 @@
-# random notes
+# Notes
 
-## tools
+## Tools
 
-### helm
+### Helm
 
-list current repos
+```bash
+# List current repos
+helm repo list
 
-`helm repo list`
+# Update a specific repo
+helm repo update argo
 
-update a specific repo (e.g. argo)
+# List all charts in a repo
+helm search repo argo
 
-`helm repo update argo`
+# List all versions of a chart
+helm search repo argo/argo-cd --versions
 
-list all charts in a repo (e.g. argo)
+# Show default values for a specific chart version
+helm show values argo/argo-cd --version 7.4.1 >> ./argo-cd_7.4.1.yaml
+```
 
-`helm search repo argo`
+### MongoDB
 
-list all versions of a chart in a repo (e.g. argo/argo-cd)
+```bash
+# Log in as root
+mongosh "mongodb://root:<pw>@localhost:27017"
 
-`helm search repo argo/argo-cd --versions`
+# Select a database
+use admin
+use unifi
 
-list latest versions of a chart in a repo (e.g. argo/argo-cd)
+# List users
+db.getUsers()
+```
 
-`helm search repo argo/argo-cd --versions`
+## Operations
 
-show default values for a specific chart version
+### Node Crash Recovery
 
-`helm show values argo/argo-cd --version 7.4.1 >> ./argo-cd_7.4.1.yaml`
+1. Unplug the node
+2. Plug in the node
+3. Power on
+4. Things will reconcile and either come back up or move to another node
 
-### mongodb
+## References
 
-logon as root
-
-`mongosh "mongodb://root:<pw>@localhost:27017"`
-
-select a database
-
-`use admin`
-`use unifi`
-
-list users
-
-`db.getUsers()`
-
-### frigate
-
-## node crash
-
-unplug node
-plug in node
-power on
-things will reconcile and either come back up or move to another node
-
-
-### nixos
+### NixOS
 
 https://www.youtube.com/watch?v=63sSGuclBn0
 
