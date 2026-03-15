@@ -34,7 +34,6 @@
         "argocd/aoa_apps/apps/monitoring/kube-prometheus-stack.yaml",
         "argocd/aoa_apps/apps/monitoring/uptime-kuma.yaml",
         "argocd/aoa_apps/apps/system/reloader.yaml",
-        "argocd/aoa_apps/values/argocd.yaml",
         "argocd/aoa_infra/apps/cert-manager.yaml",
         "argocd/aoa_infra/apps/external-secrets.yaml",
         "argocd/aoa_infra/apps/onepassword.yaml",
@@ -61,17 +60,19 @@
       "assignees": []
     },
     {
-      "description": "Auto-approve and merge PRs for code-server in home-assistant",
+      "description": "Auto-approve and merge PRs for code-server and home-assistant",
       "matchFileNames": [
         "argocd/aoa_apps/apps/automation/home-assistant.yaml"
       ],
-      "matchPackageNames": ["ghcr.io/coder/code-server"],
+      "matchPackageNames": ["ghcr.io/coder/code-server", "ghcr.io/home-assistant/home-assistant"],
       "matchUpdateTypes": ["minor", "patch", "digest"],
+      "minimumReleaseAge": "7 days",
       "automerge": true,
       "automergeType": "pr",
       "platformAutomerge": true,
       "requiredStatusChecks": null,
-      "assignees": []
+      "assignees": [],
+      "schedule": ["after 9pm"]
     },
     {
       "description": "Auto-approve and merge PRs for media apps with pinned digests",
