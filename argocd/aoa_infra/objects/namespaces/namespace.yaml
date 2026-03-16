@@ -103,3 +103,10 @@ metadata:
   name: esphome
   labels:
     goldilocks.fairwinds.com/enabled: "true"
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: doorbell
+  labels:
+    goldilocks.fairwinds.com/enabled: "true"
