@@ -1,9 +1,4 @@
 apiVersion: v1
-kind: Namespace
-metadata:
-  name: doorbell
----
-apiVersion: v1
 kind: Pod
 metadata:
   name: chime
