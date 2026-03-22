@@ -31,6 +31,7 @@ repoServer:
       emptyDir: {}
   initContainers:
     - name: download-tools
+      # renovate: datasource=docker depName=registry.access.redhat.com/ubi8
       image: registry.access.redhat.com/ubi8:8.10-1772639305
       env:
         - name: AVP_VERSION
@@ -48,6 +49,7 @@ repoServer:
   extraContainers:
     - name: avp
       command: [/var/run/argocd/argocd-cmp-server]
+      # renovate: datasource=docker depName=registry.access.redhat.com/ubi8
       image: registry.access.redhat.com/ubi8:8.10-1772639305
       env:
         - name: AVP_TYPE

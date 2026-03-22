@@ -106,12 +106,24 @@
     },
     {
       "customType": "regex",
+      "description": "Docker image tags annotated with renovate comments",
+      "managerFilePatterns": [
+        "/argocd/.+\\.ya?ml$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?\\s+image:\\s+[^:]+:(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "{{datasource}}",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}loose{{/if}}"
+    },
+    {
+      "customType": "regex",
       "description": "digest",
       "managerFilePatterns": [
         "/argocd/.+\\.ya?ml$/"
       ],
       "matchStrings": [
-        "datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?\\s+tag:\\s+(?<currentValue>.*?)@(?<currentDigest>sha256:[a-f0-9]+)"
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?\\s+tag:\\s+(?<currentValue>.*?)@(?<currentDigest>sha256:[a-f0-9]+)"
       ],
       "datasourceTemplate": "{{#if datasource}}{{{datasource}}}{{else}}docker{{/if}}",
       "depNameTemplate": "{{{depName}}}",
