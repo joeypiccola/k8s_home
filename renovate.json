@@ -30,6 +30,7 @@
       "description": "Auto-approve and merge PRs for semver-based apps",
       "matchFileNames": [
         "argocd/aoa_apps/apps/argocd.yaml",
+        "argocd/aoa_apps/values/argocd.yaml",
         "argocd/aoa_apps/apps/monitoring/grafana.yaml",
         "argocd/aoa_apps/apps/monitoring/kube-prometheus-stack.yaml",
         "argocd/aoa_apps/apps/monitoring/uptime-kuma.yaml",
