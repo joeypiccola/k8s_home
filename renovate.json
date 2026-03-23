@@ -39,7 +39,8 @@
         "argocd/aoa_infra/apps/external-secrets.yaml",
         "argocd/aoa_infra/apps/onepassword.yaml",
         "argocd/aoa_apps/apps/monitoring/goldilocks.yaml",
-        "argocd/aoa_apps/apps/system/vpa.yaml"
+        "argocd/aoa_apps/apps/system/vpa.yaml",
+        "argocd/aoa_apps/objects/doorbell/objects.yaml"
       ],
       "matchUpdateTypes": ["minor", "patch"],
       "automerge": true,
