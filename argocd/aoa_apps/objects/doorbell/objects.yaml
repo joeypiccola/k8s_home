@@ -8,7 +8,7 @@ metadata:
 spec:
   initContainers:
     - name: download
-      image: curlimages/curl:8.12.1
+      image: curlimages/curl:8.18.0
       command:
         - curl
         - -L
