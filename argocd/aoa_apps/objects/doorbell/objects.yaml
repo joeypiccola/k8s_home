@@ -19,7 +19,7 @@ spec:
         - name: data
           mountPath: /data
     - name: convert
-      image: linuxserver/ffmpeg:7.1.1
+      image: linuxserver/ffmpeg:8.0.1
       command:
         - ffmpeg
         - -i
