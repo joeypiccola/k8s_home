@@ -50,7 +50,7 @@ spec:
                 app:
                   image:
                     repository: lscr.io/linuxserver/unifi-network-application
-                    tag: 9.3.45-ls100
+                    tag: 10.0.162-ls111 #9.3.45-ls100
                   env:
                     PUID: 1000
                     PGID: 1000
