@@ -23,7 +23,7 @@ spec:
   sources:
     - chart: longhorn
       repoURL: https://charts.longhorn.io/
-      targetRevision: 1.11.1 # Replace with the Longhorn version you'd like to install or upgrade to
+      targetRevision: 1.11.1
       helm:
         values: |
           preUpgradeChecker:
@@ -33,6 +33,7 @@ spec:
             backupTarget: cifs://10.0.5.206.<path:cluster-secrets:cluster-secrets#domain>/longhorn_backups?cifsOptions=vers=2.0
             backupTargetCredentialSecret: cifs-secret
             storageReservedPercentageForDefaultDisk: 10
+            allowRecurringJobWhileVolumeDetached: true
           # metrics:
           #   serviceMonitor:
           #     enabled: true
