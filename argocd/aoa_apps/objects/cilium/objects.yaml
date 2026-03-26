@@ -1,27 +1,61 @@
 ---
 apiVersion: cilium.io/v2alpha1
-kind: CiliumBGPPeeringPolicy
+kind: CiliumBGPClusterConfig
 metadata:
   name: homelab
 spec:
-  virtualRouters:
-  - exportPodCIDR: false
+  nodeSelector:
+    matchLabels: {}
+  bgpInstances:
+  - name: homelab
     localASN: 64502
-    neighbors:
-    - connectRetryTimeSeconds: 120
-      eBGPMultihopTTL: 1
-      holdTimeSeconds: 90
-      keepAliveTimeSeconds: 30
+    peers:
+    - name: router
       peerASN: 64501
-      peerAddress:  10.0.5.1/32
-      # peerPort: 179
-    serviceSelector:
-     matchExpressions:
-       - { key: somekey, operator: NotIn, values: ["will-match-and-announce-all-services"]}
+      peerAddress: 10.0.5.1
+      peerConfigRef:
+        group: cilium.io
+        kind: CiliumBGPPeerConfig
+        name: router
+
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPPeerConfig
+metadata:
+  name: router
+spec:
+  ebgpMultihop: 1
+  timers:
+    connectRetryTimeSeconds: 120
+    holdTimeSeconds: 90
+    keepAliveTimeSeconds: 30
+  families:
+  - afi: ipv4
+    safi: unicast
+    advertisements:
+      matchLabels:
+        advertise: bgp
+
+---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPAdvertisement
+metadata:
+  name: services
+  labels:
+    advertise: bgp
+spec:
+  advertisements:
+  - advertisementType: Service
+    service:
+      addresses:
+      - LoadBalancerIP
+    selector:
+      matchExpressions:
+      - { key: somekey, operator: NotIn, values: ["will-match-and-announce-all-services"]}
 
 ---
 # No selector, match all
-apiVersion: "cilium.io/v2alpha1"
+apiVersion: "cilium.io/v2"
 kind: CiliumLoadBalancerIPPool
 metadata:
   name: "pool"
