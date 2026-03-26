@@ -11,7 +11,7 @@ spec:
   project: default
   source:
     chart: cert-manager
-    repoURL: https://charts.jetstack.io
+    repoURL: oci://quay.io/jetstack/charts
     targetRevision: v1.20.0
     helm:
       releaseName: cert-manager
