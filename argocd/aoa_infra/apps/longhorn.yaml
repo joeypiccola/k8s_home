@@ -15,10 +15,10 @@
 #       prune: true
 #       selfHeal: true
 #     syncOptions:
-#       - CreateNamespace=true
+#      # - CreateNamespace=true
 #     managedNamespaceMetadata:
 #       labels:
-#         goldilocks.fairwinds.com/enabled: "true"
+#         # goldilocks.fairwinds.com/enabled: "true"
 #         pod-security.kubernetes.io/enforce: privileged
 #   sources:
 #     - chart: longhorn
