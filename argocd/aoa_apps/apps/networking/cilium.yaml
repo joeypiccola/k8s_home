@@ -12,8 +12,8 @@ spec:
   project: default
   sources:
     - chart: cilium
-      repoURL: https://helm.cilium.io/
-      targetRevision: 1.17.4 # 1.15.8
+      repoURL: oci://quay.io/cilium/charts
+      targetRevision: 1.19.2 # 1.15.8
       helm:
         valueFiles:
         - $values/argocd/aoa_apps/values/cilium.yaml
