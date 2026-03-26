@@ -12,7 +12,7 @@ spec:
   project: default
   sources:
     - chart: cilium
-      repoURL: oci://quay.io/cilium/charts
+      repoURL: quay.io/cilium/charts
       targetRevision: 1.19.2 # 1.15.8
       helm:
         valueFiles:
