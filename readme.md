@@ -1,95 +1,177 @@
 # kubernetes @ home
 
-Run Kubernetes using Talos Linux on bare metal.
+Kubernetes on bare metal using [Talos Linux](https://www.talos.dev/). GitOps managed by [ArgoCD](https://argo-cd.readthedocs.io/) via the App of Apps pattern. Secrets encrypted with [SOPS](https://github.com/getsops/sops)/[age](https://github.com/FiloSottile/age) and injected at runtime via the [1Password Kubernetes operator](https://developer.1password.com/docs/k8s/k8s-operator/) + [External Secrets](https://external-secrets.io/).
 
-Tools you'll need.
+|                |                                                     |
+|----------------|-----------------------------------------------------|
+| **Cluster**    | `talos`                                             |
+| **Domain**     | `k8s.piccola.us`                                    |
+| **VIP**        | `10.0.5.200`                                        |
+| **Nodes**      | `control-1` through `control-5` at `10.0.5.201-205` |
+| **Talos**      | see `talos/talenv.yaml`                             |
+| **Kubernetes** | see `talos/talenv.yaml`                             |
 
-- kubectl
-- talhelper
-- talosctl
-- 1password
-- taskfile
-- helm
+## Prerequisites
 
-## What is Talos
+- `kubectl`
+- `talhelper`
+- `talosctl`
+- `helm`
+- `task`
+- `sops`
+- `age`
+- `yq`
+- `jq`
+- `op` (1Password CLI)
 
-Talos Linux is Linux designed for Kubernetes - secure, immutable, and minimal.
+## Talos
 
-### Talos and Kubernetes Versions
+[Talos Linux](https://www.talos.dev/) is a minimal, immutable, API-driven OS purpose-built for Kubernetes. There is no SSH — all management is via `talosctl`.
 
-Talos and Kubernetes versions are a bit interdependent. You can find a support-matrix [here (example v1.5, update URL as needed)](https://www.talos.dev/v1.5/introduction/support-matrix/). Talos releases are [here](https://github.com/siderolabs/talos/releases). Use the release page to get the latest patch. Kubernetes releases are [here](https://kubernetes.io/releases/). These versions are used in the `talos/talenv.yaml` file.
+### Versions
 
-### Talos Configs
+Talos and Kubernetes versions are interdependent. Refer to the [support matrix](https://www.talos.dev/latest/introduction/support-matrix/) for compatible pairs. Versions are set in `talos/talenv.yaml` and used throughout the config generation process.
 
-We're going to use `talhelper` to generate talos node configs. Talos node configs are node specific and are applied to the nodes later via a task. Normally we'd do something like `talosctl gen config myCluster https://<VIP>:<port>` to generate talos node configs but this doesn't scale very well. With `talhelper` we can leverage `talos/talconfig.yaml` + `talos/talenv.yaml` + `talos/talsecret.sops.yaml` to generate all talos node configs at once. The following is a brief description of each file.
+- Talos releases: [github.com/siderolabs/talos/releases](https://github.com/siderolabs/talos/releases)
+- Kubernetes releases: [kubernetes.io/releases](https://kubernetes.io/releases/)
 
-- `talos/talconfig.yaml`: talos config template (created by hand initially via a [starter template](https://github.com/budimanjojo/talhelper/blob/master/example/talconfig.yaml)) This is a `talhelper` specific config that leverages variable substitution from `talos/talenv.yaml` (e.g. `${domainName}`).
-- `talos/talenv.yaml`: talos environment variables that are injected into talos node config files.
-- `talos/talsecret.sops.yaml`: talos secrets that are injected into talos node config files. It holds k8s certs/keys, talos specific certs/keys and bootstrap tokens that get injected into talos config files. This file was created with `talhelper gensecret > talsecret.sops.yaml`, only needed once! This file was encrypted with `sops -e -i talos/talsecret.sops.yaml` discussed later.
+### Config Files
 
-#### Generate Talos Configs
+[`talhelper`](https://github.com/budimanjojo/talhelper) generates per-node Talos configs from three source files:
 
-Use `talhelper` to generate talos configs. The following will generate individual talos node config files and a `talosconfig` in `talos/clusterconfig`. Regenerating configs is only necessary if you want to change the talos version, kubernetes version, or a talos config setting.
+| File                        | Purpose                                              |
+|-----------------------------|------------------------------------------------------|
+| `talos/talconfig.yaml`      | Config template with `${variable}` substitution      |
+| `talos/talenv.yaml`         | Variable values (versions, IPs, domain)              |
+| `talos/talsecret.sops.yaml` | SOPS-encrypted cluster secrets (certs, tokens, keys) |
 
-`task talos:genconfig`
+`talsecret.sops.yaml` was generated once with `talhelper gensecret > talos/talsecret.sops.yaml` and then encrypted in-place. It should never need to be regenerated unless starting fresh.
 
-#### SOPS and talhelper
+Output configs land in `talos/clusterconfig/` (node YAMLs are committed; `kubeconfig` is git-ignored).
 
-`talsecret.sops.yaml` is encrypted with [SOPS](https://github.com/getsops/sops) leveraging [age](https://github.com/FiloSottile/age). `age-keygen -o myKey.txt` was used to generate the public key and age secret. SOPS is configured to use the age public key via the `.sops.yaml` in the root of this repo to encrypt files. Via the VSCode extension `signageos.signageos-vscode-sops` we can automatically encrypt/decrypt secrets in place. In order for this to work you must have `SOPS_AGE_KEY` set as an environment variable (this is a requirement of SOPS). `SOPS_AGE_KEY` is set by the git ignored `.envrc` file in the root of this repo (example below).
+### Regenerating Configs
 
-```text
-#./.envrc
+Regenerate configs whenever Talos version, Kubernetes version, or any config setting changes:
+
+```bash
+task talos:genconfig
+```
+
+### SOPS + age
+
+`talsecret.sops.yaml` is encrypted with SOPS using an age key. The age key must be available as `SOPS_AGE_KEY` in your environment. This is set via the git-ignored `.envrc` at the repo root:
+
+```bash
+# .envrc
 export SOPS_AGE_KEY=AGE-SECRET-KEY-...
 ```
 
-The `.sops.yaml` file defines rules for what files via path filtering are in scope for encryption in addition to what keys in those files should be encrypted. To onboard a file for encryption (not the entire file, just the keys that match the rules) you can run `sops -e -i ./testing/test.sops.yaml`.
+The `.sops.yaml` at the repo root defines which file paths and which keys within those files are in scope for encryption. To encrypt a new secrets file:
 
-## Rebuild from scratch
-
-### scenario 1
-
-nodes are responsive to `talosctl` and you're knowingly doing a from scratch rebuild.
-
-1. reset the nodes
-
-`> task talos:reset-nodes`
-
-1. pxe boot the nodes (not covered here)
-
-1. regenerate configs if needed (likely need to update `talhelper` and `talosctl`)
-
-`> task talos:genconfig`
-
-1. apply the configs.
-
-`> talos:apply-config`
-
-1. initiate bootstrap.
-
-`> task talos:bootstrap`
-
-1. get kubeconfig if needed, only required if new talos secrets were generated.
-
-`> task talos:get-kubeconfig`
-
-1. begin to install core infra. cilium and argocd will be managed under argocd later.
-
-```plaintext
-> task install:gateway_api_crds
-> task install:cilium
-> task install:argocd
-> task stage:onepassword_secrets
+```bash
+sops -e -i path/to/file.sops.yaml
 ```
 
-1. install argo app of apps `infra`.
+The VSCode extension `signageos.signageos-vscode-sops` handles transparent encrypt/decrypt on save when `SOPS_AGE_KEY` is set.
 
-`> k apply -n argocd -f argocd/aoa_infra.yaml`
+---
 
-1. now that longhorn is installed, proceed to the longhorn UI to restore volumes (port forward). delete any orphaned data on longhorn mounted disk (Settings\Orphaned Data)
+## Rebuild from Scratch
 
-- restore volumes one at a time, checking "Use Previous Name"
-- restore volume PV/PVC, go to Create PV/PVC and ensure `Create PVC` and `Use Previous PVC` are checked
+### Scenario 1 — Nodes are responsive, intentional rebuild
 
-1. install argo app of apps `apps`.
+#### 1. Suspend stateful apps and back up volumes
 
-`> k apply -n argocd -f argocd/aoa_apps.yaml`
+```bash
+task stateful:suspend-all
+```
+
+Then open the Longhorn UI and trigger an immediate backup (run the daily backup job manually).
+
+#### 2. Reset and wipe nodes
+
+```bash
+task talos:reset-node NODE=all
+task talos:wipe-nvme
+```
+
+#### 3. PXE boot nodes
+
+Not covered here.
+
+#### 4. Regenerate configs if needed
+
+Update `talhelper` and `talosctl` first if versions have changed.
+
+```bash
+task talos:genconfig
+```
+
+#### 5. Apply configs
+
+```bash
+task talos:apply-config
+```
+
+#### 6. Bootstrap the cluster
+
+```bash
+task talos:bootstrap
+```
+
+#### 7. Get kubeconfig
+
+Only required when new Talos secrets were generated.
+
+```bash
+task talos:get-kubeconfig
+```
+
+#### 8. Install core infrastructure
+
+Cilium and ArgoCD are bootstrapped manually here and will be self-managed by ArgoCD afterward.
+
+```bash
+task install:gateway_api_crds
+task install:cilium          # wait for pods to be ready
+task install:argocd
+task stage:onepassword_secrets
+```
+
+#### 9. Stage namespaces
+
+Prevents eventual-consistency delays for apps that depend on namespace labels.
+
+```bash
+task stage:namespaces
+```
+
+#### 10. Apply ArgoCD App of Apps — infra
+
+Installs: 1Password operator, External Secrets, cert-manager.
+
+```bash
+kubectl apply -n argocd -f argocd/aoa_infra.yaml
+```
+
+#### 11. Apply ArgoCD App of Apps — storage
+
+Installs: Longhorn.
+
+```bash
+kubectl apply -n argocd -f argocd/aoa_storage.yaml
+```
+
+#### 12. Restore Longhorn volumes
+
+With Longhorn running, open the UI (port-forward if needed) and restore volumes from backup:
+
+1. Clean up any orphaned data: **Settings → Orphaned Data**
+2. Restore each volume, checking **Use Previous Name**
+3. For each restored volume, go to **Create PV/PVC**, check **Create PVC** and **Use Previous PVC**
+
+#### 13. Apply ArgoCD App of Apps — apps
+
+```bash
+kubectl apply -n argocd -f argocd/aoa_apps.yaml
+```
