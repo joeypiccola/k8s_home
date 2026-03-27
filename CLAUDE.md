@@ -25,20 +25,28 @@ task talos:bootstrap              # Bootstrap the cluster (first-time only)
 task talos:get-kubeconfig         # Merge kubeconfig (only needed after new talos secrets)
 task talos:cordon-and-reboot NODE=<node>  # Safely cordon then reboot a node
 task talos:reboot NODE=<node>     # Reboot a node
+task talos:reset-node NODE=<node> # Reset and reboot a node (destructive)
 
 # Bootstrap ArgoCD (after fresh cluster)
 task install:gateway_api_crds
 task install:cilium
 task install:argocd
+task stage:namespaces             # Apply namespace definitions
+task stage:argocd-oci-repos       # Apply ArgoCD OCI repository secrets
 task stage:onepassword_secrets    # Requires `op` CLI authenticated
 kubectl apply -n argocd -f argocd/aoa_infra.yaml
 kubectl apply -n argocd -f argocd/aoa_apps.yaml
+kubectl apply -n argocd -f argocd/aoa_storage.yaml
 
 # Useful operational tasks
 task argocd:getadminsecret        # Get initial ArgoCD admin password
+task argocd:suspend APP=<app>     # Suspend ArgoCD automated sync for an app
+task argocd:resume APP=<app>      # Resume ArgoCD automated sync for an app
+task stateful:suspend-all         # Suspend sync and scale down all stateful apps to zero
 task ha-codeserver:getpassword    # Get Home Assistant code-server password
 task restart:media                # Rolling restart all media deployments
 task k8s:cordon NODE=<node>       # Cordon a node
+task pvc:browse PVC=<name> NS=<ns> # Spin up temp pod to browse/edit a PVC
 
 # SOPS encrypt/decrypt a file
 sops -e -i <file>.sops.yaml       # Encrypt in-place
@@ -61,22 +69,26 @@ Regenerate configs with `task talos:genconfig` whenever `talconfig.yaml`, `talen
 
 ### `argocd/`
 
-ArgoCD App of Apps GitOps structure. Two root App of Apps:
+ArgoCD App of Apps GitOps structure. Three root App of Apps (apply in this order):
 
 **`aoa_infra.yaml`** → `argocd/aoa_infra/` — Core infrastructure (must install first):
 
-- onepassword (1Password operator), external-secrets, longhorn (storage), cert-manager
+- onepassword (1Password operator), external-secrets, cert-manager, namespace objects
+
+**`aoa_storage.yaml`** → `argocd/aoa_storage/` — Storage layer (after infra):
+
+- Longhorn distributed block storage
 
 **`aoa_apps.yaml`** → `argocd/aoa_apps/` — All other applications:
 
 - `apps/argocd.yaml` — ArgoCD self-manages itself
-- `apps/networking/` — Cilium (CNI), cloudflared, pihole, unifi, gateway API, dyndns
-- `apps/automation/` — Home Assistant, Frigate, ESPHome, EMQX
+- `apps/networking/` — Cilium (CNI), cloudflared, pihole, unifi, gateway API, dyndns, cert-manager objects
+- `apps/automation/` — Home Assistant, Frigate, ESPHome, EMQX, KMS, doorbell
 - `apps/media/` — Plex, Radarr, Sonarr, Sabnzbd, Tautulli, Overseerr
-- `apps/monitoring/` — kube-prometheus-stack, Grafana, Goldilocks, Uptime-Kuma
-- `apps/system/` — NFD, Intel GPU plugin, VPA, Reloader
+- `apps/monitoring/` — kube-prometheus-stack, Grafana, Goldilocks, Uptime-Kuma, kube-state-metrics, metrics-server, prometheus-node-exporter
+- `apps/system/` — NFD, Intel GPU plugin, intel-device-plugins-operator, generic-device-plugin, VPA, Reloader
 - `objects/` — PVCs, Gateway API resources, ExternalSecrets, certificates
-- `values/` — Helm values files for apps that need them
+- `values/` — Helm values files for apps that need them (argocd, cilium, emqx, grafana, kube-prometheus-stack)
 
 Each app YAML under `apps/` is an ArgoCD `Application` resource. Helm values are split out into `values/<app>.yaml` when non-trivial. ArgoCD syncs with `automated: {prune: true, selfHeal: true}` and `serverSideApply: true`.
 
@@ -96,7 +108,9 @@ Experiments and WIP configs — not applied to the cluster, git-ignored.
 
 ## Dependency Updates
 
-Renovate bot (`renovate.json`) auto-updates Helm chart versions in ArgoCD Application YAMLs. Auto-merge is enabled for several apps (ArgoCD, Grafana, Prometheus, media stack, cloudflared). Chart versions live in `spec.sources[0].targetRevision` or `spec.source.targetRevision` in the app YAML files.
+Renovate bot (`renovate.json`) auto-updates Helm chart versions in ArgoCD Application YAMLs. Chart versions live in `spec.sources[0].targetRevision` or `spec.source.targetRevision` in the app YAML files.
+
+Auto-merge is enabled for: ArgoCD, Grafana, kube-prometheus-stack, Uptime-Kuma, Reloader, cert-manager, external-secrets, onepassword operator, Goldilocks, VPA, cloudflared, Home Assistant/code-server (7-day minimum age), and the media stack (Plex, Radarr, Sonarr, Sabnzbd — digest/patch updates).
 
 ## Cluster Details
 
@@ -106,5 +120,7 @@ Renovate bot (`renovate.json`) auto-updates Helm chart versions in ArgoCD Applic
 | Kubernetes version | `talos/talenv.yaml` → `kubernetesVersion` |
 | Control plane nodes | `control-1` through `control-5` at `10.0.5.201-205` |
 | VIP | `10.0.5.200` |
+| LB IP pool | `10.0.5.208/28` (CiliumLoadBalancerIPPool) |
+| Key LB IPs | gateway-internal: `.209`, gateway-external: `.210`, emqx: `.219`, plex: `.220`, pihole-dns: `.222` |
 | DNS servers | `10.0.3.24`, `10.0.3.22` (PiHole instances) |
 | IP/network docs | `ipam.md` |
