@@ -216,27 +216,39 @@ tasks:
         done
 
   argocd:suspend:
-    desc: "Suspend ArgoCD automated sync for an app (allows manual scaling). Usage: task argocd:suspend APP=<app>"
+    desc: "Suspend ArgoCD automated sync for an app. Optionally scale to 0. Usage: task argocd:suspend APP=<app> [SCALE=true]"
     silent: true
     vars:
       APP: "{{ .APP }}"
+      SCALE: "{{ .SCALE }}"
     preconditions:
       - sh: test -n "{{ .APP }}"
         msg: "APP is required: task argocd:suspend APP=<app>"
     cmds:
       - echo "Suspending automated sync for {{ .APP }}..."
       - kubectl patch application {{ .APP }} -n argocd --type merge -p '{"spec":{"syncPolicy":{"automated":null}}}'
+      - |
+        if [ "{{ .SCALE }}" = "true" ]; then
+          echo "Scaling down deployments in {{ .APP }}..."
+          kubectl scale deployment --all -n {{ .APP }} --replicas=0
+        fi
       - echo "Done. ArgoCD will no longer self-heal {{ .APP }}."
 
   argocd:resume:
-    desc: "Resume ArgoCD automated sync for an app and trigger a sync. Usage: task argocd:resume APP=<app>"
+    desc: "Resume ArgoCD automated sync for an app. Optionally scale to 1. Usage: task argocd:resume APP=<app> [SCALE=true]"
     silent: true
     vars:
       APP: "{{ .APP }}"
+      SCALE: "{{ .SCALE }}"
     preconditions:
       - sh: test -n "{{ .APP }}"
         msg: "APP is required: task argocd:resume APP=<app>"
     cmds:
+      - |
+        if [ "{{ .SCALE }}" = "true" ]; then
+          echo "Scaling up deployments in {{ .APP }}..."
+          kubectl scale deployment --all -n {{ .APP }} --replicas=1
+        fi
       - echo "Resuming automated sync for {{ .APP }}..."
       - kubectl patch application {{ .APP }} -n argocd --type merge -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
       - echo "Done. ArgoCD will now self-heal {{ .APP }} back to desired state."
@@ -252,6 +264,19 @@ tasks:
           echo "Suspending {{ .ITEM }}..."
           kubectl patch application {{ .ITEM }} -n argocd --type merge -p '{"spec":{"syncPolicy":{"automated":null}}}'
           kubectl scale deployment --all -n {{ .ITEM }} --replicas=0
+          echo "Done {{ .ITEM }}"
+
+  stateful:resume-all:
+    desc: Scale up all stateful apps to one replica and resume ArgoCD sync
+    silent: true
+    vars:
+      STATEFUL_APPS: home-assistant frigate sonarr radarr unifi esphome plex sabnzbd tautulli overseerr uptime-kuma
+    cmds:
+      - for: { split: " ", var: STATEFUL_APPS }
+        cmd: |
+          echo "Resuming {{ .ITEM }}..."
+          kubectl scale deployment --all -n {{ .ITEM }} --replicas=1
+          kubectl patch application {{ .ITEM }} -n argocd --type merge -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
           echo "Done {{ .ITEM }}"
 
   pvc:browse:
