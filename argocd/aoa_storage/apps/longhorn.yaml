@@ -32,7 +32,7 @@ spec:
             defaultDataPath: /var/mnt/longhorn
             allowRecurringJobWhileVolumeDetached: true
           defaultBackupStore:
-            backupTarget: cifs://10.0.5.206.<path:cluster-secrets:cluster-secrets#domain>/longhorn_backups?cifsOptions=vers=2.0
+            backupTarget: cifs://10.0.5.206/longhorn_backups?cifsOptions=vers=2.0
             backupTargetCredentialSecret: cifs-secret
           # metrics:
           #   serviceMonitor:
