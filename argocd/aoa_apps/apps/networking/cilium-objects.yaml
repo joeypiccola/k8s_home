@@ -23,3 +23,9 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+  ignoreDifferences:
+    - group: cilium.io
+      kind: CiliumBGPClusterConfig
+      jqPathExpressions:
+        - .spec.bgpInstances[].peers[].peerConfigRef.group
+        - .spec.bgpInstances[].peers[].peerConfigRef.kind
