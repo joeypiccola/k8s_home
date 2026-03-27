@@ -31,3 +31,5 @@ scratch/*
 # bootstrap/*
 
 debug.yaml
+
+ansible/*
