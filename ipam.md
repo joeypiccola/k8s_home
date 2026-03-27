@@ -38,6 +38,7 @@
 | halloween-pumkins-esp   | 192.168.9.156 | true   |
 | 3dprinter-esp           | 192.168.9.157 | true   |
 | aqi-a-esp               | 192.168.9.158 | true   |
+| epl | 192.168.9.50 | false/reservation   |
 
 ## sonos
 
