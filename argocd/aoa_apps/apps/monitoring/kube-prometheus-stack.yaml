@@ -19,7 +19,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true # why tho -> https://blog.ediri.io/kube-prometheus-stack-and-argocd-25-server-side-apply-to-the-rescue
-      # - ServerSideDiff=true
+      - ServerSideDiff=true
       - RespectIgnoreDifferences=true
     managedNamespaceMetadata:
       labels:
