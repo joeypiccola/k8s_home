@@ -30,10 +30,10 @@ spec:
             jobEnabled: false
           defaultSettings:
             defaultDataPath: /var/mnt/longhorn
+            allowRecurringJobWhileVolumeDetached: true
+          defaultBackupStore:
             backupTarget: cifs://10.0.5.206.<path:cluster-secrets:cluster-secrets#domain>/longhorn_backups?cifsOptions=vers=2.0
             backupTargetCredentialSecret: cifs-secret
-            storageReservedPercentageForDefaultDisk: 10
-            allowRecurringJobWhileVolumeDetached: true
           # metrics:
           #   serviceMonitor:
           #     enabled: true
