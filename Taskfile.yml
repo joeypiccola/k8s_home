@@ -19,36 +19,55 @@ tasks:
     silent: true
     deps: [set_k8s_context]
     cmds:
-      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
-      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
-      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
-      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
-      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
-      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
-      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.2.0/config/crd/experimental/gateway.networking.k8s.io_udproutes.yaml
-
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.4.1/config/crd/standard/gateway.networking.k8s.io_gatewayclasses.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.4.1/config/crd/standard/gateway.networking.k8s.io_gateways.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.4.1/config/crd/standard/gateway.networking.k8s.io_httproutes.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.4.1/config/crd/standard/gateway.networking.k8s.io_referencegrants.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.4.1/config/crd/standard/gateway.networking.k8s.io_grpcroutes.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.4.1/config/crd/experimental/gateway.networking.k8s.io_tlsroutes.yaml
+      - kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/gateway-api/v1.4.1/config/crd/experimental/gateway.networking.k8s.io_udproutes.yaml
 
   install:cilium:
     desc: Install Cilium
     silent: true
     cmds:
       - |
-        helm repo add cilium https://helm.cilium.io/
-        helm repo update cilium
         cilium_helm_release=$(yq '.spec.sources[0].targetRevision' ./argocd/aoa_apps/apps/networking/cilium.yaml)
-        helm template cilium cilium/cilium --version $cilium_helm_release --namespace kube-system --values ./argocd/aoa_apps/values/cilium.yaml | kubectl apply -f -
+        sleep_seconds=10
+        echo "Installing Cilium $cilium_helm_release in $sleep_seconds seconds"
+        sleep $sleep_seconds
+
+        helm template cilium oci://quay.io/cilium/charts/cilium --version $cilium_helm_release --namespace kube-system --values ./argocd/aoa_apps/values/cilium.yaml | kubectl apply -f -
+        # helm template cilium oci://quay.io/cilium/charts/cilium --version 1.19.2 --namespace kube-system --values ./argocd/aoa_apps/values/cilium.yaml | kubectl apply -f -
 
   install:argocd:
     desc: Install ArgoCD
     silent: true
     cmds:
       - |
+        argo_helm_release=$(yq '.spec.sources[0].targetRevision' ./argocd/aoa_apps/apps/argocd.yaml)
+        sleep_seconds=10
+        echo "Installing ArgoCD $argo_helm_release in $sleep_seconds seconds"
+        sleep $sleep_seconds
+
         kubectl get namespace argocd >/dev/null 2>&1 || kubectl create namespace argocd
         kubectl config set-context --current --namespace=argocd
         helm repo add argo https://argoproj.github.io/argo-helm
         helm repo update argo
-        argo_helm_release=$(yq '.spec.sources[0].targetRevision' ./argocd/aoa_apps/apps/argocd.yaml)
-        helm template argocd argo/argo-cd --version $argo_helm_release --namespace argocd --values ./argocd/aoa_apps/values/argocd.yaml | kubectl apply -f -
+        # why --server-side.... because ApplicationSet CRD exceeds the size limit for client-side apply
+        helm template argocd argo/argo-cd --version $argo_helm_release --namespace argocd --values ./argocd/aoa_apps/values/argocd.yaml | kubectl apply --server-side -f -
+
+  stage:namespaces:
+    desc: Apply namespace definitions from aoa_infra
+    silent: true
+    cmds:
+      - kubectl apply -f argocd/aoa_infra/objects/namespaces/namespace.yaml
+
+  stage:argocd-oci-repos:
+    desc: Apply ArgoCD OCI repository secrets
+    silent: true
+    cmds:
+      - kubectl apply -f argocd/aoa_apps/objects/argocd-objects/objects.yaml
 
   stage:onepassword_secrets:
     desc: Stage OnePassword Secrets
@@ -97,14 +116,17 @@ tasks:
     cmds:
       - talosctl kubeconfig --nodes control-1.k8s.piccola.us --endpoints control-1.k8s.piccola.us
 
-  talos:reset-nodes:
-    desc: Reset all talos nodes and reboot
+  talos:reset-node:
+    desc: "Reset a talos node and reboot. Use NODE=<ip> or NODE=all. Example: task talos:reset-node NODE=10.0.5.201"
     silent: true
+    requires:
+      vars: [NODE]
     env:
       TALOSCONFIG: talos/clusterconfig/talosconfig
+    vars:
+      TARGET: '{{if eq .NODE "all"}}10.0.5.201,10.0.5.202,10.0.5.203,10.0.5.204,10.0.5.205{{else}}{{.NODE}}{{end}}'
     cmds:
-      - echo "you need uncomment this task's command for it to work"
-      # - talosctl reset --reboot --graceful=false -n 10.0.5.201,10.0.5.202,10.0.5.203,10.0.5.204,10.0.5.205
+      - talosctl reset --reboot --graceful=false -n {{.TARGET}}
 
   argocd:getadminsecret:
     desc: Get the ArgoCD initial admin secret
@@ -118,7 +140,6 @@ tasks:
     cmds:
       - kubectl exec -n home-assistant -c codeserver $(kubectl get pod -n home-assistant -o jsonpath='{.items[0].metadata.name}') -- cat /home/coder/.config/code-server/config.yaml| grep '^password:' | awk '{print $2}'
 
-
   # argocd:login:
   #   desc: blah
   #   silent: true
@@ -129,20 +150,19 @@ tasks:
   #     # - echo {{.PASSWORD}}
   #     - argocd login argocd-k8s.piccola.us:443 --username admin --password '{{.PASSWORD}}' --plaintext
 
-  # talos:wipe-nvme:
-  #   desc: Wipe nvme0n1 disks
-  #   silent: false
-  #   env:
-  #     TALOSCONFIG: talos/clusterconfig/talosconfig
-  #   cmds:
-  #     - talosctl wipe disk nvme0n1 -n control-1.k8s.piccola.us
-  #     - talosctl wipe disk nvme0n1 -n control-2.k8s.piccola.us
-  #     - talosctl wipe disk nvme0n1 -n control-3.k8s.piccola.us
-  #     - talosctl wipe disk nvme0n1 -n control-4.k8s.piccola.us
-  #     - talosctl wipe disk nvme0n1 -n control-5.k8s.piccola.us
-
-
-
+  talos:wipe-nvme:
+    desc: Wipe nvme0n1 on all nodes
+    silent: false
+    env:
+      TALOSCONFIG: talos/clusterconfig/talosconfig
+    cmds:
+      - echo "!! WARNING WIPING NVME0N1 ON ALL NODES IN 10 SECONDS !!"
+      - sleep 10
+      - talosctl wipe disk nvme0n1 --insecure -n control-1.k8s.piccola.us
+      - talosctl wipe disk nvme0n1 --insecure -n control-2.k8s.piccola.us
+      - talosctl wipe disk nvme0n1 --insecure -n control-3.k8s.piccola.us
+      - talosctl wipe disk nvme0n1 --insecure -n control-4.k8s.piccola.us
+      - talosctl wipe disk nvme0n1 --insecure -n control-5.k8s.piccola.us
 
   k8s:cordon:
     desc: "Cordon a Kubernetes node"
@@ -220,6 +240,19 @@ tasks:
       - echo "Resuming automated sync for {{ .APP }}..."
       - kubectl patch application {{ .APP }} -n argocd --type merge -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
       - echo "Done. ArgoCD will now self-heal {{ .APP }} back to desired state."
+
+  stateful:suspend-all:
+    desc: Suspend ArgoCD sync and scale down all stateful apps to zero replicas
+    silent: true
+    vars:
+      STATEFUL_APPS: home-assistant frigate sonarr radarr unifi esphome plex sabnzbd tautulli overseerr uptime-kuma
+    cmds:
+      - for: { split: " ", var: STATEFUL_APPS }
+        cmd: |
+          echo "Suspending {{ .ITEM }}..."
+          kubectl patch application {{ .ITEM }} -n argocd --type merge -p '{"spec":{"syncPolicy":{"automated":null}}}'
+          kubectl scale deployment --all -n {{ .ITEM }} --replicas=0
+          echo "Done {{ .ITEM }}"
 
   pvc:browse:
     desc: "Spin up a temp pod to browse/edit a PVC. Usage: task pvc:browse PVC=<pvc> NS=<namespace>"
