@@ -11,9 +11,10 @@ controlPlane:
     customization:
       systemExtensions:
         officialExtensions:
-            - siderolabs/i915          # support intel GPU
-            - siderolabs/iscsi-tools   # support longhorn functions
-            - siderolabs/gasket-driver # support M.2 Google Coral accelerators
+            - siderolabs/i915             # support intel GPU
+            - siderolabs/iscsi-tools      # support longhorn functions
+            - siderolabs/util-linux-tools # support longhorn functions
+            - siderolabs/gasket-driver    # support M.2 Google Coral accelerators
 
 nodes:
   - hostname: control-1.${domainName}

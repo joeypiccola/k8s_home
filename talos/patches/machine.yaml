@@ -1,4 +1,9 @@
 machine:
+  kernel:
+    modules:
+      - name: nbd
+      - name: iscsi_tcp
+      - name: configfs
   kubelet:
     extraMounts:
       - destination: /var/mnt/longhorn
@@ -8,7 +13,12 @@ machine:
           - bind
           - rshared
           - rw
-  disks:
-    - device: /dev/nvme0n1
-      partitions:
-        - mountpoint: /var/mnt/longhorn
+---
+apiVersion: v1alpha1
+kind: UserVolumeConfig
+name: longhorn # UserVolumeConfig is a user volume configuration document. User volume is automatically allocated as a partition on the specified disk and mounted under /var/mnt/<name>
+provisioning:
+  diskSelector:
+    match: disk.transport == "nvme"
+  grow: false
+  maxSize: 90%
