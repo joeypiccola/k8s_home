@@ -11,6 +11,49 @@ Kubernetes on bare metal using [Talos Linux](https://www.talos.dev/). GitOps man
 | **Talos**      | see `talos/talenv.yaml`                             |
 | **Kubernetes** | see `talos/talenv.yaml`                             |
 
+## Common Maintenance Tasks
+
+### Media
+
+```bash
+task restart:media                          # Rolling restart all media deployments
+```
+
+### ArgoCD App Control
+
+```bash
+task argocd:suspend APP=<app>               # Suspend automated sync for an app
+task argocd:resume APP=<app>                # Resume automated sync for an app
+```
+
+### Stateful Apps
+
+```bash
+task stateful:suspend-all                   # Suspend sync and scale down all stateful apps
+task stateful:resume-all                    # Resume sync and scale up all stateful apps
+```
+
+### PVC Browsing
+
+```bash
+task pvc:browse PVC=<name> NS=<namespace>   # Spin up a temp pod to browse/edit a PVC
+```
+
+### Node Maintenance
+
+```bash
+task talos:cordon-and-reboot NODE=control-1  # Cordon, drain, then reboot a node
+```
+
+### Passwords / Secrets
+
+```bash
+task argocd:getadminsecret                  # Get the initial ArgoCD admin password
+task ha-codeserver:getpassword              # Get the Home Assistant code-server password
+```
+
+---
+
 ## Prerequisites
 
 - `kubectl`

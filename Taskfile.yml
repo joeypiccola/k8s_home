@@ -63,12 +63,6 @@ tasks:
     cmds:
       - kubectl apply -f argocd/aoa_infra/objects/namespaces/namespace.yaml
 
-  stage:argocd-oci-repos:
-    desc: Apply ArgoCD OCI repository secrets
-    silent: true
-    cmds:
-      - kubectl apply -f argocd/aoa_apps/objects/argocd-objects/objects.yaml
-
   stage:onepassword_secrets:
     desc: Stage OnePassword Secrets
     silent: true
@@ -190,8 +184,22 @@ tasks:
       - echo "Rebooting {{ .NODE }}..."
       - talosctl reboot -n {{ .NODE }}
 
+  k8s:drain:
+    desc: "Drain a Kubernetes node (evict all pods, waits for completion). Usage: task k8s:drain NODE=<node>"
+    silent: true
+    vars:
+      NODE: "{{ .NODE }}"
+    preconditions:
+      - sh: test -n "{{ .NODE }}"
+        msg: "NODE is required: task k8s:drain NODE=<node>"
+    cmds:
+      - echo "Draining {{ .NODE }}..."
+      - kubectl drain {{ .NODE }} --ignore-daemonsets --delete-emptydir-data --timeout=300s
+      - kubectl wait --for=jsonpath='{.spec.unschedulable}'=true node/{{ .NODE }} --timeout=300s
+      - echo "Done. {{ .NODE }} is fully drained."
+
   talos:cordon-and-reboot:
-    desc: "Cordon then reboot a node (parent task)"
+    desc: "Cordon, drain, then reboot a node. Usage: task talos:cordon-and-reboot NODE=<node>"
     vars:
       NODE: "{{ .NODE }}"
     preconditions:
@@ -201,7 +209,9 @@ tasks:
       - task: k8s:cordon
         vars:
           NODE: "{{ .NODE }}"
-      # only run reboot if previous step succeeded
+      - task: k8s:drain
+        vars:
+          NODE: "{{ .NODE }}"
       - task: talos:reboot
         vars:
           NODE: "{{ .NODE }}"
