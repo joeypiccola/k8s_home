@@ -25,9 +25,9 @@ prometheus:
       volumeClaimTemplate:
         spec:
           storageClassName: longhorn
-    #       resources:
-    #         requests:
-    #           storage: 30Gi
+          resources:
+            requests:
+              storage: 50Gi
     walCompression: true
     # ruleSelectorNilUsesHelmValues: false
     # scrapeConfigSelectorNilUsesHelmValues: false
