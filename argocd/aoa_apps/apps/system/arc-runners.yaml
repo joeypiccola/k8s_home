@@ -16,7 +16,7 @@ spec:
     helm:
       releaseName: arc-runners
       valuesObject:
-        githubConfigUrl: https://github.com/joeypiccola
+        githubConfigUrl: https://github.com/joeypiccola/k8s_home
         githubConfigSecret: arc-github-app-secret
         minRunners: 0
         maxRunners: 2
