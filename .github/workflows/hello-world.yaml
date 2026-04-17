@@ -1,0 +1,11 @@
+name: hello-world
+
+on:
+  workflow_dispatch:
+
+jobs:
+  hello:
+    runs-on: k8s-home
+    steps:
+      - name: Print hello world
+        run: echo "Hello, World!"
