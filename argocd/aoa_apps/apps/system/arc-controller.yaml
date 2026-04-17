@@ -15,6 +15,8 @@ spec:
     targetRevision: 0.13.1
     helm:
       releaseName: arc-controller
+      valuesObject:
+        installCRDs: true
   destination:
     name: in-cluster
     namespace: arc-systems
