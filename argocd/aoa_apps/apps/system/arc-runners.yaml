@@ -22,6 +22,9 @@ spec:
         maxRunners: 2
         runnerScaleSetName: k8s-home
         # runnerGroup: Default   # ← optional, defaults to "Default"
+        controllerServiceAccount:
+          namespace: arc-systems
+          name: arc-controller-gha-rs-controller
   destination:
     name: in-cluster
     namespace: arc-systems
