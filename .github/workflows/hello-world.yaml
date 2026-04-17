@@ -9,3 +9,5 @@ jobs:
     steps:
       - name: Print hello world
         run: echo "Hello, World!"
+      - name: Sleep 10 minutes
+        run: sleep 600
