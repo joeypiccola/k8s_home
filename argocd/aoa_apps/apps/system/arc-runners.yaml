@@ -34,3 +34,41 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arc-runner-scale-set-aws-demo
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: ghcr.io/actions/actions-runner-controller-charts
+    chart: gha-runner-scale-set
+    targetRevision: 0.14.1
+    helm:
+      releaseName: arc-runners
+      valuesObject:
+        githubConfigUrl: https://github.com/joeypiccola/aws-demo
+        githubConfigSecret: arc-github-app-secret
+        minRunners: 0
+        maxRunners: 2
+        runnerScaleSetName: aws-demo
+        # runnerGroup: Default   # ← optional, defaults to "Default"
+        controllerServiceAccount:
+          namespace: arc-systems
+          name: arc-controller-gha-rs-controller
+  destination:
+    name: in-cluster
+    namespace: arc-systems
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
