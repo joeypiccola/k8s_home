@@ -19,7 +19,7 @@ spec:
     - group: argoproj.io
       kind: Application
       jsonPointers:
-        - /spec/syncPolicy
+        - /spec/syncPolicy # this lets you patch child apps' syncPolicy adhoc and not have it self correct
     - group: argoproj.io
       kind: Application
       name: node-feature-discovery
