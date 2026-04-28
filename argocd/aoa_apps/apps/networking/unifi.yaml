@@ -51,7 +51,7 @@ spec:
                   image:
                     repository: lscr.io/linuxserver/unifi-network-application
                     # renovate: datasource=docker depName=lscr.io/linuxserver/unifi-network-application
-                    tag: 10.3.55
+                    tag: 10.3.58
                   env:
                     PUID: 1000
                     PGID: 1000
