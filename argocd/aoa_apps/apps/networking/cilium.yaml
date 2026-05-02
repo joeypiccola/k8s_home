@@ -13,7 +13,7 @@ spec:
   sources:
     - chart: cilium
       repoURL: quay.io/cilium/charts
-      targetRevision: 1.19.2 # 1.15.8
+      targetRevision: 1.19.3 # 1.15.8
       helm:
         valueFiles:
         - $values/argocd/aoa_apps/values/cilium.yaml
