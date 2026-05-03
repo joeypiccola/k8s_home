@@ -39,6 +39,10 @@ task stateful:resume-all                    # Resume sync and scale up all state
 task pvc:browse PVC=<name> NS=<namespace>   # Spin up a temp pod to browse/edit a PVC
 ```
 
+### Cilium
+
+Cilium is the CNI for this cluster. Upgrades require care — see [docs/cilium-upgrades.md](docs/cilium-upgrades.md) for the full procedure.
+
 ### Node Maintenance
 
 ```bash

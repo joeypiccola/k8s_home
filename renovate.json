@@ -77,6 +77,15 @@
       "schedule": ["after 9pm"]
     },
     {
+      "description": "Add upgrade procedure note to Cilium PRs",
+      "matchFileNames": [
+        "argocd/aoa_apps/apps/networking/cilium.yaml"
+      ],
+      "prBodyNotes": [
+        "⚠️ **Do not merge until the manual upgrade procedure is complete.** See [docs/cilium-upgrades.md](https://github.com/joeypiccola/k8s_home/blob/main/docs/cilium-upgrades.md)."
+      ]
+    },
+    {
       "description": "Auto-approve and merge PRs for media apps with pinned digests",
       "matchFileNames": [
         "argocd/aoa_apps/apps/media/plex.yaml",
