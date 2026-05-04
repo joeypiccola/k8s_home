@@ -46,7 +46,7 @@ spec:
         spec:
           containers:
             - name: powershell
-              image: mcr.microsoft.com/powershell:alpine
+              image: ghcr.io/joeypiccola/k8s_home/pwsh:7.6.1
               command: ["pwsh"]
               args: ["-File", "/scripts/Update-DNS.ps1"]
               env:
