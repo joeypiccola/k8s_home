@@ -106,6 +106,18 @@
   "customManagers": [
     {
       "customType": "regex",
+      "description": "Dockerfile ARG versions annotated with renovate comments",
+      "managerFilePatterns": [
+        "/docker/.+/Dockerfile$/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>\\S+) depName=(?<depName>\\S+)(?:\\s+versioning=(?<versioning>\\S+))?\\nARG [A-Z_]+=(?<currentValue>\\S+)"
+      ],
+      "datasourceTemplate": "{{datasource}}",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}"
+    },
+    {
+      "customType": "regex",
       "description": "Process various dependencies, this is mostly for AVP",
       "managerFilePatterns": [
         "/argocd/.+\\.ya?ml$/"

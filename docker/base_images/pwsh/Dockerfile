@@ -1,5 +1,6 @@
 FROM alpine:3.23.4
 
+# renovate: datasource=github-releases depName=PowerShell/PowerShell
 ARG POWERSHELL_VERSION=7.6.0
 ARG TARGETARCH
 
