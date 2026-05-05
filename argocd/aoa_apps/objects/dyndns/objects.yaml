@@ -47,7 +47,7 @@ spec:
           containers:
             - name: powershell
               # renovate: datasource=docker depName=ghcr.io/joeypiccola/k8s_home/pwsh
-              image: ghcr.io/joeypiccola/k8s_home/pwsh:7.6.1
+              image: ghcr.io/joeypiccola/k8s_home/pwsh:latest
               command: ["pwsh"]
               args: ["-File", "/scripts/Update-DNS.ps1"]
               env:
