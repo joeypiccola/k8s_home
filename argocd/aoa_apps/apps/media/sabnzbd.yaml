@@ -26,7 +26,7 @@ spec:
     - repoURL: https://bjw-s-labs.github.io/helm-charts
       chart: app-template
       # path: charts/sabnzbd
-      targetRevision: 4.6.2
+      targetRevision: 5.0.1
       helm:
         releaseName: sabnzbd
         valuesObject:
