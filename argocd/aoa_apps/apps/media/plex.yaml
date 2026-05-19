@@ -44,7 +44,7 @@ spec:
                   image:
                     repository: ghcr.io/home-operations/plex
                     # renovate: datasource=docker depName=ghcr.io/home-operations/plex
-                    tag: 1.43.1@sha256:a9c3723cb31cc9621df27cf5801184c290293adf1df2bfaea4b8b6fc01dbfd96
+                    tag: 1.43.2@sha256:29aea09831a2b008ffa36b9d71b52aaf1fa3feeedec5f0211c991de01a70f645
                   env:
                     TZ: America/Denver
                     # PLEX_ADVERTISE_URL: "https://plex-k8s.<path:cluster-secrets:cluster-secrets#domain>:32400/" avp errors here when we try and do both URL on a single line
