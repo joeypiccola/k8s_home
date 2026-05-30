@@ -212,3 +212,57 @@ data:
             - path: rtsp://localhost:8554/garage_main
               roles:
                 - record
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: frigate-restarter
+  namespace: frigate
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: frigate-restarter
+  namespace: frigate
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: frigate-restarter
+  namespace: frigate
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: frigate-restarter
+subjects:
+  - kind: ServiceAccount
+    name: frigate-restarter
+    namespace: frigate
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: frigate-weekly-restart
+  namespace: frigate
+spec:
+  schedule: "0 4 * * 1"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          serviceAccountName: frigate-restarter
+          restartPolicy: OnFailure
+          containers:
+            - name: kubectl
+              image: bitnami/kubectl:latest
+              command:
+                - kubectl
+                - rollout
+                - restart
+                - deployment/frigate
+                - -n
+                - frigate
