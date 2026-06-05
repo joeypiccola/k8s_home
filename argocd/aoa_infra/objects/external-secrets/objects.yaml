@@ -38,6 +38,10 @@ spec:
       remoteRef:
         key: cluster-secrets
         property: personalemail
+    - secretKey: r53zoneid
+      remoteRef:
+        key: cluster-secrets
+        property: r53zoneid
     - secretKey: domain
       remoteRef:
         key: cluster-secrets

@@ -33,3 +33,7 @@ scratch/*
 debug.yaml
 
 ansible/*
+
+
+aws_kms_issuer/*
+aws_kms_secrets/*
