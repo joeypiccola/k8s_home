@@ -93,7 +93,14 @@ spec:
       remoteRef:
         key: cluster-secrets # this is the title of the item in 1password
         property: cloudflare-token # this is the name of the property on the 1password item
-
+    - secretKey: route53-secret-access-key
+      remoteRef:
+        key: cluster-secrets
+        property: aws-iam-access-key
+    - secretKey: route53-access-key-id
+      remoteRef:
+        key: cluster-secrets
+        property: aws-iam-access-key-id
 ---
 apiVersion: external-secrets.io/v1
 kind: ExternalSecret
