@@ -55,7 +55,7 @@ spec:
                   image:
                     repository: ghcr.io/home-assistant/home-assistant
                     # renovate: datasource=docker depName=ghcr.io/home-assistant/home-assistant versioning=calver
-                    tag: 2026.4.4@sha256:c1e5f0147f4cb51ccb05bb30b62a1269cc1bd48a6274792d3b38a77ab274dfd2
+                    tag: 2026.7.1@sha256:f73512ba4fe06bb4d57636fe3578d0820cdec46f81e8f837ab59e451662ff3cb
                   securityContext:
                     allowPrivilegeEscalation: true
                     privileged: true
