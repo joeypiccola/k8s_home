@@ -38,6 +38,8 @@ spec:
                           operator: In
                           values:
                             - "false"
+                      namespaces:
+                        - frigate
                     topologyKey: "kubernetes.io/hostname"
 
           controllers:
