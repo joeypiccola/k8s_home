@@ -30,6 +30,18 @@ spec:
         releaseName: esphome
         valuesObject:
 
+          defaultPodOptions:
+            affinity: # do not run esphome on a node that is running something that is not stable
+              podAntiAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  - labelSelector:
+                      matchExpressions:
+                        - key: stable
+                          operator: In
+                          values:
+                            - "false"
+                    topologyKey: "kubernetes.io/hostname"
+
           controllers:
             esphome:
               pod:

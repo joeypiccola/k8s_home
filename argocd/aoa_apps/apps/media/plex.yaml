@@ -28,6 +28,18 @@ spec:
       helm:
         releaseName: plex
         valuesObject:
+          defaultPodOptions:
+            affinity: # do not run plex on a node that is running something that is not stable
+              podAntiAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  - labelSelector:
+                      matchExpressions:
+                        - key: stable
+                          operator: In
+                          values:
+                            - "false"
+                    topologyKey: "kubernetes.io/hostname"
+
           controllers:
             plex:
               annotations:

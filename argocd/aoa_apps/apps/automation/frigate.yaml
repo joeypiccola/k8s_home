@@ -35,6 +35,18 @@ spec:
               feature.node.kubernetes.io/pci-0880_1ac1_089a.present: "true"
             labels:
               stable: "false"
+            affinity: # do not run frigate on a node that is running plex, home-assistant, or esphome
+              podAntiAffinity:
+                requiredDuringSchedulingIgnoredDuringExecution:
+                  - labelSelector:
+                      matchExpressions:
+                        - key: app.kubernetes.io/name
+                          operator: In
+                          values:
+                            - plex
+                            - home-assistant
+                            - esphome
+                    topologyKey: "kubernetes.io/hostname"
 
           controllers:
             frigate:
