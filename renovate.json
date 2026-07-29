@@ -62,19 +62,13 @@
       "assignees": []
     },
     {
-      "description": "Auto-approve and merge PRs for code-server and home-assistant",
+      "description": "PRs for code-server and home-assistant (no automerge)",
       "matchFileNames": [
         "argocd/aoa_apps/apps/automation/home-assistant.yaml"
       ],
       "matchPackageNames": ["ghcr.io/coder/code-server", "ghcr.io/home-assistant/home-assistant"],
       "matchUpdateTypes": ["minor", "patch", "digest"],
-      "minimumReleaseAge": "7 days",
-      "automerge": true,
-      "automergeType": "pr",
-      "platformAutomerge": true,
-      "requiredStatusChecks": null,
-      "assignees": [],
-      "schedule": ["after 9pm"]
+      "automerge": false
     },
     {
       "description": "Add upgrade procedure note to Cilium PRs",
@@ -97,7 +91,7 @@
       "matchUpdateTypes": ["minor", "patch", "digest"],
       "automerge": true,
       "automergeType": "pr",
-      "platformAutomerge": true,
+      "platformAutomerge": false,
       "requiredStatusChecks": null,
       "assignees": [],
       "schedule": ["after 1am"]
