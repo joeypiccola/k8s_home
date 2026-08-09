@@ -1,37 +1,37 @@
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: kube-prometheus-stack
-  namespace: argocd
-  annotations:
-    argocd.argoproj.io/sync-wave: "100"
-  finalizers:
-    - resources-finalizer.argocd.argoproj.io
-spec:
-  project: default
-  destination:
-    name: in-cluster
-    namespace: kube-prometheus-stack
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
-      - ServerSideApply=true # why tho -> https://blog.ediri.io/kube-prometheus-stack-and-argocd-25-server-side-apply-to-the-rescue
-      - ServerSideDiff=true
-      - RespectIgnoreDifferences=true
-    managedNamespaceMetadata:
-      labels:
-        goldilocks.fairwinds.com/enabled: "true"
-        pod-security.kubernetes.io/enforce: "privileged"
-  sources:
-    - chart: kube-prometheus-stack
-      repoURL: https://prometheus-community.github.io/helm-charts
-      targetRevision: 88.2.0
-      helm:
-        valueFiles:
-        - $values/argocd/aoa_apps/values/kube-prometheus-stack.yaml
-    - repoURL: https://github.com/joeypiccola/k8s_home.git
-      targetRevision: main
-      ref: values
+# apiVersion: argoproj.io/v1alpha1
+# kind: Application
+# metadata:
+#   name: kube-prometheus-stack
+#   namespace: argocd
+#   annotations:
+#     argocd.argoproj.io/sync-wave: "100"
+#   finalizers:
+#     - resources-finalizer.argocd.argoproj.io
+# spec:
+#   project: default
+#   destination:
+#     name: in-cluster
+#     namespace: kube-prometheus-stack
+#   syncPolicy:
+#     automated:
+#       prune: true
+#       selfHeal: true
+#     syncOptions:
+#       - CreateNamespace=true
+#       - ServerSideApply=true # why tho -> https://blog.ediri.io/kube-prometheus-stack-and-argocd-25-server-side-apply-to-the-rescue
+#       - ServerSideDiff=true
+#       - RespectIgnoreDifferences=true
+#     managedNamespaceMetadata:
+#       labels:
+#         goldilocks.fairwinds.com/enabled: "true"
+#         pod-security.kubernetes.io/enforce: "privileged"
+#   sources:
+#     - chart: kube-prometheus-stack
+#       repoURL: https://prometheus-community.github.io/helm-charts
+#       targetRevision: 88.2.0
+#       helm:
+#         valueFiles:
+#         - $values/argocd/aoa_apps/values/kube-prometheus-stack.yaml
+#     - repoURL: https://github.com/joeypiccola/k8s_home.git
+#       targetRevision: main
+#       ref: values
