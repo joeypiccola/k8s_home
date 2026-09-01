@@ -57,7 +57,7 @@ spec:
                   image:
                     repository: ghcr.io/home-operations/esphome
                     # renovate: datasource=docker depName=ghcr.io/home-operations/esphome versioning=calver
-                    tag: 2026.8.1@sha256:de0004b441319aecec27742432e47ea06bb25476254d68c97fd66d382a275da1
+                    tag: 2026.8.2@sha256:c9c004278fe0d23467fc4bfe2562de0b5965f344ec9724f496a523f7364eeeef
                   env:
                     TZ: America/Denver
                     ESPHOME_DASHBOARD_USE_PING: true
