@@ -30,7 +30,7 @@ spec:
           mountPath: /data
   containers:
     - name: nginx
-      image: nginx:1.31.4-alpine
+      image: nginx:1.31.5-alpine
       ports:
         - containerPort: 80
       volumeMounts:
