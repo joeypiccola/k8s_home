@@ -5,10 +5,6 @@ metadata:
   namespace: frigate
 data:
   config.yaml: |
-    # logger:
-    #   logs:
-    #     frigate.record.maintainer: debug
-
     mqtt:
       host: emqx.emqx.svc.cluster.local
       topic_prefix: frigate
@@ -45,7 +41,6 @@ data:
 
     record:
       enabled: True
-      sync_recordings: True
       continuous:
         days: 6
       motion:
@@ -80,8 +75,9 @@ data:
             sub_stream: alley_sub
         motion:
           mask:
-            # ignore timestamp
-            - 0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098
+            mask1:
+              friendly_name: "ignore timestamp"
+              coordinates: "0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098"
         ffmpeg:
           hwaccel_args: preset-vaapi
           inputs:
@@ -100,25 +96,32 @@ data:
             sub_stream: front_porch_sub
         motion:
           mask:
-            # ignore timestamp
-            - 0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098
-            # plants
-            - 0.681,0.702,0.642,0.63,0.579,0.652,0.553,0.6,0.534,0.606,0.523,0.587,0.511,0.591,0.474,0.526,0.464,0.499,0.794,0.354
-            - 0.331,0.55,0.451,0.701,0.253,0.795,0.22,0.862,0.184,0.906,0.144,0.927,0.154,0.979,0.002,0.954,0.011,0.699,0.069,0.671
+            mask1:
+              friendly_name: "ignore timestamp"
+              coordinates: "0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098"
+            mask2:
+              friendly_name: "plants"
+              coordinates: "0.681,0.702,0.642,0.63,0.579,0.652,0.553,0.6,0.534,0.606,0.523,0.587,0.511,0.591,0.474,0.526,0.464,0.499,0.794,0.354"
+            mask3:
+              friendly_name: "plants"
+              coordinates: "0.331,0.55,0.451,0.701,0.253,0.795,0.22,0.862,0.184,0.906,0.144,0.927,0.154,0.979,0.002,0.954,0.011,0.699,0.069,0.671"
         objects:
           filters:
             car:
               mask:
-                # there are no cars in the front yard
-                - 0.003,0.227,0.148,0.172,0.334,0.122,0.493,0.116,0.703,0.233,0.786,0.33,0.81,0.336,0.864,0.135,0.905,0.008,0.988,0.148,0.989,0.99,0.007,0.995
+                mask1:
+                  friendly_name: "there are no cars in the front yard"
+                  coordinates: "0.003,0.227,0.148,0.172,0.334,0.122,0.493,0.116,0.703,0.233,0.786,0.33,0.81,0.336,0.864,0.135,0.905,0.008,0.988,0.148,0.989,0.99,0.007,0.995"
             dog:
               mask:
-                # doormat
-                - 0.785,0.959,0.736,0.899,0.665,0.92,0.567,0.924,0.513,0.996,0.675,0.996,0.755,0.996
+                mask1:
+                  friendly_name: "doormat"
+                  coordinates: "0.785,0.959,0.736,0.899,0.665,0.92,0.567,0.924,0.513,0.996,0.675,0.996,0.755,0.996"
             cat:
               mask:
-                # doormat
-                - 0.785,0.959,0.736,0.899,0.665,0.92,0.567,0.924,0.513,0.996,0.675,0.996,0.755,0.996
+                mask1:
+                  friendly_name: "doormat"
+                  coordinates: "0.785,0.959,0.736,0.899,0.665,0.92,0.567,0.924,0.513,0.996,0.675,0.996,0.755,0.996"
         zones:
           south_lawn:
             coordinates: 0.59,0.425,0.515,0.292,0.705,0.238,0.737,0.271,0.786,0.34
@@ -150,26 +153,32 @@ data:
             sub_stream: backyard_sub
         motion:
           mask:
-            # ignore tree moving and sun shade sails blowing in the wind
-            - 0.928,0.735,0.868,0.742,0.759,0.754,0.734,0.658,0.763,0.583,0.672,0.502,0.627,0.383,0.624,0.295,0.663,0.246,0.683,0.195,0.232,0.044,0.041,0.024,0.041,0,1,0.002,0.999,0.533
-            # ignore timestamp
-            - 0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098
+            mask1:
+              friendly_name: "ignore tree moving and sun shade sails blowing in the wind"
+              coordinates: "0.928,0.735,0.868,0.742,0.759,0.754,0.734,0.658,0.763,0.583,0.672,0.502,0.627,0.383,0.624,0.295,0.663,0.246,0.683,0.195,0.232,0.044,0.041,0.024,0.041,0,1,0.002,0.999,0.533"
+            mask2:
+              friendly_name: "ignore timestamp"
+              coordinates: "0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098"
         objects:
           filters:
             cat:
               mask:
-                # ignore rock that looks like a cat
-                - 0.145,0.501,0.165,0.507,0.174,0.55,0.193,0.601,0.177,0.634,0.152,0.603,0.137,0.542
-                # ignore patio
-                - 0.706,0.576,0.732,0.53,0.771,0.557,0.757,0.682,0.751,0.743,0.693,0.755,0.655,0.714
+                mask1:
+                  friendly_name: "ignore rock that looks like a cat"
+                  coordinates: "0.145,0.501,0.165,0.507,0.174,0.55,0.193,0.601,0.177,0.634,0.152,0.603,0.137,0.542"
+                mask2:
+                  friendly_name: "ignore patio"
+                  coordinates: "0.706,0.576,0.732,0.53,0.771,0.557,0.757,0.682,0.751,0.743,0.693,0.755,0.655,0.714"
             dog:
               mask:
-                # ignore rock that looks like a dog
-                - 0.145,0.501,0.165,0.507,0.174,0.55,0.193,0.601,0.177,0.634,0.152,0.603,0.137,0.542
+                mask1:
+                  friendly_name: "ignore rock that looks like a dog"
+                  coordinates: "0.145,0.501,0.165,0.507,0.174,0.55,0.193,0.601,0.177,0.634,0.152,0.603,0.137,0.542"
             car:
               mask:
-                # there are no cars in the backyard
-                - 0.007,0.06,0.23,0.023,0.581,0.051,0.798,0.174,0.927,0.363,0.904,0.616,0.912,0.903,0.919,0.99,0.005,0.992
+                mask1:
+                  friendly_name: "there are no cars in the backyard"
+                  coordinates: "0.007,0.06,0.23,0.023,0.581,0.051,0.798,0.174,0.927,0.363,0.904,0.616,0.912,0.903,0.919,0.99,0.005,0.992"
         ffmpeg:
           hwaccel_args: preset-vaapi
           inputs:
@@ -187,22 +196,27 @@ data:
             main_stream: garage_main
             sub_stream: garage_sub
         motion:
-          mask: # ignore timestamp
-            - 0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098
+          mask:
+            mask1:
+              friendly_name: "ignore timestamp"
+              coordinates: "0.037,0.064,0.375,0.064,0.375,0.099,0.042,0.098"
         objects:
           filters:
             car:
               mask:
-                # ignore parked car that has moving shadows on it
-                - 0.212,0.005,0.093,0.178,0.302,0.869,0.483,0.849,0.64,0.745,0.811,0.174,0.736,0.088,0.713,0.005
+                mask1:
+                  friendly_name: "ignore parked car that has moving shadows on it"
+                  coordinates: "0.212,0.005,0.093,0.178,0.302,0.869,0.483,0.849,0.64,0.745,0.811,0.174,0.736,0.088,0.713,0.005"
             person:
               mask:
-                # ignore shadows on ground that keep moving and look like a person
-                - 0.336,1,0.375,0.71,0.277,0.536,0.067,0.614,0.133,0.841,0.213,1
+                mask1:
+                  friendly_name: "ignore shadows on ground that keep moving and look like a person"
+                  coordinates: "0.336,1,0.375,0.71,0.277,0.536,0.067,0.614,0.133,0.841,0.213,1"
             bicycle:
               mask:
-                # ignore bags that look like a bike
-                - 0.004,0.353,0.065,0.331,0.115,0.468,0.163,0.569,0.231,0.691,0.269,0.823,0.302,0.928,0.269,0.993,0.009,0.99
+                mask1:
+                  friendly_name: "ignore bags that look like a bike"
+                  coordinates: "0.004,0.353,0.065,0.331,0.115,0.468,0.163,0.569,0.231,0.691,0.269,0.823,0.302,0.928,0.269,0.993,0.009,0.99"
         ffmpeg:
           hwaccel_args: preset-vaapi
           inputs:
@@ -212,6 +226,7 @@ data:
             - path: rtsp://localhost:8554/garage_main
               roles:
                 - record
+
 ---
 apiVersion: v1
 kind: ServiceAccount
