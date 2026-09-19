@@ -18,6 +18,11 @@ spec:
       valuesObject:
         name: intel-gpu-plugin
         sharedDevNum: 3
+        tolerations:
+          - key: dedicated
+            operator: Equal
+            value: frigate
+            effect: NoSchedule
   destination:
     name: in-cluster
     namespace: system

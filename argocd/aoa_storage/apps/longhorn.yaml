@@ -31,6 +31,7 @@ spec:
           defaultSettings:
             defaultDataPath: /var/mnt/longhorn
             allowRecurringJobWhileVolumeDetached: true
+            taintToleration: "dedicated=frigate:NoSchedule"
           defaultBackupStore:
             backupTarget: cifs://10.0.5.206/longhorn_backups?cifsOptions=vers=2.0
             backupTargetCredentialSecret: cifs-secret

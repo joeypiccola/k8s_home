@@ -56,6 +56,11 @@ spec:
               memory: 48Mi
             limits:
               memory: 48Mi
+          tolerations:
+            - key: dedicated
+              operator: Equal
+              value: frigate
+              effect: NoSchedule
   destination:
     name: in-cluster
     namespace: system
