@@ -38,6 +38,18 @@ spec:
           # metrics:
           #   serviceMonitor:
           #     enabled: true
+          longhornManager:
+            tolerations:
+              - key: dedicated
+                operator: Equal
+                value: frigate
+                effect: NoSchedule
+          longhornDriver:
+            tolerations:
+              - key: dedicated
+                operator: Equal
+                value: frigate
+                effect: NoSchedule
   ignoreDifferences:
     - group: apiextensions.k8s.io
       kind: CustomResourceDefinition
