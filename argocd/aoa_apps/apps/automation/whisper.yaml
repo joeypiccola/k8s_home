@@ -29,6 +29,24 @@ spec:
         releaseName: whisper
         valuesObject:
 
+          defaultPodOptions:
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchExpressions:
+                          - key: app.kubernetes.io/name
+                            operator: In
+                            values:
+                              - plex
+                              - kokoro
+                      namespaces:
+                        - plex
+                        - kokoro
+                      topologyKey: "kubernetes.io/hostname"
+
           controllers:
             whisper:
               annotations:

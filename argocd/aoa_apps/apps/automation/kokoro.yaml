@@ -29,6 +29,24 @@ spec:
         releaseName: kokoro
         valuesObject:
 
+          defaultPodOptions:
+            affinity:
+              podAntiAffinity:
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchExpressions:
+                          - key: app.kubernetes.io/name
+                            operator: In
+                            values:
+                              - plex
+                              - whisper
+                      namespaces:
+                        - plex
+                        - whisper
+                      topologyKey: "kubernetes.io/hostname"
+
           controllers:
             kokoro:
               annotations:

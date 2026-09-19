@@ -29,18 +29,22 @@ spec:
         releaseName: plex
         valuesObject:
           defaultPodOptions:
-            affinity: # do not run plex on a node that is running something that is not stable
+            affinity:
               podAntiAffinity:
-                requiredDuringSchedulingIgnoredDuringExecution:
-                  - labelSelector:
-                      matchExpressions:
-                        - key: stable
-                          operator: In
-                          values:
-                            - "false"
-                    namespaces:
-                      - frigate
-                    topologyKey: "kubernetes.io/hostname"
+                preferredDuringSchedulingIgnoredDuringExecution:
+                  - weight: 100
+                    podAffinityTerm:
+                      labelSelector:
+                        matchExpressions:
+                          - key: app.kubernetes.io/name
+                            operator: In
+                            values:
+                              - whisper
+                              - kokoro
+                      namespaces:
+                        - whisper
+                        - kokoro
+                      topologyKey: "kubernetes.io/hostname"
 
           controllers:
             plex:
