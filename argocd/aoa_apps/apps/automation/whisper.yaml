@@ -1,0 +1,74 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: whisper
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: whisper
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+  sources:
+    - repoURL: https://bjw-s-labs.github.io/helm-charts
+      chart: app-template
+      targetRevision: 5.2.1
+      helm:
+        releaseName: whisper
+        valuesObject:
+
+          controllers:
+            whisper:
+              annotations:
+                reloader.stakater.com/auto: "true"
+              containers:
+                app:
+                  image:
+                    repository: rhasspy/wyoming-whisper
+                    # renovate: datasource=docker depName=rhasspy/wyoming-whisper
+                    tag: 3.8.1@sha256:ba6fcb6056ebe237d15a325381763a80af2fc8fcedaa04f6a714a7375eb20d80
+                  args:
+                    - --model
+                    - small-int8
+                    - --language
+                    - en
+                  probes:
+                    liveness: &probes
+                      enabled: true
+                      custom: true
+                      spec:
+                        tcpSocket:
+                          port: &port 10300
+                        initialDelaySeconds: 0
+                        periodSeconds: 10
+                        timeoutSeconds: 1
+                        failureThreshold: 3
+                    readiness: *probes
+                    startup:
+                      enabled: false
+
+          service:
+            app:
+              controller: whisper
+              ports:
+                http:
+                  port: *port
+
+          persistence:
+            data:
+              enabled: true
+              existingClaim: whisper-data
+              globalMounts:
+                - path: /data
