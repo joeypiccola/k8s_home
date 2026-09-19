@@ -1,0 +1,138 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kokoro
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: kokoro
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+  sources:
+    - repoURL: https://bjw-s-labs.github.io/helm-charts
+      chart: app-template
+      targetRevision: 5.2.1
+      helm:
+        releaseName: kokoro
+        valuesObject:
+
+          controllers:
+            kokoro:
+              annotations:
+                reloader.stakater.com/auto: "true"
+              containers:
+                app:
+                  image:
+                    repository: ghcr.io/remsky/kokoro-fastapi-cpu
+                    # renovate: datasource=docker depName=ghcr.io/remsky/kokoro-fastapi-cpu
+                    tag: v0.9.0@sha256:ee3111d6a2c903ed62f3b4fa19543c6901205ed39fce3c177e895b34a8386b9c
+                  env:
+                    TZ: America/Denver
+                    USE_GPU: "false"
+                  resources:
+                    requests:
+                      cpu: 500m
+                      memory: 2Gi
+                    limits:
+                      cpu: 4000m
+                      memory: 4Gi
+                  probes:
+                    liveness: &kokoroProbe
+                      enabled: true
+                      custom: true
+                      spec:
+                        httpGet:
+                          path: /v1/test
+                          port: &httpPort 8880
+                        periodSeconds: 30
+                        timeoutSeconds: 10
+                        failureThreshold: 3
+                    readiness: *kokoroProbe
+                    startup:
+                      enabled: true
+                      custom: true
+                      spec:
+                        httpGet:
+                          path: /v1/test
+                          port: *httpPort
+                        failureThreshold: 60
+                        periodSeconds: 10
+
+                bridge:
+                  image:
+                    repository: ghcr.io/roryeckel/wyoming_openai
+                    # renovate: datasource=docker depName=ghcr.io/roryeckel/wyoming_openai
+                    tag: "0.6.1@sha256:7200ac141cd12594878aca7ce69d7c2159b824a411f25b96ea7431f71d250344"
+                  env:
+                    TZ: America/Denver
+                    WYOMING_URI: tcp://0.0.0.0:10200
+                    WYOMING_LOG_LEVEL: INFO
+                    WYOMING_LANGUAGES: en
+                    TTS_OPENAI_URL: http://localhost:8880/v1
+                    TTS_MODELS: kokoro
+                    TTS_BACKEND: KOKORO_FASTAPI
+                    TTS_STREAMING_MODELS: kokoro
+                    TTS_VOICES: >-
+                      af_alloy af_aoede af_bella af_heart af_jadzia af_jessica
+                      af_kore af_nicole af_nova af_river af_sarah af_sky
+                      af_v0 af_v0bella af_v0irulan af_v0nicole af_v0sarah af_v0sky
+                      am_adam am_echo am_eric am_fenrir am_liam am_michael
+                      am_onyx am_puck am_santa
+                      am_v0adam am_v0gurney am_v0michael
+                      bf_alice bf_emma bf_isabella bf_lily bf_v0emma bf_v0isabella
+                      bm_daniel bm_fable bm_george bm_lewis bm_v0george bm_v0lewis
+                  resources:
+                    requests:
+                      cpu: 10m
+                      memory: 64M
+                    limits:
+                      cpu: 500m
+                      memory: 512M
+                  probes:
+                    liveness: &bridgeProbe
+                      enabled: true
+                      custom: true
+                      spec:
+                        tcpSocket:
+                          port: &bridgePort 10200
+                        periodSeconds: 10
+                        timeoutSeconds: 3
+                        failureThreshold: 3
+                    readiness: *bridgeProbe
+                    startup:
+                      enabled: true
+                      custom: true
+                      spec:
+                        tcpSocket:
+                          port: *bridgePort
+                        failureThreshold: 60
+                        periodSeconds: 10
+
+          service:
+            app:
+              controller: kokoro
+              ports:
+                wyoming:
+                  port: 10200
+                http:
+                  port: 8880
+
+          persistence:
+            data:
+              enabled: true
+              existingClaim: kokoro-data
+              globalMounts:
+                - path: /app/cache
