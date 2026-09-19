@@ -8,6 +8,10 @@ This is a GitOps home lab running Kubernetes on Talos Linux (bare metal). ArgoCD
 
 **Cluster:** `talos` | Domain: `k8s.piccola.us` | VIP: `10.0.5.200` | 5 control-plane nodes: `10.0.5.201-205`
 
+## Git Workflow
+
+**Never run `git commit` or `git push` in this repository.** The user reviews and commits/pushes all changes themselves — stage or prepare edits as needed, but leave committing and pushing to them, always, even if asked to commit elsewhere in a session.
+
 ## Required Tools
 
 `kubectl`, `talhelper`, `talosctl`, `helm`, `task`, `sops`, `age`, `yq`, `jq`, `op` (1Password CLI)
@@ -92,6 +96,8 @@ ArgoCD App of Apps GitOps structure. Three root App of Apps (apply in this order
 
 Each app YAML under `apps/` is an ArgoCD `Application` resource. Helm values are split out into `values/<app>.yaml` when non-trivial. ArgoCD syncs with `automated: {prune: true, selfHeal: true}` and `serverSideApply: true`.
 
+Frigate's NVR config is inlined in the `frigate-configmap` ConfigMap at `argocd/aoa_apps/objects/frigate/objects.yaml`, under `data.config.yaml` as a literal block scalar indented 4 spaces.
+
 ### `bootstrap/`
 
 One-time setup artifacts: secret templates for 1Password operator credentials.
@@ -99,6 +105,23 @@ One-time setup artifacts: secret templates for 1Password operator credentials.
 ### `scratch/`
 
 Experiments and WIP configs — not applied to the cluster, git-ignored.
+
+## Node Scheduling
+
+**Frigate is pinned to `control-1`.** Frigate has been crashing intermittently and we haven't had time to root-cause it yet; pinning it to its own dedicated node isolates it from resource contention with everything else while that's still unresolved. Pinning is enforced two ways, both intentionally kept as **manual, non-GitOps steps** (not persisted in Talos machine config — they'd need to be reapplied if `control-1` is ever reset/rejoined):
+
+- `kubectl taint nodes control-1 dedicated=frigate:NoSchedule` — keeps every other pod off the node.
+- `kubectl label nodes control-1 dedicated=frigate` — paired with a matching `nodeSelector: {dedicated: frigate}` on Frigate (alongside its existing Coral-TPU PCI-feature selector) so Frigate *requires* that node, not just tolerates it.
+
+Frigate's `Application` ([argocd/aoa_apps/apps/automation/frigate.yaml](argocd/aoa_apps/apps/automation/frigate.yaml)) carries the matching `defaultPodOptions.tolerations` entry for the taint.
+
+Because the taint blocks **any** pod without a matching toleration — including DaemonSets — several cluster-wide DaemonSet/controller charts also needed the same toleration added so they keep running on `control-1` (otherwise Frigate itself would break: no CSI plugin means its Longhorn PVCs can't mount, no GPU plugin means its `gpu.intel.com/i915` request can't be satisfied):
+
+- `argocd/aoa_storage/apps/longhorn.yaml` — needs **three** separate keys, not just one: `defaultSettings.taintToleration` (only covers Longhorn's dynamically-managed components — instance-manager, engine-image, share-manager), plus `longhornManager.tolerations` and `longhornDriver.tolerations` (plain Helm-templated tolerations for the `longhorn-manager` DaemonSet and CSI driver-deployer — these are the ones that actually matter and are easy to miss).
+- `argocd/aoa_apps/apps/system/intel-device-plugins-gpu.yaml`, `node-feature-discovery.yaml`, `generic-device-plugin.yaml` — each got a plain `tolerations:` (or `worker.tolerations` for NFD) entry.
+- Cilium/cilium-envoy already tolerate everything by default — no change needed there.
+
+**Plex, Whisper, and Kokoro preferentially avoid each other's node.** All three are CPU-heavy on a small 5-node cluster (Plex transcoding, Whisper STT, Kokoro TTS), so each carries a `defaultPodOptions.affinity.podAntiAffinity.preferredDuringSchedulingIgnoredDuringExecution` rule (weight 100, `topologyKey: kubernetes.io/hostname`) listing the *other two* app names — soft/"optimistic" rather than a hard requirement, since a hard rule could create scheduling failures once `control-1` is reserved for Frigate and only 4 nodes are left for everything else. This replaced an earlier, now-removed hard anti-affinity scheme (a `stable: "false"` pod label on Frigate that Plex/Home Assistant/ESPHome each hard-avoided) that predates the `control-1` taint and became redundant once the taint took over that job.
 
 ## Secrets Management
 
