@@ -88,7 +88,7 @@ spec:
               controller: echomuse
               type: LoadBalancer
               loadBalancerIP: *lbIP
-              externalTrafficPolicy: Local
+              externalTrafficPolicy: Cluster
               ports:
                 http:
                   port: *apiPort
