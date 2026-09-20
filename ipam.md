@@ -20,6 +20,7 @@
 |------------------------------|------------|-------------------|
 | cilium-gateway-internal      | 10.0.5.209 | gateway-api-https |
 | cilium-gateway-external      | 10.0.5.210 | n/a               |
+| echomuse                     | 10.0.5.211 | echomuse-k8s      |
 | kms                          | 10.0.5.217 | n/a               |
 | cilium-gateway-unifi-gateway | 10.0.5.218 | gateway-api-unifi |
 | emqx                         | 10.0.5.219 | n/a               |
@@ -28,17 +29,18 @@
 
 ## esphome
 
-| device                  | ip            | static |
-|-------------------------|---------------|--------|
-| joey-office-esp         | 192.168.9.151 | true   |
-| master-blindcontrol-esp | 192.168.9.152 | true   |
-| mech-room-esp           | 192.168.9.153 | true   |
-| garage-esp              | 192.168.9.154 | true   |
-| basement-esp            | 192.168.9.155 | true   |
-| halloween-pumkins-esp   | 192.168.9.156 | true   |
-| 3dprinter-esp           | 192.168.9.157 | true   |
-| aqi-a-esp               | 192.168.9.158 | true   |
-| epl | 192.168.9.50 | false/reservation   |
+| device                  | ip            | static            |
+|-------------------------|---------------|-------------------|
+| joey-office-esp         | 192.168.9.151 | true              |
+| master-blindcontrol-esp | 192.168.9.152 | true              |
+| mech-room-esp           | 192.168.9.153 | true              |
+| garage-esp              | 192.168.9.154 | true              |
+| basement-esp            | 192.168.9.155 | true              |
+| halloween-pumkins-esp   | 192.168.9.156 | true              |
+| 3dprinter-esp           | 192.168.9.157 | true              |
+| aqi-a-esp               | 192.168.9.158 | true              |
+| anthony-esp-env         | 192.168.9.159 | true              |
+| epl                     | 192.168.9.50  | false/reservation |
 
 ## sonos
 
