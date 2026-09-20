@@ -1,0 +1,151 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: echomuse
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "100"
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  destination:
+    name: in-cluster
+    namespace: echomuse
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    managedNamespaceMetadata:
+      labels:
+        goldilocks.fairwinds.com/enabled: "true"
+  sources:
+    - repoURL: https://bjw-s-labs.github.io/helm-charts
+      chart: app-template
+      targetRevision: 5.2.1
+      helm:
+        releaseName: echomuse
+        valuesObject:
+
+          controllers:
+            echomuse:
+              annotations:
+                reloader.stakater.com/auto: "true"
+              containers:
+                app:
+                  image:
+                    repository: ghcr.io/wilbowes/echomuse-controller
+                    # renovate: datasource=docker depName=ghcr.io/wilbowes/echomuse-controller
+                    tag: 2.23.1@sha256:82497a128bc65cf832b290ae5d01d46d85ac64d0abb3ba73598236014e86b84f
+                  env:
+                    TZ: America/Denver
+                    SERVER_HOST: 0.0.0.0
+                    SERVER_PORT: &wsPort 8767
+                    SERVER_TLS_PORT: &wssPort 8770
+                    API_PORT: &apiPort 8768
+                    # must be the LoadBalancer IP below — this is what gets advertised to
+                    # devices (via mDNS, and what you put in a Dot's controller.json)
+                    SERVER_IP: &lbIP 10.0.5.211
+                    MDNS_NAME: echomuse
+                    REQUIRE_DEVICE_TLS: 0
+                    ESPHOME_PROJECT_VERSION: 2.23.1
+                    EM_ESPHOME_PORT_BASE: 16001
+                    OWW_MODEL: hey_jarvis
+                    OWW_THRESHOLD: 0.5
+                    DB_PATH: /app/data/echomuse.db
+                    DEVICE_APPROVAL: strict
+                    DEBUG: 0
+                  resources:
+                    requests:
+                      cpu: 100m
+                      memory: 512M
+                    limits:
+                      memory: 4Gi
+                  probes:
+                    liveness: &probe
+                      enabled: true
+                      custom: true
+                      spec:
+                        tcpSocket:
+                          port: *apiPort
+                        periodSeconds: 10
+                        timeoutSeconds: 3
+                        failureThreshold: 3
+                    readiness: *probe
+                    startup:
+                      enabled: true
+                      custom: true
+                      spec:
+                        tcpSocket:
+                          port: *apiPort
+                        failureThreshold: 30
+                        periodSeconds: 5
+
+          service:
+            app:
+              controller: echomuse
+              type: LoadBalancer
+              loadBalancerIP: *lbIP
+              externalTrafficPolicy: Local
+              ports:
+                http:
+                  port: *apiPort
+                ws:
+                  port: *wsPort
+                wss:
+                  port: *wssPort
+                # one esphome + bt port pair per device, sized for up to 6 Dots
+                # (base 16001, bt = base + 1000); only device 1 is in use today
+                esphome-1:
+                  port: 16001
+                esphome-2:
+                  port: 16002
+                esphome-3:
+                  port: 16003
+                esphome-4:
+                  port: 16004
+                esphome-5:
+                  port: 16005
+                esphome-6:
+                  port: 16006
+                bt-1:
+                  port: 17001
+                bt-2:
+                  port: 17002
+                bt-3:
+                  port: 17003
+                bt-4:
+                  port: 17004
+                bt-5:
+                  port: 17005
+                bt-6:
+                  port: 17006
+
+          route:
+            main:
+              parentRefs:
+                - name: internal
+                  namespace: gateway
+                  # sectionName: https
+              hostnames:
+                - echomuse-k8s.<path:cluster-secrets:cluster-secrets#domain>
+              rules:
+                - matches:
+                    - path:
+                        type: PathPrefix
+                        value: /
+                  backendRefs:
+                    - kind: Service
+                      port: *apiPort
+                      name: echomuse
+                      namespace: echomuse
+                      weight: 1
+
+          persistence:
+            data:
+              enabled: true
+              existingClaim: echomuse-data
+              globalMounts:
+                - path: /app/data
