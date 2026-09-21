@@ -38,7 +38,7 @@ spec:
                   image:
                     repository: ghcr.io/wilbowes/echomuse-controller
                     # renovate: datasource=docker depName=ghcr.io/wilbowes/echomuse-controller
-                    tag: 2.23.1@sha256:82497a128bc65cf832b290ae5d01d46d85ac64d0abb3ba73598236014e86b84f
+                    tag: 2.24.1@sha256:b931a4ba08394dd84c68cfa8cc0fb49bbf8a696be0abf0b71b6eb262572094f2
                   env:
                     TZ: America/Denver
                     SERVER_HOST: 0.0.0.0
@@ -50,7 +50,7 @@ spec:
                     SERVER_IP: &lbIP 10.0.5.211
                     MDNS_NAME: echomuse
                     REQUIRE_DEVICE_TLS: 0
-                    ESPHOME_PROJECT_VERSION: 2.23.1
+                    ESPHOME_PROJECT_VERSION: 2.24.1
                     EM_ESPHOME_PORT_BASE: 16001
                     OWW_MODEL: hey_jarvis
                     OWW_THRESHOLD: 0.5
