@@ -106,7 +106,20 @@ data:
               friendly_name: "plants"
               coordinates: "0.331,0.55,0.451,0.701,0.253,0.795,0.22,0.862,0.184,0.906,0.144,0.927,0.154,0.979,0.002,0.954,0.011,0.699,0.069,0.671"
         objects:
+          track:
+            - person
+            - dog
+            - car
+            - cat
+            - bicycle
+            - motorcycle
+            - package
           filters:
+            package:
+              mask:
+                mask1:
+                  friendly_name: "no packages outside the porch area"
+                  coordinates: "0.006,0.009,0.014,0.995,0.224,0.994,0.172,0.767,0.433,0.71,0.353,0.56,0.467,0.507,0.681,0.712,0.988,0.482,0.995,0.007"
             car:
               mask:
                 mask1:
