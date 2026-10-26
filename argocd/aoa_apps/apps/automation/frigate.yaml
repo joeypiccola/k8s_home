@@ -49,7 +49,7 @@ spec:
                   image:
                     repository: ghcr.io/blakeblackshear/frigate
                     # renovate: datasource=docker depName=ghcr.io/blakeblackshear/frigate
-                    tag: 0.18.0@sha256:9678a83a76e4730ac7d9ea7428370e32ae656d6b312aaad30d6c69f3fef14d35
+                    tag: 0.18.2@sha256:fd60f99ffd4eb6c42360ed4e14953e270586f239309ab3983e55b2e97ffac09a
                     # go to https://github.com/blakeblackshear/frigate/releases, select image you want, get manifest sha256 there
                   env:
                     TZ: America/Denver
