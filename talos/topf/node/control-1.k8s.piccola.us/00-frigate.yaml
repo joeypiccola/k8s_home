@@ -1,0 +1,5 @@
+machine:
+  nodeLabels:
+    dedicated: frigate
+  nodeTaints:
+    dedicated: frigate:NoSchedule

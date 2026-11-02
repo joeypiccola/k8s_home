@@ -115,10 +115,10 @@ Experiments and WIP configs — not applied to the cluster, git-ignored.
 
 ## Node Scheduling
 
-**Frigate is pinned to `control-1`.** Frigate has been crashing intermittently and we haven't had time to root-cause it yet; pinning it to its own dedicated node isolates it from resource contention with everything else while that's still unresolved. Pinning is enforced two ways, both intentionally kept as **manual, non-GitOps steps** (not persisted in Talos machine config — they'd need to be reapplied if `control-1` is ever reset/rejoined):
+**Frigate is pinned to `control-1`.** Frigate has been crashing intermittently and we haven't had time to root-cause it yet; pinning it to its own dedicated node isolates it from resource contention with everything else while that's still unresolved. Pinning is enforced two ways, both set in Talos machine config at `talos/topf/node/control-1.k8s.piccola.us/00-frigate.yaml` so they survive a reset or rebuild (removing that patch also removes them from the node):
 
-- `kubectl taint nodes control-1 dedicated=frigate:NoSchedule` — keeps every other pod off the node.
-- `kubectl label nodes control-1 dedicated=frigate` — paired with a matching `nodeSelector: {dedicated: frigate}` on Frigate (alongside its existing Coral-TPU PCI-feature selector) so Frigate *requires* that node, not just tolerates it.
+- `machine.nodeTaints` (`dedicated=frigate:NoSchedule`) — keeps every other pod off the node.
+- `machine.nodeLabels` (`dedicated=frigate`) — paired with a matching `nodeSelector: {dedicated: frigate}` on Frigate (alongside its existing Coral-TPU PCI-feature selector) so Frigate *requires* that node, not just tolerates it.
 
 Frigate's `Application` ([argocd/aoa_apps/apps/automation/frigate.yaml](argocd/aoa_apps/apps/automation/frigate.yaml)) carries the matching `defaultPodOptions.tolerations` entry for the taint.
 
