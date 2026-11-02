@@ -1,0 +1,12 @@
+clusterName: talos
+clusterEndpoint: https://talos.k8s.piccola.us:6443
+kubernetesVersion: 1.35.3
+talosVersion: 1.12.6
+schematicId: "@schematic.yaml"
+secretsPath: secrets.sops.yaml
+nodes:
+  - { host: control-1.k8s.piccola.us, ip: 10.0.5.201, role: control-plane }
+  - { host: control-2.k8s.piccola.us, ip: 10.0.5.202, role: control-plane }
+  - { host: control-3.k8s.piccola.us, ip: 10.0.5.203, role: control-plane }
+  - { host: control-4.k8s.piccola.us, ip: 10.0.5.204, role: control-plane }
+  - { host: control-5.k8s.piccola.us, ip: 10.0.5.205, role: control-plane }

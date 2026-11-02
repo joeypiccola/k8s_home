@@ -40,6 +40,7 @@
 | 3dprinter-esp           | 192.168.9.157 | true              |
 | aqi-a-esp               | 192.168.9.158 | true              |
 | anthony-esp-env         | 192.168.9.159 | true              |
+| pumpkin                 | 192.168.9.159 | true              |
 | epl                     | 192.168.9.50  | false/reservation |
 
 ## sonos

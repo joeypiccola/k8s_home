@@ -14,7 +14,7 @@ This is a GitOps home lab running Kubernetes on Talos Linux (bare metal). ArgoCD
 
 ## Required Tools
 
-`kubectl`, `talhelper`, `talosctl`, `helm`, `task`, `sops`, `age`, `yq`, `jq`, `op` (1Password CLI)
+`kubectl`, `topf`, `talosctl`, `helm`, `task`, `sops`, `age`, `yq`, `jq`, `op` (1Password CLI)
 
 ## Common Commands
 
@@ -23,9 +23,10 @@ This is a GitOps home lab running Kubernetes on Talos Linux (bare metal). ArgoCD
 task --list
 
 # Talos cluster operations
-task talos:genconfig              # Regenerate node configs (needed after version/config changes)
-task talos:apply-config           # Apply configs to all 5 control-plane nodes
-task talos:bootstrap              # Bootstrap the cluster (first-time only)
+task talos:render                 # Render node configs to talos/topf/output (plaintext secrets, git-ignored)
+task talos:diff                   # Show pending changes on running nodes without applying (exits 2 if any)
+task talos:apply-config [NODES=<regex>] [MODE=<mode>]  # Apply configs with topf
+task talos:bootstrap              # Apply configs and bootstrap the cluster (first-time only)
 task talos:get-kubeconfig         # Merge kubeconfig (only needed after new talos secrets)
 task talos:cordon-and-reboot NODE=<node>  # Safely cordon then reboot a node
 task talos:reboot NODE=<node>     # Reboot a node
@@ -61,15 +62,21 @@ sops -d <file>.sops.yaml          # Decrypt to stdout
 
 ### `talos/`
 
-Talos Linux configuration managed by `talhelper`.
+Talos Linux configuration managed by [`topf`](https://github.com/postfinance/topf) in `talos/topf/` (migrated from the archived `talhelper`).
 
-- `talconfig.yaml` — cluster config template with `${variable}` substitution
-- `talenv.yaml` — environment variables (versions, IPs, domain)
-- `talsecret.sops.yaml` — SOPS-encrypted cluster secrets (certs, tokens); generated once with `talhelper gensecret`
-- `patches/` — machine config patches applied on top of generated configs
-- `clusterconfig/` — **generated output** (git-ignored kubeconfig; node YAML files are committed)
+- `topf.yaml` — cluster identity, Talos/Kubernetes versions, and the node list
+- `schematic.yaml` — Image Factory system extensions
+- `secrets.sops.yaml` — SOPS-encrypted cluster secrets (certs, tokens); must match the running cluster, never regenerate it
+- `all/`, `control-plane/` — machine config patches, merged in that order and lexically within each folder
+- `all/02-resolvers.yaml` — node DNS servers
+- `output/` — **generated output** from `topf render`; git-ignored because it contains plaintext secrets
+- `talosconfig` — generated with `topf talosconfig > talosconfig`; git-ignored, and required by the `talosctl` tasks
 
-Regenerate configs with `task talos:genconfig` whenever `talconfig.yaml`, `talenv.yaml`, or Talos/Kubernetes versions change.
+Preview changes with `task talos:diff` before applying. Roll out one node at a time with `NODES=<regex>`.
+
+The old talhelper files in `talos/` (`talconfig.yaml`, `talenv.yaml`, `talsecret.sops.yaml`, `patches/`, `clusterconfig/`) are kept only as a rollback path until they're removed, and are no longer the source of truth.
+
+`all/00-install-disk.yaml` uses `machine.install`, which must become `UnattendedInstallConfig` when upgrading to Talos 1.14.
 
 ### `argocd/`
 
@@ -139,11 +146,11 @@ Auto-merge is enabled for: ArgoCD, Grafana, kube-prometheus-stack, Uptime-Kuma, 
 
 | Item | Value |
 | ------ | ------- |
-| Talos version | `talos/talenv.yaml` → `talosVersion` |
-| Kubernetes version | `talos/talenv.yaml` → `kubernetesVersion` |
+| Talos version | `talos/topf/topf.yaml` → `talosVersion` |
+| Kubernetes version | `talos/topf/topf.yaml` → `kubernetesVersion` |
 | Control plane nodes | `control-1` through `control-5` at `10.0.5.201-205` |
 | VIP | `10.0.5.200` |
 | LB IP pool | `10.0.5.208/28` (CiliumLoadBalancerIPPool) |
 | Key LB IPs | gateway-internal: `.209`, gateway-external: `.210`, emqx: `.219`, plex: `.220`, pihole-dns: `.222` |
-| DNS servers | `10.0.3.24`, `10.0.3.22` (PiHole instances) |
+| DNS servers | `10.0.3.170`, `8.8.8.8` (`talos/topf/all/02-resolvers.yaml`) |
 | IP/network docs | `ipam.md` |

@@ -75,38 +75,43 @@ tasks:
         onepass_token=$onepass_token onepass_helm_release=$onepass_helm_release yq '.stringData.token = env(onepass_token), .metadata.labels."helm.sh/chart" = env(onepass_helm_release)' ./bootstrap/onepassword-token.yaml | kubectl apply -f -
         onepass_creds=$onepass_creds onepass_helm_release=$onepass_helm_release yq '.stringData."1password-credentials.json" = strenv(onepass_creds), .metadata.labels."helm.sh/chart" = env(onepass_helm_release)' ./bootstrap/op-credentials.yaml | kubectl apply -f -
 
-  talos:genconfig:
-    desc: Generate talos configs with talhelper
+  talos:render:
+    desc: Render talos configs with topf to talos/topf/output (contains plaintext secrets, git-ignored)
     silent: true
-    dir: talos
+    dir: talos/topf
     cmds:
-      - talhelper genconfig
+      - topf render
+
+  talos:diff:
+    desc: Show pending talos config changes on running nodes without applying (topf exits 2 when changes are pending)
+    silent: true
+    dir: talos/topf
+    cmds:
+      - topf apply --dry-run
 
   talos:apply-config:
-    desc: Apply generated talos configs
+    desc: "Apply talos configs with topf. Optional NODES=<regex> and MODE=<auto|reboot|no-reboot|staged|try>. Example: task talos:apply-config NODES='^control-5\\.' MODE=no-reboot"
     silent: true
-    env:
-      TALOSCONFIG: talos/clusterconfig/talosconfig
+    interactive: true
+    dir: talos/topf
+    vars:
+      MODE: '{{.MODE | default "auto"}}'
     cmds:
-      - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-1.k8s.piccola.us.yaml -n control-1.k8s.piccola.us
-      - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-2.k8s.piccola.us.yaml -n control-2.k8s.piccola.us
-      - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-3.k8s.piccola.us.yaml -n control-3.k8s.piccola.us
-      - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-4.k8s.piccola.us.yaml -n control-4.k8s.piccola.us
-      - talosctl apply-config --insecure -f talos/clusterconfig/talos-control-5.k8s.piccola.us.yaml -n control-5.k8s.piccola.us
+      - topf apply --mode={{.MODE}}{{if .NODES}} --nodes-filter '{{.NODES}}'{{end}}
 
   talos:bootstrap:
-    desc: Bootstrap the talos cluster
+    desc: Apply talos configs and bootstrap the cluster (first-time only) !! NOT TESTED CONFIRM ON REBUILD
     silent: true
-    env:
-      TALOSCONFIG: talos/clusterconfig/talosconfig
+    interactive: true
+    dir: talos/topf
     cmds:
-      - talosctl bootstrap -n control-1.k8s.piccola.us -e control-1.k8s.piccola.us
+      - topf apply --auto-bootstrap
 
   talos:get-kubeconfig:
     desc: Get and merge the cluster kubeconfig (only required if you gen'd new talos secrets)
     silent: true
     env:
-      TALOSCONFIG: talos/clusterconfig/talosconfig
+      TALOSCONFIG: talos/topf/talosconfig
     cmds:
       - talosctl kubeconfig --nodes control-1.k8s.piccola.us --endpoints control-1.k8s.piccola.us
 
@@ -116,7 +121,7 @@ tasks:
     requires:
       vars: [NODE]
     env:
-      TALOSCONFIG: talos/clusterconfig/talosconfig
+      TALOSCONFIG: talos/topf/talosconfig
     vars:
       TARGET: '{{if eq .NODE "all"}}10.0.5.201,10.0.5.202,10.0.5.203,10.0.5.204,10.0.5.205{{else}}{{.NODE}}{{end}}'
     cmds:
@@ -148,7 +153,7 @@ tasks:
     desc: Wipe nvme0n1 on all nodes
     silent: false
     env:
-      TALOSCONFIG: talos/clusterconfig/talosconfig
+      TALOSCONFIG: talos/topf/talosconfig
     cmds:
       - echo "!! WARNING WIPING NVME0N1 ON ALL NODES IN 10 SECONDS !!"
       - sleep 10
@@ -174,7 +179,7 @@ tasks:
     desc: "Reboot a Talos node"
     silent: true
     env:
-      TALOSCONFIG: "talos/clusterconfig/talosconfig"
+      TALOSCONFIG: "talos/topf/talosconfig"
     vars:
       NODE: "{{ .NODE }}"
     preconditions:
@@ -283,6 +288,32 @@ tasks:
       STATEFUL_APPS: home-assistant frigate sonarr radarr unifi esphome plex sabnzbd tautulli overseerr uptime-kuma
     cmds:
       - for: { split: " ", var: STATEFUL_APPS }
+        cmd: |
+          echo "Resuming {{ .ITEM }}..."
+          kubectl scale deployment --all -n {{ .ITEM }} --replicas=1
+          kubectl patch application {{ .ITEM }} -n argocd --type merge -p '{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
+          echo "Done {{ .ITEM }}"
+
+  media:suspend-all:
+    desc: Suspend ArgoCD sync and scale down media apps (sonarr, radarr, sabnzbd, plex) to zero replicas
+    silent: true
+    vars:
+      MEDIA_APPS: sonarr radarr sabnzbd plex
+    cmds:
+      - for: { split: " ", var: MEDIA_APPS }
+        cmd: |
+          echo "Suspending {{ .ITEM }}..."
+          kubectl patch application {{ .ITEM }} -n argocd --type merge -p '{"spec":{"syncPolicy":{"automated":null}}}'
+          kubectl scale deployment --all -n {{ .ITEM }} --replicas=0
+          echo "Done {{ .ITEM }}"
+
+  media:resume-all:
+    desc: Scale up media apps (sonarr, radarr, sabnzbd, plex) to one replica and resume ArgoCD sync
+    silent: true
+    vars:
+      MEDIA_APPS: sonarr radarr sabnzbd plex
+    cmds:
+      - for: { split: " ", var: MEDIA_APPS }
         cmd: |
           echo "Resuming {{ .ITEM }}..."
           kubectl scale deployment --all -n {{ .ITEM }} --replicas=1
