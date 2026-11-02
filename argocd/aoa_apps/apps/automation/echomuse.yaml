@@ -38,7 +38,7 @@ spec:
                   image:
                     repository: ghcr.io/wilbowes/echomuse-controller
                     # renovate: datasource=docker depName=ghcr.io/wilbowes/echomuse-controller
-                    tag: 2.26.3@sha256:1fa294c9e9cb2869dfb96e82e4b6d2c2c5530540ba8e2713facf096639290f06
+                    tag: 2.26.4@sha256:ee76e151dc79bdd7be6f70d19c2439cd9a25ab794a2933530df962861f71c63b
                   env:
                     TZ: America/Denver
                     SERVER_HOST: 0.0.0.0
