@@ -143,7 +143,7 @@ spec:
             media:
               enabled: true
               type: nfs
-              server: freenas.<path:cluster-secrets:cluster-secrets#domain>
+              server: truenas.<path:cluster-secrets:cluster-secrets#domain>
               path: /mnt/storage/media
               # globalMounts:
                 # - path: /downloads # mount media to /downloads
