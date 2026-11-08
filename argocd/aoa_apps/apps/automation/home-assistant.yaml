@@ -39,7 +39,6 @@ spec:
 
           controllers:
             home-assistant:
-              pod:
               containers:
                 app:
                   image:
