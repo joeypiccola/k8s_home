@@ -286,7 +286,7 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: kubectl
-              image: registry.k8s.io/kubectl:v1.35.3
+              image: registry.k8s.io/kubectl:v1.37.2
               args:
                 - rollout
                 - restart
