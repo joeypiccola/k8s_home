@@ -24,7 +24,6 @@
 | cilium-gateway-unifi-gateway | 10.0.5.218 | gateway-api-unifi |
 | emqx                         | 10.0.5.219 | n/a               |
 | plex                         | 10.0.5.220 | plex-k8s          |
-| pihole-dns                   | 10.0.5.222 | n/a               |
 
 ## esphome
 

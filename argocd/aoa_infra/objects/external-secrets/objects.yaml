@@ -46,10 +46,6 @@ spec:
       remoteRef:
         key: cluster-secrets
         property: domain
-    - secretKey: pihole-admin-password
-      remoteRef:
-        key: cluster-secrets
-        property: pihole-admin-password
     - secretKey: frigate-camera-user
       remoteRef:
         key: cluster-secrets
