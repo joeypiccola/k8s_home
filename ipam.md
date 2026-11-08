@@ -21,7 +21,6 @@
 | cilium-gateway-internal      | 10.0.5.209 | gateway-api-https |
 | cilium-gateway-external      | 10.0.5.210 | n/a               |
 | echomuse                     | 10.0.5.211 | echomuse-k8s      |
-| kms                          | 10.0.5.217 | n/a               |
 | cilium-gateway-unifi-gateway | 10.0.5.218 | gateway-api-unifi |
 | emqx                         | 10.0.5.219 | n/a               |
 | plex                         | 10.0.5.220 | plex-k8s          |

@@ -94,7 +94,7 @@ ArgoCD App of Apps GitOps structure. Three root App of Apps (apply in this order
 
 - `apps/argocd.yaml` — ArgoCD self-manages itself
 - `apps/networking/` — Cilium (CNI), cloudflared, pihole, unifi, gateway API, dyndns, cert-manager objects
-- `apps/automation/` — Home Assistant, Frigate, ESPHome, EMQX, KMS, doorbell
+- `apps/automation/` — Home Assistant, Frigate, ESPHome, EMQX, doorbell
 - `apps/media/` — Plex, Radarr, Sonarr, Sabnzbd, Tautulli, Overseerr
 - `apps/monitoring/` — kube-prometheus-stack, Grafana, Goldilocks, Uptime-Kuma, kube-state-metrics, metrics-server, prometheus-node-exporter
 - `apps/system/` — NFD, Intel GPU plugin, intel-device-plugins-operator, generic-device-plugin, VPA, Reloader
