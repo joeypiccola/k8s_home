@@ -286,9 +286,8 @@ spec:
           restartPolicy: OnFailure
           containers:
             - name: kubectl
-              image: bitnami/kubectl:latest
-              command:
-                - kubectl
+              image: registry.k8s.io/kubectl:v1.35.3
+              args:
                 - rollout
                 - restart
                 - deployment/frigate
