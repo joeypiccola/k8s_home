@@ -19,14 +19,73 @@ spec:
     syncOptions:
       - CreateNamespace=true
   source:
-    chart: uptime-kuma
-    repoURL: https://helm.irsigler.cloud
-    targetRevision: 4.2.0
+    repoURL: https://bjw-s-labs.github.io/helm-charts
+    chart: app-template
+    targetRevision: 5.3.0
     helm:
       releaseName: uptime-kuma
       valuesObject:
-        volume:
-          enabled: true
-          accessMode: ReadWriteOnce
-          size: 6Gi
-          existingClaim: uptime-kuma
+        controllers:
+          uptime-kuma:
+            containers:
+              app:
+                image:
+                  repository: louislam/uptime-kuma
+                  # renovate: datasource=docker depName=louislam/uptime-kuma
+                  tag: 2.5.0
+                probes:
+                  liveness:
+                    enabled: true
+                    custom: true
+                    spec:
+                      exec:
+                        command:
+                          - extra/healthcheck
+                      initialDelaySeconds: 180
+                      periodSeconds: 10
+                      timeoutSeconds: 2
+                      failureThreshold: 3
+                  readiness:
+                    enabled: true
+                    custom: true
+                    spec:
+                      httpGet:
+                        path: /
+                        port: &port 3001
+                      initialDelaySeconds: 10
+                      periodSeconds: 10
+                      timeoutSeconds: 1
+                      failureThreshold: 3
+
+        service:
+          app:
+            controller: uptime-kuma
+            ports:
+              http:
+                port: *port
+
+        route:
+          main:
+            parentRefs:
+              - name: internal
+                namespace: gateway
+            hostnames:
+              - uptime-kuma-k8s.<path:cluster-secrets:cluster-secrets#domain>
+              - status.<path:cluster-secrets:cluster-secrets#domain>
+            rules:
+              - matches:
+                  - path:
+                      type: PathPrefix
+                      value: /
+                backendRefs:
+                  - kind: Service
+                    port: *port
+                    name: uptime-kuma
+                    namespace: uptime-kuma
+                    weight: 1
+
+        persistence:
+          data:
+            existingClaim: uptime-kuma
+            globalMounts:
+              - path: /app/data
