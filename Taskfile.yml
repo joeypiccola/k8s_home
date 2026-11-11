@@ -225,7 +225,7 @@ tasks:
     desc: Restart all media deployments
     cmds:
       - |
-        for ns in sabnzbd radarr sonarr plex tautulli; do
+        for ns in sabnzbd radarr sonarr plex tautulli seerr; do
           echo "Restarting $ns..."
           kubectl rollout restart deployment/$ns -n $ns
         done
@@ -272,7 +272,7 @@ tasks:
     desc: Suspend ArgoCD sync and scale down all stateful apps to zero replicas
     silent: true
     vars:
-      STATEFUL_APPS: home-assistant frigate sonarr radarr unifi esphome plex sabnzbd tautulli uptime-kuma
+      STATEFUL_APPS: home-assistant frigate sonarr radarr unifi esphome plex sabnzbd tautulli seerr uptime-kuma
     cmds:
       - for: { split: " ", var: STATEFUL_APPS }
         cmd: |
@@ -285,7 +285,7 @@ tasks:
     desc: Scale up all stateful apps to one replica and resume ArgoCD sync
     silent: true
     vars:
-      STATEFUL_APPS: home-assistant frigate sonarr radarr unifi esphome plex sabnzbd tautulli uptime-kuma
+      STATEFUL_APPS: home-assistant frigate sonarr radarr unifi esphome plex sabnzbd tautulli seerr uptime-kuma
     cmds:
       - for: { split: " ", var: STATEFUL_APPS }
         cmd: |
