@@ -93,15 +93,23 @@ ArgoCD App of Apps GitOps structure. Three root App of Apps (apply in this order
 **`aoa_apps.yaml`** → `argocd/aoa_apps/` — All other applications:
 
 - `apps/argocd.yaml` — ArgoCD self-manages itself
-- `apps/networking/` — Cilium (CNI), cloudflared, pihole, unifi, gateway API, dyndns, cert-manager objects
+- `apps/networking/` — Cilium (CNI), cloudflared, unifi, gateway API, dyndns, cert-manager objects
 - `apps/automation/` — Home Assistant, Frigate, ESPHome, EMQX, doorbell
-- `apps/media/` — Plex, Radarr, Sonarr, Sabnzbd, Tautulli, Overseerr
+- `apps/media/` — Plex, Radarr, Sonarr, Sabnzbd, Tautulli, Seerr
 - `apps/monitoring/` — kube-prometheus-stack, Grafana, Goldilocks, Uptime-Kuma, kube-state-metrics, metrics-server, prometheus-node-exporter
 - `apps/system/` — NFD, Intel GPU plugin, intel-device-plugins-operator, generic-device-plugin, VPA, Reloader
 - `objects/` — PVCs, Gateway API resources, ExternalSecrets, certificates
 - `values/` — Helm values files for apps that need them (argocd, cilium, emqx, grafana, kube-prometheus-stack)
 
 Each app YAML under `apps/` is an ArgoCD `Application` resource. Helm values are split out into `values/<app>.yaml` when non-trivial. ArgoCD syncs with `automated: {prune: true, selfHeal: true}` and `serverSideApply: true`.
+
+**ArgoCD has NetworkPolicies (since argo-cd chart 10.x).** The chart's `global.networkPolicy.create` defaults to `true`, which `values/argocd.yaml` doesn't override, and Cilium enforces them. These are the only NetworkPolicies in the cluster. They're ingress-only:
+
+- `argocd-server` allows all ingress (the Gateway HTTPRoute works unchanged).
+- `argocd-repo-server`, `argocd-redis` and `argocd-dex-server` only accept traffic from the other ArgoCD components.
+- The `metrics` ports on controller, repo-server, server, dex and notifications are open to pods in any namespace. Redis metrics are not: no exporter runs (`redis.exporter` isn't enabled), and the `argocd-redis` policy only allows the `redis` port.
+
+Anything new that needs to reach repo-server, Redis or Dex from outside the ArgoCD pods needs a policy change, or `global.networkPolicy.create: false`.
 
 Frigate's NVR config is inlined in the `frigate-configmap` ConfigMap at `argocd/aoa_apps/objects/frigate/objects.yaml`, under `data.config.yaml` as a literal block scalar indented 4 spaces.
 
@@ -140,7 +148,7 @@ Because the taint blocks **any** pod without a matching toleration — including
 
 Renovate bot (`renovate.json`) auto-updates Helm chart versions in ArgoCD Application YAMLs. Chart versions live in `spec.sources[0].targetRevision` or `spec.source.targetRevision` in the app YAML files.
 
-Auto-merge is enabled for: ArgoCD, Grafana, kube-prometheus-stack, Uptime-Kuma, Reloader, cert-manager, external-secrets, onepassword operator, Goldilocks, VPA, cloudflared, Home Assistant/code-server (7-day minimum age), and the media stack (Plex, Radarr, Sonarr, Sabnzbd — digest/patch updates).
+Auto-merge is enabled for: ArgoCD, Grafana, kube-prometheus-stack, Uptime-Kuma, Reloader, cert-manager, external-secrets, onepassword operator, Goldilocks, VPA, cloudflared, Home Assistant/code-server (7-day minimum age), and the media stack (Plex, Radarr, Sonarr, Sabnzbd, Seerr — digest/patch updates).
 
 ## Cluster Details
 
@@ -151,6 +159,6 @@ Auto-merge is enabled for: ArgoCD, Grafana, kube-prometheus-stack, Uptime-Kuma, 
 | Control plane nodes | `control-1` through `control-5` at `10.0.5.201-205` |
 | VIP | `10.0.5.200` |
 | LB IP pool | `10.0.5.208/28` (CiliumLoadBalancerIPPool) |
-| Key LB IPs | gateway-internal: `.209`, gateway-external: `.210`, emqx: `.219`, plex: `.220`, pihole-dns: `.222` |
+| Key LB IPs | gateway-internal: `.209`, gateway-external: `.210`, emqx: `.219`, plex: `.220` |
 | DNS servers | `10.0.3.170`, `8.8.8.8` (`talos/topf/all/02-resolvers.yaml`) |
 | IP/network docs | `ipam.md` |
