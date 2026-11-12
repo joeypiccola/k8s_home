@@ -32,7 +32,7 @@ spec:
                 image:
                   repository: louislam/uptime-kuma
                   # renovate: datasource=docker depName=louislam/uptime-kuma
-                  tag: 2.5.9
+                  tag: 2.5.10
                 probes:
                   liveness:
                     enabled: true
